@@ -1,0 +1,28 @@
+name: Check the guide
+
+# Builds the guide on every pull request, so a broken link or a page that will
+# not render is caught before it is merged rather than when the site deploys.
+on:
+  pull_request:
+    paths:
+      - "docs/**"
+      - "package.json"
+      - "package-lock.json"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run docs:build

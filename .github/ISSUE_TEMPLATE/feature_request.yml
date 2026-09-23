@@ -1,0 +1,20 @@
+name: Feature request
+description: Something the kit could do that it does not.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What you are trying to do
+      description: The thing your game needs, rather than the feature you imagine. Two requests for the same need are often one feature.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: How you imagine it working
+  - type: textarea
+    id: now
+    attributes:
+      label: What you do today instead
+      description: A workaround, a script of your own, or nothing.

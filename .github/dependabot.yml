@@ -1,0 +1,18 @@
+# Keeps VitePress and the workflow actions current, once a month, in one pull
+# request each, so the site does not quietly fall behind.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      docs:
+        patterns: ["*"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a question
+    url: https://github.com/Vexx3/Ascent/discussions
+    about: How do I set something up? Is this the kit or my place? Start here.
+  - name: Getting the kit, or a purchase problem
+    url: https://discord.gg/TbqyC2hJRH
+    about: Access, the Vendr hub and updates are handled in the Ascent Discord.

@@ -1,0 +1,75 @@
+name: Bug report
+description: Something in the kit does not work the way the guide says it should.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. A bug with the version, the steps and the Output log is usually fixed in the next update; one without them usually is not.
+
+        Not sure whether it is the kit or your place? Ask in [Discussions](https://github.com/Vexx3/Ascent/discussions) first.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you report
+      options:
+        - label: I opened the Tower Setup plugin's **Setup** tab, and it does not explain this.
+          required: true
+        - label: I searched the existing issues for this.
+          required: true
+        - label: This report contains no kit place file, no whole kit script, and no webhook URL or other secret.
+          required: true
+  - type: input
+    id: version
+    attributes:
+      label: Kit version
+      description: Run `kit-info` in the admin console (F4 by default), or press Play and read the `AscentVersion` attribute on `game` in the Properties window.
+      placeholder: 1.0.0-rc.3
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where it happens
+      multiple: true
+      options:
+        - A tower place
+        - The hub (ring select)
+        - The Tower Setup plugin
+        - Studio only
+        - The live game only
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what you expected
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: From opening the place. The smaller the better.
+      placeholder: |
+        1. Open a tower place
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output window
+      description: What the Output window printed, server and client, pasted as text. Check it for webhook URLs first.
+      render: text
+  - type: textarea
+    id: changes
+    attributes:
+      label: What you changed from the kit
+      description: Config values you edited, scripts you changed, menus you renamed. "Nothing" is a useful answer.
+  - type: textarea
+    id: fix
+    attributes:
+      label: A fix, if you have one
+      description: Only the lines you changed, and the script's Explorer path. If a small place shows the problem, share it privately in the Discord and say so here.
+      render: lua

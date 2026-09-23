@@ -1,0 +1,20 @@
+name: Guide problem
+description: Something in the guide is wrong, missing or hard to follow.
+labels: [documentation]
+body:
+  - type: markdown
+    attributes:
+      value: For a small fix, the **Suggest a change to this page** link at the bottom of every page is quicker than an issue.
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      placeholder: https://kiels.dev/Ascent/guide/...
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong or missing
+    validations:
+      required: true
