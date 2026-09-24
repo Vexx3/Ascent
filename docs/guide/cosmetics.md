@@ -21,7 +21,7 @@ Select `BlueTrail` and set `Rarity = "Rare"`, `CosmeticName = "Blue Trail"` and
 
 | Attribute | Kind | Purpose |
 | :-- | :-- | :-- |
-| `Rarity` | String | Required. A key from `rarityColors`. This is what makes a model a cosmetic. |
+| `Rarity` | String | Required. `Uncommon`, `Rare`, `Epic`, `Legendary` or `Mythic`; anything else is ignored with a warning. This is what makes a model a cosmetic. |
 | `CosmeticName` | String | The name players see. Defaults to the model's name. |
 | `Hint` | String | Shown while it is still locked. |
 | `UnlockTower` | String | Beat one exact tower. |
@@ -97,10 +97,11 @@ would be dead.
 
 ### Worked examples
 
-`Config > Economy` ships a handful of plain cosmetics and no rules at all, so the
-file stays a list of what your game sells. Every rule is worked through here
+`Config > Economy` ships five cosmetics, and only two carry a rule: `BlueTrail`
+opens on `ETV5` and `Moonflower` on `ETV6`. Every rule is worked through here
 instead. Paste this over the shipped `cosmetics` table to watch each one behave,
-and give `Shinning` a real group id or drop that line.
+and give `Shinning` a real group id or drop that line. `VIPTrail` and `Fallen`
+stay in it because the VIP pass and the shop name them.
 
 ```luau
 cosmetics = {
@@ -119,8 +120,20 @@ cosmetics = {
 				{ type = "Tower", tower = "ETV5" },
 			},
 		},
+		VIPTrail = {
+			name = "VIP Trail",
+			rarity = "Legendary",
+			hint = "Own the VIP game pass to unlock this trail.",
+			unlocks = {},
+		},
 	},
 	Auras = {
+		Fallen = {
+			name = "Fallen",
+			rarity = "Epic",
+			hint = "Purchase Fallen in the ticket shop.",
+			unlocks = {},
+		},
 		Moonflower = {
 			name = "Moonflower",
 			rarity = "Legendary",
@@ -146,7 +159,8 @@ cosmetics = {
 
 | Cosmetic | Opens on |
 | :-- | :-- |
-| `GreenTrail` | nothing — shop only |
+| `GreenTrail`, `Fallen` | nothing — shop only |
+| `VIPTrail` | nothing — the VIP pass only |
 | `BlueTrail` | one named tower |
 | `Moonflower` | a named tower, **or** an exact difficulty |
 | `Shinning` | ten towers, **or** Premium, **or** a group |
@@ -157,9 +171,6 @@ true`, and so on. The one thing attributes cannot express is two rules of the
 same kind — two different named towers, say — which is when the config list is
 the answer.
 
-`tests/runtime/Cosmetics.luau` drives this exact set, both ways round, so the
-behaviour above is asserted rather than remembered.
-
 ## Shop And Pass Unlocks
 
 - A ticket-shop Trail or Aura unlocks the cosmetic with the same item ID.
@@ -167,6 +178,11 @@ behaviour above is asserted rather than remembered.
 - Both are saved as permanent ownership.
 
 Players choose one Trail and one Aura from the Cosmetics menu. Unlocking does not automatically equip it.
+
+`enabled.cosmetics` in `Config > Economy` switches the Cosmetics menu off, and
+`enabled.cosmeticCategories` one category at a time. A category that is off
+loses its tab, its shop items stop selling, and the server refuses to equip or
+grant one. What players already own stays in their save.
 
 ## Trail Assets
 
@@ -188,7 +204,8 @@ item still open. Dragging rotates the view.
 It needs one thing from you: a character `Model` called **`Rig`** in
 `Workspace`. Any R6 or R15 rig will do, and how you have dressed it does not
 matter — the copy is dressed as whoever is looking at it, read off the
-character they are standing in. Without one the button does nothing, which the
+character they are standing in. It has to have a `HumanoidRootPart` and be
+`Archivable`. Without one the button does nothing, which the
 Output window says once and the [Tower Setup window](./tower-setup-plugin.md#setup)
 reports on its Setup tab.
 
@@ -202,12 +219,14 @@ never changes. It is hidden for the player previewing, because their copy is
 standing in the same spot.
 :::
 
-::: warning Why the mannequin walks in a circle
+::: warning Why a previewed trail is redrawn
 A trail only draws where its attachments move, and the kit hangs them on the
-body's centre — the part every animation is measured against, which therefore
-never moves. A mannequin walking on the spot would show nothing. So it walks a
-two-stud circle, which reads as walking on the spot and draws the arc a player
-would really leave. An aura has no such problem and stands still.
+body's centre — the part every animation is measured against, which never goes
+anywhere on a mannequin walking on the spot. Left alone it would show nothing.
+So while a trail is previewed its own `Trail` is switched off, and the kit draws
+a copy that streams backwards from the body at walking speed, with a small
+stride sway: the ribbon a player would really leave. An aura has no such problem
+and stands still.
 :::
 
 ## Existing UI
@@ -229,7 +248,7 @@ CosmeticsMenu
   HintHover
 ```
 
-Each scrolling list should contain a `UIListLayout`. The kit sizes its canvas from the layout so the final item remains reachable.
+Each scrolling list needs a `UIListLayout` or `UIGridLayout`, and its `AutomaticCanvasSize` set to the direction it scrolls. The kit then sizes its canvas from the layout so the final item remains reachable.
 
 Rarity colors are in `Economy > rarityColors` and are shared with the shop.
 

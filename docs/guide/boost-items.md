@@ -19,9 +19,9 @@ When Practice mode is enabled inside a tower, the kit clones these into the
 player's inventory, and takes them back when Practice mode ends or they leave
 the tower. Scripts inside the tools do the work, so there is nothing to wire up.
 
-**The names are exact.** A tool under any other name is not picked up, and the
-Output says which of the three are missing. Practice mode still works without
-them — players just get no tools.
+**The names are exact.** A tool under any other name is not picked up. If any of
+the three is missing, the Output names all three it needs, once. Practice mode
+still works without them — players just get whichever of the tools it found.
 
 ## Marking A Tool As A Boost
 
@@ -47,7 +47,7 @@ Tool named SpeedCoil
 | :-- | :-- | :-- |
 | Tag `Boost` | tag | Marks the tool as a boost. It announces under its own name. |
 | `BoostName` | `string` | Marks it too, and sets the name announcements print. |
-| `DebugItem` | `boolean` | Marks the tool as a debug item. |
+| `DebugItem` | `boolean` | Marks the tool as a debug item. A win with one equipped skips the winpad's minimum-time and checkpoint checks and earns no Elo. |
 
 Tools brought over from an older kit carry `BoostName`, including as the
 `StringValue` those kits used, so both keep working and neither is going away.
@@ -57,6 +57,7 @@ When a player equips a boost tool inside a tower:
 - `boostItemUsed` is set on their session.
 - The boost name can appear in announcements.
 - Tickets will not be awarded for that run.
+- The run earns no [Elo](./elo.md).
 - `NoBoosts` tower rules can reject the win.
 
 ## Switching Items Off
@@ -124,6 +125,10 @@ To block boosted wins in one tower:
 2. Add the CollectionService tag `NoBoosts`.
 
 If the player has used a boost item, the winpad will not accept the run.
+
+A tower type with `noBoosts = true` in `Config > Towers` bans boosts in every
+tower of that type — Citadel and Obelisk as the kit ships — with no tag. A
+tower's own `noBoosts` there wins over both the tag and its type.
 
 ## Disabling Boosts In A Tower Rush
 

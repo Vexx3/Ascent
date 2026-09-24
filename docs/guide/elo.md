@@ -49,7 +49,7 @@ Open **ReplicatedStorage > Shared > Config > Elo**.
 | :-- | :-- | :-- |
 | `points.scale` | `10` | What a difficulty 1 tower is worth. |
 | `points.difficultyGrowth` | `1.8` | Multiplier per difficulty tier. `1` is flat; below `1` is refused. |
-| `leaderstat.enabled` | `true` | Show the Elo on the in-experience player list. |
+| `leaderstat.enabled` | `false` | Show the Elo on the in-experience player list. |
 | `leaderstat.name` | `"Elo"` | What that column is called. |
 | `normal.enabled`, `allJumps.enabled` | `true` | Whether clears in that mode count at all. |
 | `normal.multiplier` | `1` | What a normal clear is worth. |
@@ -84,10 +84,10 @@ stops the server rather than producing a wrong Elo quietly.
 
 ## Where Players See It
 
-**On the player list.** The Elo sits in `leaderstats` beside the tower
-and All-jumps counts, so it shows in the in-experience player list Roblox draws
-from that folder. Rename it or turn it off with `leaderstat.name` and
-`leaderstat.enabled`. See Roblox's
+**On the player list.** With `leaderstat.enabled` on -- it ships off -- the
+Elo sits in `leaderstats` beside the tower and All-jumps counts, so it shows in
+the in-experience player list Roblox draws from that folder. Rename the column
+with `leaderstat.name`. See Roblox's
 [Leaderboards](https://create.roblox.com/docs/players/leaderboards) page for how
 that list works.
 
@@ -107,8 +107,8 @@ print("you are", Data.GetMyRank("Elo"))
 
 An entry is `{ Rank, UserId, Name, Score }`. `Data.OnLeaderboard` fires when a
 board refreshes. Scribe keeps the ordered store behind it; you do not write to
-it. Boards do not update in Studio unless you mock them -- see the testing note
-below.
+it. In Studio a board holds only the players in that test -- see the testing
+note below.
 
 It is one of three. To show it with Roblox's own leaderboard, or to read the
 two that rank completion counts rather than Elo, see
@@ -170,7 +170,7 @@ true on a profile whose old-kit history has been credited, which is what stops
 that credit happening twice.
 
 ```luau
-local EloAwards = require("@Server/Accounts/EloAwards")
+local EloAwards = require(ServerScriptService.Server.Accounts.EloAwards)
 
 local result = EloAwards.get(player)
 if result ~= nil then
@@ -183,10 +183,13 @@ end
 
 ## Testing In Studio
 
-Elo itself works in Studio. Leaderboards read an OrderedDataStore, so
-prefer Scribe's mocking over pointing a development place at live data --
-`Data.Mock` accepts a `Leaderboards` table of fake entries, and real ordered
-writes from a test place are difficult to undo.
+Elo itself works in Studio. Leaderboards read an OrderedDataStore, and with
+`dataStoreStudioMode` on `Mock`, as shipped, Scribe swaps in an in-memory one,
+so a board holds only the players in that test. Keep it that way rather than
+pointing a development place at live data: real ordered writes from a test
+place are difficult to undo. To draw a board full of fake entries in edit mode
+rather than a play test, Scribe's client `Data.Mock` accepts a `Leaderboards`
+table.
 
 Elo uses the kit's existing win validation. It does not make
 client-owned movement or client-only hazards exploit-proof.

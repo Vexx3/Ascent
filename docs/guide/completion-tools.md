@@ -50,9 +50,16 @@ Tools can affect win legitimacy when equipped inside a tower.
 | Attribute | Type | Effect |
 | :-- | :-- | :-- |
 | `BoostName` | `string` | Marks the run as boosted and records a display name for announcements. |
-| `DebugItem` | `boolean` | Marks the run as debugged. Debug items are treated as assisted tools. |
+| `DebugItem` | `boolean` | Marks the run as a debug run: the winpad skips its minimum-time and checkpoint checks, and the win earns no Elo. |
+
+A Tool tagged `Boost` counts as a boost too, and announces under its own name —
+see [Marking A Tool As A Boost](./boost-items.md#marking-a-tool-as-a-boost).
 
 If an older tool contains a nonempty `StringValue` named `BoostName`, the kit recognizes it as a boost. When equipped in a tower, the server warns and copies it to a `BoostName` attribute.
+
+In Studio, the kit moves every Tool in `ServerStorage > StarterPackStudio` into
+`StarterPack` and sets `DebugItem` on it, so a run where one is equipped inside a
+tower is marked as a debug run.
 
 ## No-Boost Towers
 
@@ -63,7 +70,9 @@ A tower rush is stricter. Set `noBoosts = true` on the rush in `Config > Towers`
 and **equipping a boost item kills the player on the spot**, because a rush is
 one run and there is nothing to salvage from a boosted leg of it.
 
-Citadels and Obelisks ban boosts by type, without a tag.
+Citadels and Obelisks ban boosts by type, without a tag. A tower's own
+`noBoosts` in `Config > Towers` wins over both the tag and the type, so
+`noBoosts = false` lets boosts into one Citadel.
 
 ## See Also
 

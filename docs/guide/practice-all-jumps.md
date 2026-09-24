@@ -8,7 +8,14 @@ The kit supports three player modes:
 | `Practice` | Assisted tower practice with tools and checkpoint recovery. |
 | `AllJumps` | Manual checkpoint challenge mode. |
 
-Changing modes while inside a tower reloads the current tower.
+Changing modes while inside a tower reloads the current tower, or a tower rush
+from its first tower.
+
+## Turning A Mode Off
+
+`allJumpsEnabled` and `practiceEnabled` in `Config > Project` switch a whole
+mode off. Its button, menu, keybinds and leaderboard stat go, and the server
+never starts listening for it, so a crafted request cannot switch it back on.
 
 ## Restarting In Practice And All Jumps
 
@@ -40,22 +47,20 @@ Practice mode is for learning and testing towers.
 When Practice mode is enabled:
 
 - The player receives the practice tools, which are described in [Boost & Practice Tools](./boost-items.md).
-- Death is intercepted and the player is sent back to their current checkpoint.
+- The player can place checkpoints with the same keys as All Jumps, as long as All Jumps is enabled.
+- Death is intercepted and the player is sent back to the checkpoint they placed, or to the tower's spawn if they have not placed one.
 - The player cannot complete the tower from a winpad.
 - Practice tools are removed when the player leaves Practice mode or exits the tower.
 
 ### Godmode
 
 `PracticeGodmode` is a toggle: equip it and click to switch damage off, click
-again to switch it back on. While it is on the player wears a force field, which
-is both the visible sign and most of the mechanism — Roblox will not let
-`Humanoid:TakeDamage` through one, so killbricks stop landing. It survives
+again to switch it back on. The tool's own name shows which, `Godmode [ON]` or
+`Godmode [OFF]`. While it is on the player wears an invisible force field, and
+Roblox will not let `Humanoid:TakeDamage` through one; the server also drops
+killbrick damage outright rather than sending it at the force field. It survives
 dying and respawning, since practice deaths are the thing it exists to make
-cheap.
-
-Heal pads keep working while it is on, which takes a deliberate exception: a
-force field swallows healing as readily as damage, so the server writes health
-back directly rather than sending it through `TakeDamage`.
+cheap. Starting the tower again, leaving it, or leaving Practice switches it off.
 
 The server checks the player is actually in Practice before switching it on. The
 tool is handed out and taken away with the rest of the practice kit, so it should

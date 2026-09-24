@@ -136,7 +136,7 @@ is no "not set yet" case to handle, ever.
 ### On the client
 
 A **LocalScript in `StarterPlayer > StarterPlayerScripts`**, beside the kit's
-`Client` folder rather than inside it — everything in there is kit code, and
+`Client` script rather than inside it — everything in there is kit code, and
 keeping yours out of it means an update to the kit cannot take your script with
 it.
 
@@ -225,6 +225,10 @@ effect immediately rather than on the next join.
 The kit refuses anything that is not a real `KeyCode` name, so what you read is
 always safe to look up.
 
+The row listens for keyboard keys only, and Escape cancels. A controller button
+such as `"ButtonY"` works as a `default`, but it is not something a player can
+rebind to from the menu.
+
 ::: tip It will not clash with the kit's own binds
 The row shares the kit's capture lock, so two rows cannot listen for the same
 press. Nothing stops a player binding your key to the same one as Quick Restart,
@@ -249,6 +253,7 @@ declaration and nothing else:
   refused outright — NaN passes every range comparison, so a clamp alone would
   let it through;
 - a **choice** must be one of `options`;
+- a **key** must be a real `KeyCode` name;
 - a key you never declared is **never stored**, however many a message carries.
 
 That last one is why the server walks your declarations rather than the message.
@@ -280,7 +285,7 @@ schema and a field to the account, the way the kit's own settings do. The
 | Symptom | Check |
 | :-- | :-- |
 | No row in the menu | The Output window names the setting and what was missing. Most often `CustomTemplates` has been renamed or deleted. |
-| The row is there and does nothing | It is missing the control inside it — `ToggleButton`, `OptionsFrame`, or `SliderFrame`. |
+| The row is there and does nothing | It is missing the control inside it — `ToggleButton`, `OptionsFrame`, `SliderFrame`, or `KeybindButton`. |
 | The row lands in the wrong tab | `category`, which defaults to `"Gameplay"`. |
 | A row you authored is ignored and a copy appears instead | Its name has to match the key, or `frame` has to name it. |
 | It changes but does not survive a rejoin | Studio Mock mode forgets the profile on purpose. Test persistence with a `"Live"` `dataStoreStudioMode` and a dedicated `dataStoreKeyStudio`. |

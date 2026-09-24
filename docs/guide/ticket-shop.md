@@ -2,6 +2,8 @@
 
 The ticket shop sells permanent Tools, Trails, and Auras. Configure it in `ReplicatedStorage > Shared > Config > Economy`, under `shop`.
 
+`enabled.shop` in the same file switches the shop off, and so does switching tickets off, since a shop with no currency has nothing to charge. With the shop off and tickets on, tickets are still earned but cannot be spent.
+
 ## Add An Item
 
 Every item is one table keyed by a stable item ID:
@@ -27,7 +29,7 @@ GravityCoil = {
 | `rarity` | `string` | — | `Uncommon`, `Rare`, `Epic`, `Legendary`, or `Mythic`. |
 | `icon` | `string` | — | Roblox image string. Use `rbxassetid://0` when the template supplies its own art. |
 | `template` | `string` | none | Optional Tool name. If omitted, the item's display `name` is used. |
-| `featuredOnly` | `boolean` | `false` | Optional. Keeps the item out of All and shows it only in the featured Items list. |
+| `featuredOnly` | `boolean` | `false` | Optional. Keeps the item out of All and shows it only in the featured Items list, so it only suits an `Items` entry. The rotation never picks it, so it is never discounted. |
 
 There are no separate grant tables or enable switches:
 
@@ -44,12 +46,18 @@ Keep item IDs stable after release because ownership saves those IDs.
 featured = {
 	refreshMinutes = 60,
 	itemCount = 4,
+	discountPercent = 25,
 	categories = { "Trails", "Auras", "Items" },
 }
 ```
 
 The rotation uses the same time window for every server. It selects from the
 listed categories and refreshes on the configured minute boundary.
+
+`discountPercent` takes that much off an item while it is featured. `0` turns
+the discount off, it is capped at 90, and a featured item never drops below 1
+ticket. The server works the price out itself rather than trusting the one the
+client showed.
 
 Because the window is a division of the clock rather than a timer, every server
 works out the same boundary on its own — they rotate together without anything
@@ -94,6 +102,8 @@ ShopMenu
         BuyButton
 ```
 
+Two buttons, `FeaturedButton` and `AllButton`, switch between `FeaturedList` and `AllList`. They can sit anywhere inside `ShopMenu`, and the Output window names either one that is missing.
+
 Ticket-item buttons open `InfoModal`. `Purchase` performs one atomic, idempotent Scribe purchase and `Cancel` closes the modal. Repeated requests for the same permanent item do not spend tickets twice, and owned items cannot be purchased again.
 
 `Preview` is optional. Add a `GuiButton` of that name to `Options` and the kit shows it for a trail or an aura and hides it for anything else — an Item is a Tool and a game pass is a perk, and there is nothing to stand a mannequin in front of. See [Previewing a cosmetic](./cosmetics.md#previewing-a-cosmetic).
@@ -121,7 +131,7 @@ Purchased Trails and Auras are unlocked permanently but are equipped from the Co
 | Item is missing | Check that its entry is under `Economy > shop > items` and its category is spelled exactly. |
 | Tool purchase fails | Match `template` to a Tool in `ServerStorage > TicketShopItems > Tools`. |
 | Cosmetic purchase fails | Give the shop item and cosmetic the same ID under the matching category. |
-| Last list item is clipped | Keep a `UIListLayout` in the list; the kit updates `CanvasSize` from `AbsoluteContentSize`. |
+| Last list item is clipped | Keep a `UIListLayout` or `UIGridLayout` in the scrolling list and set its `AutomaticCanvasSize` to the direction it scrolls; the kit then sizes `CanvasSize` from the layout's `AbsoluteContentSize`. |
 
 ## See Also
 

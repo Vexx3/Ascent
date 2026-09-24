@@ -33,7 +33,8 @@ simply finds nothing.
 Most of the ways a tower breaks are invisible in Explorer. A part named `Winpad`
 instead of `WinPad` looks right and never registers. A checkpoint folder that
 goes 1, 2, 4 stops the tower loading for everyone. A tower with no `Spawn` is
-skipped without a word. The window exists to tell you before your players do.
+skipped with a single line in the Output. The window exists to tell you before
+your players do.
 
 ## The six tabs
 
@@ -73,8 +74,8 @@ One question asked of three places, ordered by how far the failure reaches.
 
 ### Menus
 
-The menus are the one part of the kit that does not ship with it. `StarterGui`
-is yours, Rojo does not map it, and until this tab nothing had ever read it
+The menus are the one part of the kit that is yours to lay out. `StarterGui` is
+built in Studio rather than by code, and until this tab nothing had ever read it
 back — while the client is exact about the names it reaches for inside it.
 
 The order things start in is what makes this worth a tab of its own. The client
@@ -112,8 +113,9 @@ that opens onto nothing.
 
 ### Folders and services
 
-The second tab is about the place rather than the towers in it: the folders
-and markers the kit reaches for by name, and whether they are there.
+The second section is about the place rather than any one tower in it: the
+folders and markers the kit reaches for by name, whether they are there, and
+anything that only shows up when every tower is looked at together.
 
 This is the half that fails in silence.
 
@@ -126,6 +128,9 @@ tidying `ServerStorage`, usually because it looked empty.
 
 | It finds | Severity | Because |
 | :-- | :-- | :-- |
+| `Config` is missing a module | Error | Every Config module is required by name, so whatever requires the missing one errors when the server or client starts. |
+| A newer `Config` package is published | Warning | This place plays by older settings than your other places until it is updated and published. |
+| `Config` does not update itself here | Warning | `Config` is a package with AutoUpdate off in this place, so a change published from another place never arrives. |
 | No `Workspace > Towers` | Error | `TowerRegistry` waits ten seconds for it and errors, and the client's tower display does the same, so nothing on the client starts either. |
 | No `Workspace > Markers` | Error | Two modules wait ten seconds for it and error, both required before the server starts anything. Nobody can join. |
 | No `ServerStorage > TowerCheckpoints` | Error | Named with a plain dot in `TowerRegistry`, so requiring that module fails outright. |
@@ -138,11 +143,16 @@ tidying `ServerStorage`, usually because it looked empty.
 | Chat is set to the legacy service | Error | No `TextChannels` are made, so announcing a win errors every time. |
 | No chat channel called *X* | Error | `Config > Chat` names a channel this place will not have when it runs. |
 | Practice mode is missing its tools | Warning | Practice still works and hands the player nothing to practise with. |
+| No Team called Start or Winners | Error | The server calls `error()` on startup rather than running without them, so nobody can join. Fixable in one click with **Create Team**. |
+| Checkpoints with no tower | Warning | A folder in `TowerCheckpoints` no tower goes by. Usually a tower renamed without its checkpoint folder, which then loads with none. |
+| Listed in this area, but not here | Warning | Config puts the tower in the Ring this place is, and no folder goes by that name, so the chart shows a tower nobody can enter. |
+| Rush names an unknown tower | Error | A rush walks its list in order and stops at the first name `Config > Towers` does not describe. |
+| Rush spread across areas | Error | A rush never leaves the server it started in, so it stops at the first tower this place does not have. |
+| Tower in an area that does not exist | Warning | The chart groups by Area, and an Area nobody has described has no group. |
+| This window does not know which area this place is | Warning | Until it does, it cannot tell a missing tower from one that lives in another Ring. See [Which area this place is](#which-area-this-place-is). |
 
-Below the problems it lists everything the kit looks for with what is in it and
-a **Select** button, and the lobby markers with where each one turned up —
-markers are found recursively, so one loose at the top of `Markers` and one
-buried in the model you built the lobby as are different things to go and move.
+Markers are found recursively, the way the game finds them, so one inside the
+model you built the lobby as counts.
 
 ::: tip Why the chat check is a prediction
 `TextChatService.TextChannels` does not exist in Studio at all; Roblox builds
@@ -158,7 +168,7 @@ only one right answer for those.
 
 ### Rewards
 
-The fourth tab checks everything a tower rewards you with — the half nobody
+The third section checks everything a tower rewards you with — the half nobody
 could see from Studio.
 
 Before it, these were found by players:
@@ -176,15 +186,13 @@ Every one of these is a name in `Config` having to match a name in
 | No tool for an item | Error | The item is on sale and cannot be bought. |
 | No cosmetic for an item | Error | A `Trails` or `Auras` entry finds its cosmetic by **key**, so the two spellings have to match. |
 | No model for a cosmetic | Error | Players unlock it, equip it, and nothing appears on them. |
+| No `Trails` or `Auras` folder | Error | `Config > Economy` lists cosmetics of that kind and `ServerStorage > Cosmetics` has nowhere to keep them. Fixable in one click. |
 | No tool for a pass | Error | Owning the game pass does nothing. |
 | No trail for a pass | Error | The VIP pass unlocks a trail `Config > Economy` does not list. |
 | Completion tools with no tower | Error | The folder name has to be the tower's acronym, so a typo means the reward is never handed out. |
 | No chat tag for a pass | Warning | The rest of the pass works; owners get no tag. |
 | Empty completion tool folder | Warning | Only `Tool` instances are cloned, so beating that tower awards nothing. |
 | Tools outside the Tools folder | Warning | The kit only looks one level further in. Fixable in one click. |
-
-Below the problems, the tab shows what `Config` lists and where those things
-live, with a **Select** button for each folder so you can jump straight to it.
 
 A tower with no folder under `CompletionTools` is the normal case — most towers
 award nothing — so it is never reported.
@@ -204,10 +212,12 @@ line each at the bottom.
 | No spawn | Error | The game skips the tower, so nobody can enter it. |
 | Winpad spelled wrong | Error | Only a part named `WinPad` exactly becomes a winpad. |
 | No winpad | Error | There is nothing to touch to finish the tower. |
-| Checkpoint gap | Error | Loading stops at the first missing number, for everyone, and the order is also what players must touch. |
-| Not a numbered part | Error | Only numbered BaseParts belong in a checkpoint folder. |
-| Checkpoint number used twice | Error | The game counts the folder rather than reading the names, so a repeat sends it looking for a number that is not there. |
-| Ending ID used twice | Error | Completions are saved per ending ID, so beating one would count as both. |
+| Checkpoint gap | Error | The game skips the whole tower at startup, for everyone, and the order is also what players must touch. |
+| Not a numbered part | Error | Only numbered BaseParts belong in a checkpoint folder; anything else makes the game skip the tower. |
+| Checkpoint number used twice | Error | The game counts the folder rather than reading the names, so a repeat sends it looking for a number that is not there, and it skips the tower. |
+| Checkpoints are in Workspace | Error | A checkpoint folder in the tower and nothing in `ServerStorage`, so the tower loads with none. See [Checkpoints in the wrong place](#checkpoints-in-the-wrong-place). |
+| Two sets of checkpoints | Warning | One in the tower and one in `ServerStorage`; the game uses the second and the first leaks the route. |
+| Checkpoints are shown for editing | Warning | Moved into the tower by **Show in Workspace**. Put them back before you publish. |
 | No checkpoints | Warning | Nothing checks the route, so anyone reaching the winpad wins. |
 | No minimum time | Warning | A run of any speed is accepted, so the too-fast check is off. |
 | Nothing describes this tower | Warning | No attributes and no config entry, so it loads unnamed at the default difficulty. |
@@ -215,21 +225,16 @@ line each at the bottom.
 | No difficulty | Warning | It sorts as rating zero and shows as Unknown. |
 | Sign points at nothing | Warning | A `PortalSign` or `ChartLine` with no part in it is never coloured, so the tower reads as wired up and is not. |
 | Sign is the wrong class | Warning | Only an `ObjectValue` is read, so a sign that is anything else is skipped in silence. |
-| Checkpoints with no tower | Warning | Usually a tower renamed without its checkpoint folder. |
-| Listed in this area, but not here | Warning | Config puts the tower in the Ring this place is, and no folder goes by that name. |
-| No Team called Start or Winners | Error | The server calls `error()` on startup rather than running without them, so nobody can join. |
-| Rush names an unknown tower | Error | A rush walks its list in order and stops at the first name `Config > Towers` does not describe. |
-| Tower in an area that does not exist | Warning | The chart groups by Area, and an Area nobody has described has no group. |
-| Rush spread across areas | Error | A rush never leaves the server it started in, so it stops at the first tower this place does not have. |
 | Not in the catalogue | Warning | Only this place knows the tower exists. See [Adding a tower to the catalogue](#adding-a-tower-to-the-catalogue). |
-| This window does not know which area this place is | Warning | Until it does, it cannot tell a missing tower from one that lives in another Ring. |
 
-Anything wrong with the place rather than with one tower appears above the
-list, and again on the [Setup](#setup) tab with the whole skeleton around it.
+Anything wrong with the place rather than with one tower — teams, rushes,
+Areas, checkpoint folders that belong to no tower, ending IDs shared between
+towers — is not on this tab. It is on the [Setup](#folders-and-services) tab,
+with the whole skeleton around it.
 
-The one-click fixes are **Add Spawn**, **Add WinPad**, **Rename to WinPad**,
-**Create folder**, **Create Team**, **Move into Tools**, and **Renumber by
-height**. Every one is a single undo step, so try them freely.
+The one-click fixes here are **Add Spawn**, **Add WinPad**, **Rename to
+WinPad**, **Create folder**, **Move to ServerStorage**, **Put back** and
+**Renumber by height**. Every one is a single undo step, so try them freely.
 
 ::: tip Renumber by height
 This is the fix for a checkpoint gap. It sorts the parts from lowest to highest
@@ -250,14 +255,17 @@ Select a tower, or anything inside one, and the Selected tab shows it.
   [Seeing checkpoints while you build](#seeing-checkpoints-while-you-build)),
   and **Add ClientSidedObjects**.
 - **How it plays** edits the values that live on the tower itself: minimum time,
-  the All Jumps badge, the ticket multiplier, whether wins can be repeated, and
-  whether boost items are banned.
+  the All Jumps badge, the ticket multiplier, **Pay tickets on rebeats** (every
+  win pays, ignoring the cooldown), and **Ban boost items** (the `NoBoosts`
+  tag).
 - **What this tower is** sets the name, difficulty, area, badge and type. These
   are attributes on the tower folder, so you set them where you can see the
-  tower, and they win over its `Config > Towers` entry.
+  tower, and they win over its `Config > Towers` entry — apart from the area,
+  which the game always takes from the entry. The area here is what the window
+  writes into that entry.
 - **Signs** points a tower at the two parts it recolours when somebody beats
   it. See [Signs](#signs).
-- **Also in Config > Towers** shows what the catalogue says about it, and lists
+- **In Config > Towers** shows what the catalogue says about it, and lists
   anything the two disagree about. Neither side is wrong on its own — the
   attribute is what this place uses and the entry is what every other place
   uses — so there is no fix button, only the difference.
@@ -346,8 +354,9 @@ the top of the tab.
 
 Either way you can select the line and press <kbd>Ctrl</kbd>+<kbd>C</kbd>.
 
-The line only appears once the tower has a difficulty and an area, because
-without those there is no entry worth writing.
+The line only appears once the tower has a difficulty and an area — its own
+`Area`, or failing that the Area this place is — because without those there is
+no entry worth writing.
 
 ::: warning Using Rojo?
 Copy the line into your own file instead. Rojo syncs one way, from your files
@@ -395,17 +404,22 @@ sign at all is not a problem and is never mentioned.
 
 An ending is a winpad. The Selected tab lists every winpad the tower has,
 one card each, and **a tower with one winpad gets a card too** — the server reads
-the same five attributes off a lone winpad as it does off five, so a single
-ending can still carry its own name, difficulty, badge and winroom without the
-tower's catalogue entry saying so.
+a badge, a winroom and **Do not award the tower's badge** off a lone winpad as
+it does off five, so a single ending can still carry those without the tower's
+catalogue entry saying so.
+
+The winpad whose ending ID is the tower's acronym — an empty one — is the
+**main ending**, and only it records the tower as beaten. Any other ID makes a
+side ending, which announces the win and awards badges but does not count as a
+completion. See [Winpads & Endings](./winpads-endings.md#custom-ending).
 
 Every field may be left empty, and the placeholder says what happens if you do.
 
 | Field | Leave it empty to |
 | :-- | :-- |
-| Ending ID | Use the tower's acronym. |
-| Ending name | Use the tower's name. |
-| Difficulty | Use the tower's own difficulty. |
+| Ending ID | Use the tower's acronym, which makes this the main ending. |
+| Ending name | Use the tower's name. The main ending always does. |
+| Difficulty | Use the tower's own difficulty. The main ending always does. |
 | Badge ID | Award no badge for this ending. |
 | Winroom marker | Send the player to `WinroomSpawn`. |
 
@@ -415,8 +429,8 @@ should award only its own badge and not the tower's — a secret ending meant to
 be found instead of, not as well as, the normal one.
 
 **Add another ending** copies the first winpad beside itself and gives it a free
-ending ID, so a second exit is a button rather than a hunt through attribute
-names. The copy lands next to the original, carrying its shape and material but
+ending ID — `ToH2`, `ToH3` and so on — so a second exit is a button rather than
+a hunt through attribute names. That makes it a side ending. The copy lands next to the original, carrying its shape and material but
 none of its settings; drag it where the ending actually is. A tower with no
 winpad at all gets **Add a winpad** instead, which is the same button doing the
 same thing from nothing.
@@ -426,8 +440,9 @@ buttons go through Studio's own undo history, so an ending added or removed by
 mistake is one <kbd>Ctrl</kbd>-<kbd>Z</kbd> away.
 
 ::: warning
-The ending ID is saved with every completion. Renaming it after release loses
-whatever players earned under the old one.
+Leave the main winpad's ending ID empty or equal to the acronym. Give it any
+other ID and reaching it stops counting as beating the tower — no win, no
+tickets, no points — while it still announces and awards badges.
 :::
 
 ## Cosmetics
@@ -455,7 +470,10 @@ checklist. Leaving all five empty is a perfectly good cosmetic: it becomes one
 that only the shop or a game pass hands out.
 
 The rarity picker offers the names in `Config > Economy.rarityColors` and
-nothing else, because a rarity with no colour draws a card with no colour.
+nothing else, because a rarity with no colour draws a card with no colour. Only
+the five the kit ships — `Uncommon`, `Rare`, `Epic`, `Legendary` and `Mythic` —
+work in game: a name you add to `rarityColors` shows up in the picker, and the
+server ignores it with a warning in the Output.
 
 ::: tip Two things this tab tells you that nothing else does
 **"Not a cosmetic yet"** — the model has neither a rarity nor a Config entry, so
@@ -490,8 +508,8 @@ does.
 | Shown as | The key is what players see. |
 | Description | No line under the name. |
 | Price | Cannot be emptied — an entry with no price is not one the shop can sell. `0` is free. |
-| Category | **Broken.** The shop does not know what it is selling. |
-| Rarity | No colour behind the card. |
+| Category | **Left out of the shop.** The shop does not know what it is selling. |
+| Rarity | **Left out of the shop.** It only sells items rated one of the five rarities. |
 | Icon | No picture. |
 | Only sold while featured | Always on sale. |
 | Tool | Find the Tool by the display name instead. Only for `Items`. |
@@ -532,10 +550,11 @@ what lets the window find the line without guessing. A per-tower `name`, a shop
 item `price` and an Area `id` all repeat, so those stay in the file or in the
 Selected tab, which edits one tower at a time.
 
-A number setting only takes what the game can start with. An interval the
-server divides by cannot be 0, the featured discount stops at the 90% the
-server caps it to, and Elo growth cannot drop below 1 — the server refuses to
-start with any of those, so the window refuses to write them.
+A number setting only takes what the game can run with. An interval the server
+divides by has to be at least 0.05 seconds, Elo growth cannot drop below 1 —
+the server refuses to start below it — and the featured discount stops at the
+90% the server caps it to anyway. The window refuses to write anything outside
+those.
 
 The window's own preferences — which Area this place is, and the size of a
 checkpoint it adds — are the last section, because they are settings too and one
@@ -543,28 +562,30 @@ place to look beats two.
 
 ### Window preferences
 
-The last section of the Config tab is how you like the window to build things,
-rather than anything about the game. Those are saved against the plugin, not the
-place, so they follow you between games and two people working on the same place
-can each have their own.
+The last section of the Config tab, **This window**, is how you like the window
+to build things, rather than anything about the game. Those are saved against
+the plugin, not the place, so they follow you between games and two people
+working on the same place can each have their own.
 
 ### Which area this place is
 
 The window needs to know which Ring it is looking at. Without it, "this tower is
 missing" and "this tower lives in another place" are the same sentence, so it
 stops comparing `Config > Towers` against `Workspace` and says so on the
-Towers tab.
+Setup tab.
 
 It works this out from the place's **Place ID**, matched against the Areas in
 `Config > Worlds`.
 
-Nothing is stored: a place made with **Save As** inherits every attribute of its
-original, so a remembered answer would leave Ring 2 insisting it was Ring 1. The
-Place ID changes as soon as the copy is published.
+Nothing is stored in the place: a place made with **Save As** inherits every
+attribute of its original, so an answer kept there would leave Ring 2 insisting
+it was Ring 1. The Place ID changes as soon as the copy is published.
 
-An unpublished place has no Place ID, so there the tab asks, and remembers your
-answer against that place until it does. Clear the picker to go back to
-matching the Place ID.
+When no Area has this Place ID — an unpublished place, or one whose ID is not in
+`Config > Worlds` yet — pick the Area in **This window**. The answer is kept
+against the plugin, keyed by Place ID, so every unpublished place shares one
+answer. A Place ID that matches an Area always wins over it. Clear the picker to
+go back to matching the Place ID.
 
 ### Checkpoint size
 
@@ -577,23 +598,22 @@ and Studio only draws what is in Workspace, so you will not see one either.
 Colour and material would be settings nobody could look at.
 
 ::: warning Checkpoints are not touch triggers
-The server does not use a `Touched` event for them, the way it does for winpads. It samples
-where each player is every `checkpointInterval` — 0.25s by default, in
-`Config > Project` — and asks whether that point is inside the checkpoint part.
-Nothing that happens between samples is seen.
+The server does not use a `Touched` event for them, the way it does for winpads.
+It samples where each player is every `checkpointInterval` — 0.25s by default,
+in `Config > Project` — and asks whether the straight line from the last sample
+to this one passes through the next checkpoint part. So a player moving fast,
+or falling, is still caught crossing one between samples, and a thin slab works
+as well as a cube.
 
-A player walking at Roblox's default 16 studs a second covers **4 studs** between
-samples, and far more falling. The 8-stud default gives them about **two**
-chances to be caught on the way through, which is the thin end of comfortable.
+The line is only drawn along a path actually walked. After a respawn, a tower
+reload, or a jump of more than 200 studs between samples — a teleport, in
+other words — only the point where the player now stands is checked. Size
+checkpoints to the path they guard: nobody should get past one without going
+through it.
 
-Height counts as much as width. A wide, one-stud-thick slab is generous to
-somebody walking and almost useless against somebody falling past it — which is
-why the default is a cube rather than a floor. Size them to the path they guard:
-nobody should get past one without going through it.
-
-Missing a checkpoint does not fail quietly. The server refuses the win, so the
-player climbs the whole tower and is told no, with nothing on screen explaining
-why.
+Missing a checkpoint does not fail quietly. When the player touches the winpad
+the server treats the run as cheating and kicks them, with
+"Completed the tower out of order" as the reason.
 :::
 
 ## What it will not do

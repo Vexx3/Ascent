@@ -78,9 +78,11 @@ Wide, thin, invisible parts across the whole path work best: a player should not
 be able to get past one without going through it. `CanCollide` off.
 :::
 
-Two modes change this. In **Practice** and **All Jumps**, dying returns the
-player to their last checkpoint, and the anti-cheat is skipped because those
-runs never count as completions.
+Two modes change what dying does. In **Practice** and **All Jumps**, dying puts
+the player back at the position they last saved with the Place key, or at the
+tower's spawn — not at one of these checkpoints. The anti-cheat does not change:
+an All Jumps win is checked exactly like a Normal one, and Practice never
+completes a tower at all.
 
 ## Minimum Time Is The Other Half
 
@@ -121,14 +123,17 @@ Select the tower folder and set these in the Properties window, or let
 | :-- | :-- | :-- |
 | `TowerName` | String | The name players see. |
 | `Difficulty` | Number | The rating. `5.33` means rating 5, sub-difficulty 0.33. |
-| `Area` | String | Which area's key it belongs to, such as `Ring1`. |
+| `Area` | String | The Area `id` from `Config > Worlds` it stands in, such as `Ring1`. |
 | `BadgeID` | Number | Normal completion badge. Omit for none. |
 | `TowerPoints` | Number | Normal completion points. Defaults to `1`. |
 | `AllJumpsPoints` | Number | All Jumps points. Defaults to `TowerPoints`. |
 | `TowerType` | String | A key from the `types` list, such as `Citadel`. |
 
 `TowerName`, `Difficulty` and `Area` are the three that matter. With those set,
-the tower is named, rated, and filed in the right Ring.
+the tower is named and rated in this place, and Tower Setup has everything it
+needs to write the tower's `Config > Towers` line. That line is what files it in
+the right Ring: the chart and unlock requirements take a tower's Area from its
+entry, never from the attribute.
 
 ::: warning A tower from an older kit may already carry these
 Towers built for the legacy framework describe themselves with `StringValue` and
@@ -194,11 +199,12 @@ reason.
 | `AJBadgeID` | Number attribute | All Jumps completion badge. Use `0` for none. |
 | `NoBoosts` | CollectionService tag | Rejects boosted wins in this tower. |
 | `TicketMultiplier` | Number attribute | Scales this tower's ticket payout. |
-| `AllowRebeats` | Boolean attribute | Pays tickets again even after the cooldown. |
+| `AllowRebeats` | Boolean attribute | Pays tickets on every win, ignoring the cooldown. |
 
-`NoBoosts` is the one place a tower cannot overrule its type: a `Citadel` or an
-`Obelisk` bans boosts whatever the tag says, because the type's own `noBoosts`
-is applied last.
+The `NoBoosts` tag can only add a ban. A `Citadel` or an `Obelisk` bans boosts
+with or without it, because the type's own `noBoosts` turns the ban on. To let
+one of them allow boosts, set `noBoosts = false` in its `Config > Towers` entry,
+which overrides both the tag and the type.
 
 ## Optional Client Objects
 
@@ -207,7 +213,10 @@ Put client-only objects in either:
 - `Workspace > Towers > ToH > ClientSidedObjects`; or
 - `ServerStorage > TowerClientObjects > ToH`.
 
-Removing a released tower config entry makes that acronym unavailable to the kit. Plan saved-data changes carefully and test them with the Studio save key first.
+Removing a released tower's config entry takes it off the chart, out of every
+total and unlock requirement, and out of `recount-badges`, although the folder
+still loads where it stands. Plan saved-data changes carefully and test them
+with the Studio save key first.
 
 ## See Also
 

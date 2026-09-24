@@ -40,11 +40,16 @@ name out.
 A player receives tickets when:
 
 - the run is in Normal mode;
+- the winpad is the tower's own ending, not one with an `EndingID` of its own;
 - no boost item was used;
 - the difficulty has a reward greater than `0`; and
 - the tower is not on cooldown, unless `allowRebeats` is enabled for it.
 
 Practice, All Jumps, and tower-rush wins do not award tower tickets.
+
+Tickets as a whole are switched by `enabled.tickets` in `Config > Economy`.
+Off means no tickets for a win, no ticket counter, and no shop, since the shop
+has nothing to charge. What players already earned stays in their save.
 
 ## Settings
 

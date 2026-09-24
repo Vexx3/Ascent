@@ -5,7 +5,7 @@ Configure the Teleport menu in `ReplicatedStorage > Shared > Config > Worlds`. T
 The word `areas` is intentionally neutral. An Area can be a Ring, a Zone, an Era, a subrealm, an event area, or any other destination. Each Area is one published Roblox place.
 
 ::: tip Everything below Ring 1 is an example
-The kit ships two Worlds and eight Areas so you can see each unlock rule written down and watch the menus draw a real map. **They are meant to be deleted or rewritten as your own.** Only Ring 1 is real -- every tower the kit ships stands there. The rest all point at the hub, so entering one takes you back to the lobby until you publish the place it stands for and put its ID in.
+The kit ships two Worlds and eight Areas so you can see each unlock rule written down and watch the menus draw a real map. **They are meant to be deleted or rewritten as your own.** Only Ring 1 is real -- every tower the kit ships stands there. The rest all point at Ring 1's place, so entering one takes you to Ring 1 until you publish the place it stands for and put its ID in.
 
 Several Areas sharing one Place ID is survivable but not tidy: the kit answers "which Area is this place?" with the first one listed, so ticket analytics tag every run as Ring 1 until the real IDs go in.
 :::
@@ -81,7 +81,7 @@ This example requires:
 | `requiredTowers` | Exact tower acronyms that must be completed. |
 | `requiredBadges` | Roblox badges the player has to own. |
 | `elo` | Minimum [Elo](./elo.md). |
-| `scope` | Omit for this World, or use `"All"` for every World. Does not reach the two Elo rules. |
+| `scope` | Omit for this World, or use `"All"` for every World. Does not reach `elo`. |
 
 All fields are optional. Every completed tower counts once, and a harder completion also counts toward easier `+` requirements.
 
@@ -152,7 +152,7 @@ other already. Use Elo where you want depth and a count where you want breadth.
 
 ### Worked examples
 
-`Config > Worlds` ships one open Area and nothing else — your game starts as a map of itself rather than as six examples to delete. Every rule is worked through here instead, as one `worlds` list you can paste over the shipped one while you find your feet. The Place IDs are placeholders; the tower acronyms are the ones `Config > Towers` ships.
+The example Areas `Config > Worlds` ships each write a rule down, with a comment beside it saying what it does. Here the rules are worked through again as one `worlds` list you can paste over the shipped one while you find your feet. The Place IDs are placeholders; the tower acronyms are the ones `Config > Towers` ships.
 
 ```luau
 worlds = {
@@ -238,8 +238,6 @@ worlds = {
 `Ring2Sub` is the one worth reading. It asks for `{ Difficult = 3, Insane = 1 }`, and because each number means that tier **or harder**, one Insane clear counts toward both lines — so three Difficult+ where one is Insane+ opens it, while three Difficult+ that stop at Remorseless stay locked on the second line. A `towerCompletions` alongside it would have hidden that, which is why it has none.
 
 Every World 2 Area above carries `scope = "All"`, because every tower the kit ships stands in Ring 1. Drop the scope from `Zone1` and it never opens, however many towers a player beats.
-
-`tests/runtime/Teleports.luau` drives this exact set, so the behaviour described below is asserted rather than remembered.
 
 ### Only one reason at a time
 
@@ -336,7 +334,7 @@ The `Friend` tab lists online friends who are inside one of your Areas, one row 
 - `PlayerInfo` reads `DisplayName (Area)`, using the Area's own `name` -- `simply_kiel (Ring 1: Limbo)`.
 - `EnterButton` teleports into that friend's server. A friend already in this server gets `Here` instead, and the button says so rather than doing anything.
 
-A friend only appears if the local player has met that Area's `requirements`. Someone playing a Ring you have not unlocked is not listed at all, and the list refreshes each time the tab is opened.
+A friend only appears if the local player has met that Area's `requirements`. Someone playing a Ring you have not unlocked is not listed at all, and the list refreshes each time the tab is opened, at most once every ten seconds.
 
 `InfoLabel` is the panel's content when there are no rows. It says which reason
 applies: nobody playing, nobody in an Area you have unlocked, the friends list
@@ -370,7 +368,7 @@ The included `PersonalServers` game pass is enabled in `Config > GamePasses`.
 
 - A pass owner clicks a Realm's `PSButton` to reserve that Realm and teleport there.
 - The new personal server starts private, with no active share code.
-- In the personal server, `SettingsMenu > SettingsSidebar > PSButton` opens the personal server controls.
+- In the personal server, `SettingsMenu > SettingsSidebar > PSButton` opens the personal server controls. It is shown to the owner only, since the server refuses those controls to anyone else.
 - The owner can turn on `ToggleServerCode` to create a share code. `ServerCodeFrame > CodeBox` displays it through the `Text` property, and `RegenButton` invalidates it and creates a replacement.
 - Turning the toggle off invalidates the active share code and hides `ServerCodeFrame`.
 - Anyone can enter that code and click `JoinCode`; joining does not require the pass.
@@ -392,6 +390,8 @@ personalServers = {
 	ownerLeaveGracePeriod = 10 * 60,
 },
 ```
+
+`codeLength` is kept between 8 and 30 characters whatever you write, and `ownerLeaveGracePeriod` is in seconds. Guests are warned when the owner leaves, and if the return to the hub fails they are removed with `personalServers.ownerLeftKick` from `Config > Messages`.
 
 Roblox teleports and reserved servers do not run in Studio playtests. Publish all places, enable Studio API access only when intentionally testing MemoryStore, and perform the final flow in the Roblox app.
 

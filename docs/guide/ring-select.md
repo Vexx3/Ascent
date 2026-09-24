@@ -19,7 +19,7 @@ Everything it draws comes from `Config > Worlds` and `Config > Towers`. There is
 
    The kit checks the last two on startup and says so in the Output window if either is wrong.
 
-**What a place runs is decided by what is synced into it.** The hub's two entry scripts, `Server > HubServer` and `Client > HubClient`, exist only in the hub; the kit's towers, HUD and menus exist only in tower places. There is no setting that switches one into the other, so there is no setting that can do it by mistake.
+**What a place runs is decided by which file it was started from.** The hub's two entry scripts, `Server > HubServer` and `Client > HubClient`, exist only in `Ascent Hub.rbxlx`; the kit's towers, HUD and menus exist only in `Ascent Area.rbxlx`. There is no setting that switches one into the other, so there is no setting that can do it by mistake.
 
 ## Config > RingSelect
 
@@ -75,7 +75,7 @@ Workspace
       Camera
 ```
 
-Folders are matched by Area `id`, so building a new ring is a folder named after the id you already wrote in `Config > Worlds`. A subrealm can have its own shot, or share its Area's by having no folder of its own.
+Folders are matched by Area `id`, so building a new ring is a folder named after the id you already wrote in `Config > Worlds`. A subrealm can have its own shot. One with no folder of its own leaves the camera where it was — its Area's shot, when the player stepped down from the Area above it — and the Output window says so once.
 
 A place with no `Rings` folder keeps its ordinary camera and the screen still works. An Area with no camera part leaves the camera where it is and says so in the Output window.
 
@@ -139,11 +139,11 @@ RingSelect                       ScreenGui
     TipLabel                     TextLabel
 ```
 
-`AreaFrame` and `DifficultyBar` are templates. They stay visible in Studio so you can style them, and the screen hides the originals and clones one per Area and per tower at run time. Everything clones carries an `AscentGeneratedRingSelect` attribute and is swept before a redraw, so your authored instances are never destroyed.
+`AreaFrame` and `DifficultyBar` are templates. They stay visible in Studio so you can style them, and the screen hides the originals and clones one per Area and per tower at run time. Every clone carries an `AscentGenerated` attribute and is swept before a redraw, so your authored instances are never destroyed.
 
 Each button **is** the Area, so its own `Image` is the place picture: `image` from `Config > Worlds`, or the destination place's live Roblox thumbnail when you have not set one. `AreaEmblem` inside it is that Area's `emblem` — the same small icon its towers carry on the Completions chart — and hides itself on an Area that has none.
 
-`SubButton` is hidden on a row whose Area has no subrealm after it.
+`SubButton` is hidden on a row whose Area has no subrealm after it. A row has one `SubButton`, so a second subrealm listed under the same Area is not drawn, and the Output window names it.
 
 ### Progress
 
@@ -162,7 +162,7 @@ A tower counts as beaten if it has been cleared in **either** mode. Tower rushes
 
 ### Settings
 
-`SettingsButton` opens and closes `Settings`, with the same slide the hub's menus use. Its one row, the **Detailed Progress Meter**, is a switch built the same way as the hub's: a `TextButton` with a `Circle` inside that slides across.
+`SettingsButton` opens and closes `Settings`, with the same slide the kit's other menus use. Its one row, the **Detailed Progress Meter**, is a switch built the same way as the settings menu's: a `TextButton` with a `Circle` inside that slides across.
 
 The choice is saved like any other setting — it goes to `Server > Settings`, which checks it before writing it — so it follows the player to every server of the hub. The switch moves the moment it is clicked and the saved value comes back to confirm it. A new player starts where `detailedProgress` in `Config > RingSelect` says.
 
@@ -184,7 +184,7 @@ If you want to replace Roblox's own loading screen too, that is a separate scrip
 
 ### Locked Areas
 
-`Requirements` appears only when the picked Area is locked, and `AreaReqLabel` says why — the same rules and the same wording as the Teleport menu in the hub, from the Area's `requirements` in `Config > Worlds`. Play refuses and repeats the reason.
+`Requirements` appears only when the picked Area is locked, and `AreaReqLabel` says why — the same rules and the same wording as the Teleport menu in your tower places, from the Area's `requirements` in `Config > Worlds`. Play refuses and repeats the reason.
 
 This screen has no notification holder, so anything the server says — a teleport cooldown, a refusal, data still loading — is shown in `AreaReqLabel` for a few seconds and then the standing reason comes back.
 
@@ -196,6 +196,8 @@ Nothing here is a permission. The client refuses a locked Area so the player is 
 
 **The screen is empty and the Output says Config has no playable World.** Every Area in `Config > Worlds` is disabled or has `placeId = 0`.
 
-**The kit's menus and HUD appear in the hub, or the ring screen in a tower place.** The wrong project was synced into it. The hub takes `hub.project.json` on port 34873; a tower place takes `default.project.json` on 34872. Delete the stale `Server` and `Client` trees and sync the right one.
+**The kit's menus and HUD appear in the hub, or the ring screen in a tower place.** The place was started from the wrong file, or has scripts copied in from the other one. The hub's `Server`, `Client` and `Shared` are a cut-down set of a tower place's, so the two cannot share them. Start the hub from `Ascent Hub.rbxlx` and every tower place from `Ascent Area.rbxlx`.
+
+**The Area list never scrolls, and rings past the bottom edge are missing.** `AreaList` has no canvas to scroll. Set its `AutomaticCanvasSize` to `Y` so it grows with the rows put in it; the Output window says so too.
 
 **The client never finishes starting.** The hub needs its server half too — `Server > HubServer` is what creates the networking remotes the client waits for.

@@ -29,31 +29,36 @@ fresh kit gets you a tower that loads, times, validates and awards.
 
 ::: warning A named `Difficulty` loses the decimal
 `Difficulty = "Extreme"` resolves to rating `9` and nothing after the point, so
-the tower reads as a Baseline Extreme — and because a Value object child beats
-everything, it **overrides** whatever you write in `Config > Towers`. Once you
-have set a number there, delete the old child.
+the tower reads as a Baseline Extreme — and because a Value object child wins
+over `Config > Towers`, it **overrides** whatever you write there. Once you have
+set a number there, delete the old child.
 :::
 
 ## What you have to set
 
-**`Area`.** Older kits have no worlds or areas, so nothing says which part of
-the chart a tower belongs to. Without it the tower loads and plays but never
-appears in the Completions menu.
+**An entry in `Config > Towers`, naming its Area.** Older kits have no worlds or
+areas, so nothing says which part of the chart a tower belongs to. The chart,
+the totals and Area unlock requirements are all read from `Config > Towers`, so
+without an entry the tower loads and plays but never appears in the Completions
+menu.
 
-Select the tower and pick one on the Selected tab of
-[Tower Setup](./tower-setup-plugin.md), or set an `Area` string attribute by
-hand. The areas come from `Config > Worlds`.
+Select the tower, pick its Area on the Selected tab of
+[Tower Setup](./tower-setup-plugin.md), and press **Add to catalogue** — the
+window writes the line for you. The areas come from `Config > Worlds`.
 
 ## What to check afterwards
 
 Open Tower Setup and read the Towers tab. It lists every tower with anything
-missing, and most of what it finds it can fix in one click. The two worth
-looking for after a move are:
+missing, and most of what it finds it can fix in one click. Then read the Setup
+tab, which checks the place as a whole. The three worth looking for after a
+move are:
 
-- **Checkpoints with no tower** — a checkpoint folder whose acronym no longer
-  matches any tower, usually from renaming one on the way across.
-- **Nothing describes this tower** — neither attributes nor a config entry, so
-  it shows up unnamed at the default difficulty.
+- **Not in the catalogue** (Towers tab) — the tower has no `Config > Towers`
+  entry yet, so no other place knows it exists.
+- **Nothing describes this tower** (Towers tab) — neither attributes nor a
+  config entry, so it shows up unnamed at the default difficulty.
+- **Checkpoints with no tower** (Setup tab) — a checkpoint folder whose acronym
+  no longer matches any tower, usually from renaming one on the way across.
 
 ## What has no equivalent
 

@@ -100,7 +100,7 @@ limits from a settings file would be a fangame with no limits.
 
 | Field | Type | Default | What it does |
 | :-- | :-- | :-- | :-- |
-| `emotes` | `{ string }` | `{ "dance2", "laugh", "cheer" }` | Played at random by the Dance key. |
+| `emotes` | `{ string }` | `{ "dance2", "laugh", "cheer" }` | The emotes players can play, in the order the on-screen picker shows them. Each has a key of its own. |
 | `fpsCaps` | `{ number }` | `{ 60, 75, 90, 144, 165, 240 }` | The frame rates the [FPS Cap](./settings.md#fps-cap) setting offers. Off is always first and is not listed here. |
 
 These are the emotes built into Roblox's own `Animate` script, so every avatar
@@ -113,6 +113,11 @@ declared under `ReplicatedStorage > AscentInputs > Gameplay` as `Emote_dance2`,
 `Emote_laugh` and `Emote_cheer`. To add one of the others, copy an existing
 `InputAction` there and rename it `Emote_<name>`, keeping its `Keyboard` child.
 An emote listed in Config with no matching action says so in the Output.
+
+Its starting key goes in `keybinds.emotes` in [`Settings`](#settings); one with
+no key there has none until a player binds one. Players rebind it from a row in
+**Settings > Controls** named after the emote with a capital first letter —
+`Dance2` for `dance2` — and an emote with no such row cannot be rebound.
 
 ### Turning modes off
 
@@ -139,7 +144,7 @@ shows it again.
 | :-- | :-- | :-- | :-- |
 | `dataStoreKey` | `string` | `"BETA_RC_1_SCRIBE"` | Where progress is stored in a published game. |
 | `dataStoreKeyStudio` | `string` | `"STUDIO_KEY_1_SCRIBE"` | A separate store used only while testing in Studio. |
-| `dataStoreStudioMode` | `"Mock" \| "Live" \| "NoSave"` | `"Mock"` | `Mock` fakes saving and forgets on stop. `Live` really writes to the Studio key. `NoSave` loads defaults and saves nothing. |
+| `dataStoreStudioMode` | `"Mock" \| "Live" \| "NoSave"` | `"Mock"` | `Mock` fakes saving and forgets on stop. `Live` really writes to the Studio key. `NoSave` reads the real save under the Studio key and never writes it. |
 
 ::: danger
 Changing a save key points the game at a different, empty save. Existing
@@ -230,11 +235,11 @@ defaultType = "Tower",
 | `ticketMultiplier` | `number` | no | Scales tickets for every tower of this type. Defaults to `1`. |
 | `noBoosts` | `boolean` | no | Bans boost items in every tower of this type. |
 
-Boosts are decided in three passes, and **the type has the last word**: a
-`NoBoosts` tag on the model turns the ban on, a `noBoosts` in the tower's entry
-overrides that either way, and then a type with `noBoosts = true` turns it on
-regardless. So a Citadel bans coils by being a Citadel and **cannot opt back in**
-with `noBoosts = false`. Give that one tower a type that allows boosts instead.
+Boosts are decided like this: a `NoBoosts` tag on the model turns the ban on, a
+type with `noBoosts = true` turns it on too, and **the tower's own entry has the
+last word** — a `noBoosts` there overrides both the tag and the type, either
+way. So a Citadel bans coils by being a Citadel, and one Citadel can opt back in
+with `noBoosts = false` in its entry.
 
 Ticket multipliers stack: the type scales the difficulty reward, then a
 per-tower entry in `Config > Economy` scales that.
@@ -258,11 +263,16 @@ The table key (`ToH`) is the tower's acronym and must match the model name in
 `Workspace > Towers`.
 
 All of these except `noBoosts` can also be set as an attribute on the tower
-model, which is where older kits put them, and the attribute wins. That is the
-right way round for the place the tower stands in — you change a value in Studio
-and the next run uses it — but it is not a way to skip the entry, because no
-other place can read it. `noBoosts` is the exception because the model side of
-it is the `NoBoosts` tag rather than an attribute.
+model, which is where older kits put them, and the attribute wins. The attribute
+names are listed in [Building A Tower](./tower-setup.md#on-the-tower-no-code).
+That is the right way round for the place the tower stands in — you change a
+value in Studio and the next run uses it — but it is not a way to skip the
+entry, because no other place can read it. `noBoosts` is the exception because
+the model side of it is the `NoBoosts` tag rather than an attribute.
+
+`area` is an exception the other way. Which Area a tower counts toward — its
+place on the Completions chart and in unlock requirements — always comes from
+this entry, so an `Area` attribute on its own files the tower nowhere.
 
 Endings are attributes only, and deliberately so: a tower can have several
 winpads, each with its own ending name, difficulty and badge, and an ending
@@ -324,8 +334,8 @@ and is meant to be deleted or rewritten. See
 [Worlds, Areas & Personal Servers](./worlds-personal-servers.md).
 
 Worlds and Areas are lists rather than tables of names, so the order you write
-them in is the order players read on the Teleport menu and on the Completions
-chart.
+them in is the order players read on the Teleport menu, the ring select screen
+and the Completions chart.
 
 | Field | Type | Default | What it does |
 | :-- | :-- | :-- | :-- |
@@ -345,6 +355,9 @@ chart.
 | `image` | `string` | no | Overrides the live place thumbnail on the Teleport menu card. |
 | `requirements` | `table` | no | Unlock rules. Omit for an open destination. |
 | `disabled` | `boolean` | no | Temporarily hide this Area. |
+| `sub` | `boolean` | no | Draws it as a subrealm, on the narrower `SubPlace` card under the Area written above it. Presentation only. |
+
+A World takes `id`, `name`, its `areas`, and `disabled` to hide the whole World.
 
 ### Requirements
 
@@ -355,7 +368,7 @@ chart.
 | `requiredTowers` | `{ string }` | Specific acronyms that must be beaten. |
 | `requiredBadges` | `{ { id: number, name: string? } }` | Roblox badges the player must own. Checked first. |
 | `elo` | `number` | Minimum [Elo](./elo.md), both modes in one number. Checked last. |
-| `scope` | `"World" \| "All"` | Count only this World's towers, or every tower. Defaults to `"World"`. Does not reach the two Elo rules. |
+| `scope` | `"World" \| "All"` | Count only this World's towers, or every tower. Defaults to `"World"`. Applies to `towerCompletions` and `difficulties` only. |
 
 See [Worlds, Areas & Personal Servers](./worlds-personal-servers.md).
 
@@ -401,7 +414,7 @@ feature back on gives it back exactly as it was.
 | `rewards` | `{ [string]: number }` | — | Tickets per difficulty name. `0` pays nothing. |
 | `perTower` | `{ [string]: table }` | `{}` | Per-tower overrides, keyed by acronym. |
 | `perTower[x].multiplier` | `number` | — | Scales that tower's reward. |
-| `perTower[x].allowRebeats` | `boolean` | — | Pays out even for a tower already beaten. |
+| `perTower[x].allowRebeats` | `boolean` | — | Ignores the cooldown, so every win of that tower pays. |
 
 Both also exist as attributes on the tower itself, `TicketMultiplier` and
 `AllowRebeats`, which win over the entry here.
@@ -429,7 +442,7 @@ Shop item fields:
 | `rarity` | `string` | yes | Picks its color from `rarityColors`. |
 | `icon` | `string` | yes | Roblox image ID. |
 | `featuredOnly` | `boolean` | no | Only buyable while featured. |
-| `template` | `string` | no | Tool in `ServerStorage > TicketShopItems > Tools` to grant. |
+| `template` | `string` | no | Tool in `ServerStorage > TicketShopItems > Tools` to grant. Left out, the Tool is found by `name`. |
 
 See [Ticket Shop](./ticket-shop.md).
 
@@ -459,8 +472,11 @@ See [Cosmetics](./cosmetics.md).
 
 ### Rarity colors
 
-`rarityColors` maps a rarity name to a `Color3`, shared by the shop and the
-cosmetics menu. Add a name here and you can use it above.
+`rarityColors` gives each rarity its `Color3`, shared by the shop and the
+cosmetics menu. The rarities themselves are fixed at five — `Uncommon`, `Rare`,
+`Epic`, `Legendary` and `Mythic` — because the network sends a rarity as one of
+those and nothing else. A shop item or cosmetic with any other rarity is left
+out, and the Output window names it when the server starts.
 
 ## GamePasses
 
@@ -509,7 +525,7 @@ affects people who have never played.
 | `audioVisualizer` | `"Off" \| "Low" \| "Medium" \| "High" \| "OMG Why" \| "AAAAA"` | `"Off"` |
 | `musicVolume` | `number` (0–2) | `0.5` |
 | `keybinds` | `table` | see below |
-| `custom` | `table` | `{}` — a new player has chosen nothing yet |
+| `custom` | `table` | empty — a new player has chosen nothing yet |
 
 `quickResetDelay`'s top of the slider is one step past
 `timings.maximumQuickResetDelay` in [`Project`](#project), and that last notch
@@ -548,7 +564,7 @@ Anything in curly braces is filled in for you: `{PlayerName}`, `{EndingName}`,
 | `tags.byGamePass` | Filled in from `Config > GamePasses`. |
 | `tags.byGroup` | Give a tag to everyone in a Roblox group. |
 | `messages` | In-game win messages, their channel, and their fonts. |
-| `webhooks` | Discord messages, and `enabled` to turn them off. |
+| `webhooks` | Discord messages, `enabled` to turn them off, and `antiCheat` to post a report when a win fails the server checks (off as shipped). |
 | `antiCheatKickMessages` | Picked at random when a win fails server checks. |
 
 See [Chat](./chat.md) and
@@ -574,8 +590,9 @@ treated as security. See [Admin Commands](./commands.md).
 
 The ring select screen, which is the whole of the hub: the place players join
 first, which draws the map from [`Worlds`](#worlds) and sends players into it.
-Which place is the hub is not set here -- it is the place `hub.project.json` is
-synced into, or the one made from `Ascent Hub.rbxlx`.
+Which place is the hub is not set here -- it is the place made from
+`Ascent Hub.rbxlx`, so nothing in `Config` can turn a tower place into a hub by
+mistake.
 
 | Field | What it controls |
 | :-- | :-- |
@@ -623,11 +640,20 @@ chat tag. Reword them to suit your game, or translate them.
 | Group | What it holds |
 | :-- | :-- |
 | `loading` | The loading screen. `playerData` is the first thing anyone reads. |
+| `ringSelect` | The hub's ring select screen: its loading screen, tips and buttons. |
+| `dataKicks` | Why a player was removed because their saved data could not be used. |
 | `wins` | The `[GLOBAL]` and `[SERVER]` prefixes on a win announcement. |
 | `rewards` | What a player is told when a tower or a game pass pays out. |
 | `teleports` | Why a teleport did not happen. |
+| `friends` | The Join Friend tab. |
 | `personalServers` | Creating, joining, sharing and closing a personal server. |
+| `towers` | Things that go wrong on the way into a run. |
+| `shopRotation` | The featured row changing over. |
+| `gifts` | Gifting a game pass. |
+| `shutdown` | The countdown shown before a server closes. |
 | `shutdownKick` | Shown to everyone when an administrator closes the server. |
+| `kickedByAdmin` | Shown to a player removed with `kick` when no reason was given. |
+| `commands` | What the admin console tells somebody who is not allowed to use it. |
 
 Anything in curly braces is filled in for you, and each message names the ones
 it understands in a comment above it. `{Currency}` arrives already singular or

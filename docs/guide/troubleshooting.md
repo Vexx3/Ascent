@@ -39,6 +39,13 @@ The client waits for saved data before hiding it. If data never arrives, the
 Output window shows why. The usual causes are Studio API access being off, or a
 `Config > Project` save key that is empty.
 
+The other cause is the menu. The client sets the menu up before it connects the
+player's data, so if `MainMenu` is missing `ButtonsHolder`, `Main`,
+`Main > ButtonsContainer` or `Main > MenusContainer`, setting it up errors and
+the loading screen never lifts. The Output names the missing frame, and the
+Setup tab of the [Tower Setup window](./tower-setup-plugin.md#menus) lists it
+before you press Play.
+
 ## Towers
 
 ### "\<Tower\> has no checkpoints!"
@@ -57,7 +64,8 @@ You can silence the warning with `checkpointsMissingWarning` in
 
 ### A player says their win was not counted
 
-The server refuses a win for one of three reasons, all of them anti-cheat:
+The server refuses a win for one of three reasons, all of them anti-cheat, and
+kicks the player with the reason below:
 
 - **"Completed the tower out of order"** — they reached the winpad without
   passing every checkpoint in sequence. Usually a checkpoint that is too small
@@ -70,24 +78,33 @@ The server refuses a win for one of three reasons, all of them anti-cheat:
   belongs to the tower it is parented under; move it, rather than looking
   for an attribute to correct.
 
-Practice and All Jumps runs skip these checks and never count as completions.
+All Jumps wins go through the same checks. A few runs are not counted without
+anybody being kicked:
+
+- **Practice mode** never completes a tower; touching the winpad does nothing.
+- **A boost item** in a tower or rush that bans boosts: the winpad ignores the
+  touch.
+- **A winpad with its own `EndingID`** is a side ending. It announces the win
+  and awards its badge, but only the tower's main ending records the tower as
+  beaten. See [Winpads & Endings](./winpads-endings.md#custom-ending).
 
 ### A tower does not appear in the Completions menu
 
-The tower needs to belong to an area. Either set an `Area` attribute on the
-tower folder, which the [Tower Setup window](./tower-setup-plugin.md) does from
-a dropdown, or register its acronym in `Config > Towers` under a World and Area.
-The model name in `Workspace > Towers` must match that acronym exactly,
-including capitals.
+The chart is drawn from `Config > Towers` alone, so the tower needs an entry
+there whose `area` is an Area `id` from `Config > Worlds`. An `Area` attribute
+on the folder does not put it on the chart by itself; the
+[Tower Setup window](./tower-setup-plugin.md#adding-a-tower-to-the-catalogue)
+turns the tower's attributes into the entry and adds it. The model name in
+`Workspace > Towers` must match that acronym exactly, including capitals.
 
 ### A tower shows the wrong difficulty
 
 Check the tower folder for a `Difficulty` **child** — a `StringValue` or
-`NumberValue` — left over from an older kit. A child wins over both the
-attribute and `Config > Towers`, and a `StringValue` holding a name like
-`"Extreme"` resolves to that rating with no decimal, so `9.26` becomes a
-Baseline `9.00`. Delete it or replace it with the number. Tower Setup flags it
-on the tower's card.
+`NumberValue` — left over from an older kit. A `NumberValue` child wins over
+both the attribute and `Config > Towers`, and a `StringValue` holding a name
+like `"Extreme"` wins over `Config > Towers` and resolves to that rating with no
+decimal, so `9.26` becomes a Baseline `9.00`. Delete it or replace it with the
+number. Tower Setup flags it on the tower's card.
 
 ### A portal to a tower does nothing
 
@@ -96,10 +113,15 @@ checkpoints are not numbered `1`, `2`, `3` with no gaps and nothing else in the
 folder, is left out at startup and the rest of the game carries on. The line
 says which one is wrong.
 
-### A tower loads but the timer never starts
+A tower portal also does nothing while the player is inside a different tower,
+or partway through a tower rush.
 
-The tower model needs a spawn. The plugin can create one, or add a `SpawnLocation`
-or a part named `Spawn` yourself.
+### The timer does not show in a tower
+
+Check the player's **Hide Timer** setting first. Otherwise `TowerGUI` is
+missing its `Timer` label: the client looks for it by name anywhere inside
+`TowerGUI` and carries on without it. The Setup tab of the Tower Setup window
+lists it.
 
 ### Beating the tower does nothing
 
@@ -107,7 +129,7 @@ The winpad must be a `BasePart` named exactly `WinPad`. The name is case
 sensitive, so `Winpad` or `winpad` looks right in Explorer and never
 registers. The Tower Setup window finds this one and renames it in a click.
 
-If the winpad is named correctly, the run is being refused. See
+If the winpad is named correctly, the run is being refused or ignored. See
 [A player says their win was not counted](#a-player-says-their-win-was-not-counted).
 
 ### Wins are rejected as too fast while testing
@@ -121,16 +143,18 @@ back before you release: it is what stops a run that is too fast to be real.
 
 Tickets are only awarded when all of these are true:
 
+- tickets are switched on (`enabled.tickets` in `Config > Economy`);
 - the run was in Normal mode, not Practice or All Jumps;
+- the player reached the tower's main winpad, not a side ending;
 - no boost item was used;
 - the difficulty has a reward above `0` in `Config > Economy`; and
 - the tower is off cooldown, unless `allowRebeats` is set for it.
 
 ### A shop item does not grant its tool
 
-`template` on the item must name a Tool inside
-`ServerStorage > TicketShopItems > Tools`. The startup report names the item and
-the tool it could not find, so you do not have to buy it to notice.
+`template` on the item — or its `name`, when it has no `template` — must name a
+Tool inside `ServerStorage > TicketShopItems > Tools`. The startup report names
+the item and the tool it could not find, so you do not have to buy it to notice.
 
 ### A shop item cannot be bought and says the cosmetic is missing
 
@@ -157,6 +181,10 @@ tower is reported at startup, because that is always a typo.
 rotate on `featured.refreshMinutes` and are picked from
 `featured.categories`.
 
+An item is also left out when its `category` is not `Items`, `Trails` or
+`Auras`, when its `rarity` is not one of the five the kit has, or when its
+cosmetic category is switched off. The startup report names the first two.
+
 ## Game Passes
 
 ### Owning the pass does nothing
@@ -177,13 +205,15 @@ every place and test in the Roblox app.
 ### An Area is missing from the Teleport menu
 
 An Area is hidden when its `placeId` is `0` or `disabled` is set. A whole World
-is hidden when none of its Areas have a usable Place ID.
+is hidden when it has `disabled` set, or when none of its Areas have a usable
+Place ID.
 
 ### An Area is locked when it should not be
 
-`requirements` in `Config > Worlds` counts towers from `Config > Towers`. The
-World and Area IDs must match between the two files, or the kit cannot tell
-which towers belong to that World. `scope = "All"` counts every tower instead.
+`requirements` in `Config > Worlds` counts towers from `Config > Towers`. Each
+tower's `area` must be an Area `id` from `Config > Worlds`, or the kit cannot
+tell which World the tower belongs to. `scope = "All"` counts every tower
+instead.
 
 ### Personal server codes do not work
 
