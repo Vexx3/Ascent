@@ -2,12 +2,10 @@ name: Check the guide
 
 # Builds the guide on every pull request, so a broken link or a page that will
 # not render is caught before it is merged rather than when the site deploys.
+# Every pull request rather than only those touching docs/: this is a required
+# check on main, and a required check that never starts blocks the merge.
 on:
   pull_request:
-    paths:
-      - "docs/**"
-      - "package.json"
-      - "package-lock.json"
 
 permissions:
   contents: read
