@@ -32,6 +32,7 @@ The server sends timer corrections through `UpdateTowerTimer`; the client advanc
 The main menu handles:
 
 - Restart current tower.
+- Reset the tower's client objects without restarting the run.
 - Exit current tower.
 - Toggle Practice mode.
 - Toggle All Jumps mode.
@@ -41,7 +42,8 @@ The main menu handles:
 - Open spectate.
 - Show notifications.
 - Show `HighFPSFixHint` exactly when the High FPS Physics Fix setting is enabled.
-- Rejoin the current place or Return to Hub using the configured main Place ID.
+- Rejoin the current place, or Return to Hub, which sends the player to
+  `hubPlaceId` in `Config > Worlds`.
 
 Tower-only buttons are hidden when the player is not inside a tower.
 

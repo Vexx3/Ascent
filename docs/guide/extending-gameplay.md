@@ -27,15 +27,16 @@ name on it.
 
 ## The file path is the Studio path
 
-`src/Server/Towers/Winpads.luau` becomes
-`ServerScriptService > Server > Towers > Winpads`. Nothing is renamed during the
-build, so an error in the Output window names a file you can open.
+Every kit module keeps the name and place it was written under, so an error in
+the Output window names a script you can open: an error from
+`ServerScriptService.Server.Towers.Winpads` is in
+`ServerScriptService > Server > Towers > Winpads`.
 
-| Source | Runs on | Becomes |
+| Tree | Runs on | Studio location |
 | :-- | :-- | :-- |
-| `src/Server/` | Server | `ServerScriptService > Server` |
-| `src/Client/` | Client | `StarterPlayerScripts > Client` |
-| `src/Shared/` | Both | `ReplicatedStorage > Shared` |
+| `Server` | Server | `ServerScriptService > Server` |
+| `Client` | Client | `StarterPlayer > StarterPlayerScripts > Client` |
+| `Shared` | Both | `ReplicatedStorage > Shared` |
 
 ## Naming
 
@@ -68,9 +69,9 @@ A feature folder's entry module says which side it is on: `<Feature>Service` on
 the server, `<Feature>Controller` on the client. So the Explorer answers "which
 of these do I open first" without opening any of them.
 
-Two folders keep an `init.luau` instead, because each must be the parent of its
-own children: `Client > ClientObjects` clones a template stored under itself,
-and `Server > Commands` is walked by Cmdr.
+Two features are a ModuleScript with children instead of a Folder, because each
+must be the parent of its own children: `Client > ClientObjects` clones a
+template stored under itself, and `Server > Commands` is walked by Cmdr.
 
 ## Requires
 
@@ -107,9 +108,11 @@ at run time.
 
 ## Adding a server feature
 
-1. Create `Server > <Feature>` returning a table with a `start()` function.
+1. Create a Folder `Server > <Feature>` holding a ModuleScript
+   `<Feature>Service` that returns a table with a `start()` function.
 2. Guard it with a `started` flag, so a second call does nothing.
-3. Add one line to `Server` (the entry script).
+3. Add one line to `Server` (the entry script), where the order of the others
+   says what has to be running first.
 
 That script is the only place server features are started, which is what keeps
 the startup order readable in one screen.
@@ -132,11 +135,20 @@ The kit's source is developed privately, so this is only relevant if you have
 been given access to it. Everyone else edits the place, and sends a fix as a
 [bug report](https://github.com/Vexx3/Ascent/issues/new?template=bug_report.yml).
 
+The authored tree is `src/`, and its path is the Studio path:
+`src/Server/Towers/Winpads.luau` becomes
+`ServerScriptService > Server > Towers > Winpads`, `src/Client/` becomes
+`StarterPlayerScripts > Client` and `src/Shared/` becomes
+`ReplicatedStorage > Shared`. Nothing is renamed during the build.
+
 Write the alias form and the build converts it to the strings above:
 `@Server`, `@Client`, `@Shared`, `@Config`, `@Packages`, `@ServerPackages`,
 `@ServerNetwork`, `@SharedNetwork`, `@Vendor`.
 
-`npm run check` fails on anything else. Two more rules it enforces:
+`npm run check` fails on anything else, on a `require` of anything but a
+literal path unless a `-- dynamic require:` comment beside it says why, and on
+an `assert` with no message. Two more rules are the kit's style, which no check
+catches:
 
 - **`local` for every binding**, and `table.freeze` where contents must not change.
 - **A module returns something named.** `local Winpads = {}` … `return Winpads`, never `return { ... }` — an anonymous table has no name in a stack trace.

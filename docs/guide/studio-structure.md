@@ -95,7 +95,7 @@ ServerScriptService
 │  ├─ Towers              -- TowerRegistry, Timer, Winpads, AllJumps, TowerRush, TowerRemotes, AntiCheatLog, Spectate, Godmode, Navigation, …
 │  ├─ ClientObjects
 │  ├─ Network             -- BlinkServer, NetworkSchema
-│  └─ AssetChecks         -- and Backpack, Cooldown
+│  └─ AssetChecks         -- and Backpack, Cooldown, Retry
 └─ ServerPackages
 StarterPlayer
 └─ StarterPlayerScripts
@@ -134,15 +134,16 @@ time by the client-object loader and are not authored.
 
 ## The Menus
 
-**StarterGui is the one part of the kit Rojo does not map.** The built place
-file contains no menus at all — they live in the Studio place, they are yours to
-lay out, and the client finds them by name. Rename one and the code looking for
-it does not find it.
+**StarterGui is yours.** The menus are ordinary ScreenGuis laid out in Studio
+rather than built by code, and the client finds them by name. Rename one and the
+code looking for it does not find it.
 
 ```text
 StarterGui
 ├─ MainMenu                     -- the menu and the on-screen controls
+│  ├─ ButtonsHolder             -- the buttons on screen while playing
 │  └─ Main
+│     ├─ ButtonsContainer       -- the row of menu buttons
 │     └─ MenusContainer
 │        ├─ SettingsMenu
 │        │  ├─ SettingsSidebar  -- the tab buttons
@@ -150,9 +151,12 @@ StarterGui
 │        │  ├─ VisualFrame
 │        │  ├─ AudioFrame
 │        │  ├─ ControlsFrame
+│        │  ├─ MiscFrame
+│        │  ├─ PSFrame          -- personal server settings
 │        │  └─ CustomTemplates  -- rows copied for your own settings
 │        ├─ TeleportMenu
-│        │  └─ WorldMenu        -- holds the Place and SubPlace cards
+│        │  ├─ OptionsHolder    -- World1Button, copied once per World
+│        │  └─ World1Menu       -- copied once per World; holds the Place and SubPlace cards
 │        ├─ ShopMenu
 │        ├─ CosmeticsMenu       -- optional
 │        └─ CompletionsMenu

@@ -15,14 +15,18 @@ return {
 		trail = "VIPTrail",
 		chatTag = "VIP",
 		tickets = 200,
+		giftProductId = 3713484894,
 	},
 
 	PersonalServers = {
 		id = 1952175550,
 		kind = "PersonalServers",
+		giftProductId = 3713484932,
 	},
 }
 ```
+
+The IDs that ship belong to the kit's own experience. Replace each `id` with a pass you created in yours, and each `giftProductId` with a developer product of yours — or delete the line to hide the Gift button. A pass from another experience cannot be sold in yours, so the Shop hides it.
 
 These are the only built-in entries. The table key is the stable name Scribe uses for ownership and one-time rewards. Do not rename a live pass key.
 
@@ -59,10 +63,14 @@ Only the `VIP` kind uses these fields:
 
 | Field | Type | Default | Purpose |
 | :-- | :-- | :-- | :-- |
-| `ticketMultiplier` | `number` | `1` | Multiplies tower-completion ticket rewards. |
-| `trail` | `string` | none | Unlocks this Trail from `Config > Economy > cosmetics > Trails`. |
-| `chatTag` | `string` | none | Uses this tag from `Config > Chat > tags > styles`. |
-| `tickets` | `number` | `0` | Gives this many tickets once per account. |
+| `ticketMultiplier` | `number` | required | Multiplies tower-completion ticket rewards. `1` leaves them as they are. |
+| `trail` | `string` | required | Unlocks this Trail from `Config > Economy > cosmetics > Trails`. |
+| `chatTag` | `string` | required | Uses this tag from `Config > Chat > tags > styles`. |
+| `tickets` | `number` | required | Gives this many tickets once per account. `0` gives none. |
+
+All four are required, so a VIP entry missing one is a type error in Studio. A
+`trail` or `chatTag` that names nothing is reported in the Output window when
+the server starts, and owners get nothing for it.
 
 The included VIP config grants a `1.25x` ticket multiplier, `VIPTrail`, the `VIP` chat tag, and exactly `200` tickets once.
 

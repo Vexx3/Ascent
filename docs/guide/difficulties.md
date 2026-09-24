@@ -144,8 +144,9 @@ does. The kit ships EToH's own grouping:
 | `color` | `Color3` | yes | Color for the band. |
 | `webhook` | `string` | no | Discord secret wins in this band post to. Defaults to `NORMAL_WEBHOOK`. |
 
-This is what decides which webhook a win goes to. Before it existed the kit
-hardcoded "rating 8 and up", so adding a difficulty silently changed nothing.
+This is what decides which webhook a Normal win goes to; All Jumps wins always
+post to `ALL_JUMPS_WEBHOOK`. Before it existed the kit hardcoded "rating 8 and
+up", so adding a difficulty silently changed nothing.
 
 To add a rating above Nil, append one entry to `difficulties` and add its ticket
 reward in `Config > Economy` if it should award tickets.

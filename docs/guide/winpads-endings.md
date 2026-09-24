@@ -9,19 +9,30 @@ to the winroom.
 Every step below runs on the server. Nothing is awarded until all three checks
 pass, and a run that fails any of them is refused rather than partly credited.
 
-Touching a winpad is checked on the server, in order:
+A touch is ignored outright in Practice mode, and when the player has used a
+boost item in a tower or rush that bans boosts. Otherwise it is checked, in
+order:
 
 1. **This winpad belongs to the tower you are in.**
-2. **Every checkpoint was reached, in order.**
-3. **The run lasted at least the tower's minimum time.**
+2. **The run lasted at least the tower's minimum time.**
+3. **Every checkpoint was reached, in order.**
 
-Pass all three and the completion is granted — badge, stats, tickets and
-tools — then the win is announced and you are sent to the winroom.
+Pass all three and the win is announced, the completion is granted — badge,
+stats, tickets and tools — and you are sent to the winroom. During a tower rush,
+any winpad moves the player on to the rush's next tower instead; see
+[Tower Rushes](./tower-rushes.md).
 
 ::: warning A failed check is treated as cheating
-Fail any one of them and the player is **kicked** with nothing awarded, and
-the attempt is reported to `ANTICHEAT_WEBHOOK`. These are not soft refusals.
+Fail any one of them and the player is **kicked** with nothing awarded, and a
+line from `antiCheatKickMessages` in `Config > Chat` is announced to the server.
+With `webhooks.antiCheat` turned on in `Config > Chat` (it ships off), the
+attempt is also reported to `ANTICHEAT_WEBHOOK`. These are not soft refusals.
 :::
+
+The minimum time and checkpoint checks are skipped for a player who has used a
+debug item — a Tool with a `DebugItem` attribute, which is what the tools in
+`ServerStorage > StarterPackStudio` get in a Studio playtest. A test run with
+one of those equipped proves nothing about the anti-cheat.
 
 ## Standard Ending
 
@@ -37,14 +48,22 @@ When the player touches the `WinPad` in Normal mode, the kit can:
 - Record the tower win and best time.
 - Award tower points.
 - Give completion tools.
-- Award tickets if the run was not boosted and the tower is off cooldown.
+- Award tickets if the run was not boosted and the tower is off cooldown, or allows rebeats.
 - Teleport the player to the winroom.
 
-Practice mode cannot complete a tower. All Jumps mode records an All Jumps win and can award `AJBadgeID`, but it does not give tickets or completion tools.
+Practice mode cannot complete a tower. All Jumps mode records an All Jumps win and can award `AJBadgeID`, but it does not give tickets, completion tools, or the tower's or an ending's `BadgeID`.
 
 ## Custom Ending
 
 Use custom winpad attributes for secret endings, alternate exits, or special badges.
+
+A tower has one **main ending**: the winpad whose `EndingID` is the tower's
+acronym, which is what an unset `EndingID` means. Only the main ending counts
+as beating the tower — the win and best time, points, tickets, completion tools,
+Elo and the All Jumps badge. A winpad with any other `EndingID` is a side
+ending: it announces the win under its own name and difficulty, awards its own
+`BadgeID` and the tower's badge (unless `PreventTowerBadge` is set), and sends
+the player to its winroom, but the tower is not recorded as beaten.
 
 Example:
 
@@ -62,9 +81,9 @@ with a free ending ID already set.
 
 | Attribute | Type | Default | Purpose |
 | :-- | :-- | :-- | :-- |
-| `EndingID` | `string` | Tower acronym | Unique internal ID for this ending. |
-| `EndingName` | `string` | Tower display name | Name used in announcements and webhooks. |
-| `Difficulty` | `string` | Tower difficulty | Overrides announcement difficulty for this ending. |
+| `EndingID` | `string` | Tower acronym | Identifies this ending. The acronym makes it the main ending; anything else makes it a side ending. |
+| `EndingName` | `string` | Tower display name | Name used in announcements and webhooks. Side endings only: the main ending always uses the tower's name. |
+| `Difficulty` | `string` | Tower difficulty | Overrides announcement difficulty for this ending. Side endings only. |
 | `BadgeID` | `number` | `0` | Badge awarded for this ending. |
 | `PreventTowerBadge` | `boolean` | `false` | Prevents the normal tower badge from being awarded. |
 | `WinroomMarker` | `string` | Empty | Teleports to a named marker after winning. |
@@ -82,7 +101,7 @@ wins where a winpad has both.
 
 ## Winpad Visuals
 
-Every winpad gets the kit's particles when its tower loads, and flashes through
+Every winpad gets the kit's particles when the server starts, and flashes through
 random colours and materials while somebody is inside that tower. Three settings
 in `Config > Project` control it:
 

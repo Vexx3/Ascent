@@ -17,13 +17,17 @@ disappears again if they plug one in.
 Open `ReplicatedStorage > Shared > Config > Admin` in Studio:
 
 ```luau
-return {
+local Admin: ConfigTypes.Admin = {
 	enabled = true,
 	allowStudio = true,
 	activationKeys = { Enum.KeyCode.F4 },
 	userIds = {
 		123456789,
 	},
+
+	maxTicketChange = 1_000_000,
+	maxTicketBalance = 1_000_000_000,
+	saveTimeout = 15,
 }
 ```
 
@@ -31,6 +35,10 @@ return {
 - `allowStudio` lets every Studio test player use it.
 - `activationKeys` changes the key that opens Cmdr.
 - `userIds` lists administrators by Roblox user ID.
+- `maxTicketChange` and `maxTicketBalance` are the guard rails on `tickets-add`
+  and `tickets-set`, so one mistyped number cannot ruin a player's balance.
+- `saveTimeout` is how many seconds a command waits for a save to be confirmed
+  before it reports the save as pending.
 
 The owner of a user-owned experience is automatically authorized. Every server command is checked again on the server; hiding the console on an unauthorized client is not treated as security.
 
@@ -59,7 +67,7 @@ Angle brackets are required arguments. Square brackets are optional arguments wi
 | Command | Arguments | Purpose |
 | :-- | :-- | :-- |
 | `tower-load` | `<players> <tower>` | Loads a configured tower and starts a fresh timer. Alias: `loadtower`. |
-| `tower-exit` | `<players>` | Safely clears run state and returns players to the hub spawn. Aliases: `exittower`, `unloadtower`. |
+| `tower-exit` | `<players>` | Safely clears run state and returns players to the `SpawnLocation` in `Workspace > Markers`. Aliases: `exittower`, `unloadtower`. |
 | `tower-restart` | `<players>` | Immediately restarts active tower runs. Alias: `restarttower`. |
 | `tower-mode` | `<players> <Normal\|Practice\|AllJumps>` | Changes mode and reloads the active run when needed. Alias: `setmode`. |
 | `tower-status` | `<players>` | Shows tower, mode, timer, checkpoint, rush, and loading state. Alias: `towerstate`. |
@@ -74,14 +82,14 @@ Angle brackets are required arguments. Square brackets are optional arguments wi
 | Command | Arguments | Purpose |
 | :-- | :-- | :-- |
 | `tickets` | `<player>` | Shows a player's ticket balance. Alias: `tickets-get`. |
-| `tickets-add` | `<player> <amount>` | Adds tickets, or removes them with a negative amount. Never goes below zero. Alias: `addtickets`. |
-| `tickets-set` | `<player> <balance>` | Sets a balance from 0 to 1,000,000,000. Alias: `settickets`. |
+| `tickets-add` | `<player> <amount>` | Adds tickets, or removes them with a negative amount, up to `maxTicketChange` either way. Refuses to take more than the player has. Alias: `addtickets`. |
+| `tickets-set` | `<player> <balance>` | Sets a balance from 0 to `maxTicketBalance`. Alias: `settickets`. |
 | `cosmetic-grant` | `<player> <category> <cosmetic>` | Permanently unlocks a configured cosmetic. Alias: `grantcosmetic`. |
 | `cosmetic-revoke` | `<player> <category> <cosmetic>` | Removes a permanent cosmetic grant. Alias: `revokecosmetic`. |
 | `cosmetic-equip` | `<player> <category> [cosmetic]` | Equips a cosmetic the player has unlocked. Omit the cosmetic to unequip that category. Alias: `equipcosmetic`. |
 | `shop-item-grant` | `<player> <item>` | Grants a configured ticket-shop item without charging tickets. Alias: `grantshopitem`. |
 
-Balance and ownership changes use Scribe transactions and request an immediate save. They only target profiles loaded in the current server.
+Balance and ownership changes use Scribe transactions and request an immediate save. They only target profiles loaded in the current server. A save that has not confirmed within `saveTimeout` is reported as pending, not failed: it may still land.
 
 ### Data, players, and servers
 
@@ -93,7 +101,7 @@ Balance and ownership changes use Scribe transactions and request an immediate s
 | `leaderboard` | `[board] [count]` | Prints the top of `Towers`, `AllJumps` or `Elo`, and where everyone in this server sits. Aliases: `board`, `top`, `elo-board`. |
 | `data-health` | `[problems]` | Scribe's own view of the data service: status, save timings, DataStore budget, recent errors. Aliases: `datahealth`, `datastats`. |
 | `data-export` | `<userId>` | Prints everything saved for a user ID as JSON, for answering a data request. Works offline. Alias: `dataexport`. |
-| `data-erase` | `<userId> <confirm>` | Permanently deletes a user's saved data and leaderboard entries. Cannot be undone. Alias: `dataerase`. |
+| `data-erase` | `<userId> <confirm>` | Permanently deletes a user's saved data and leaderboard entries. Cannot be undone, and does nothing unless `confirm` is `true`. Refused while that player is in this server, whose session would save over the erasure. Alias: `dataerase`. |
 | `gamepass-refresh` | `<player> <gamePass>` | Re-checks an enabled configured pass through Scribe's ownership API. Alias: `checkgamepass`. |
 | `heal` | `<players>` | Restores living characters to full health. |
 | `give-badge` | `<players> <badgeId>` | Awards an enabled badge belonging to the experience. Alias: `givebadge`. |
@@ -101,9 +109,9 @@ Balance and ownership changes use Scribe transactions and request an immediate s
 | `kick` | `<players> [reason]` | Removes players from this server. Refuses to kick another administrator, so whoever holds the console cannot clear the room. |
 | `server-time` | `<players>` | How long each player has been in this server. Alias: `playtime`. |
 | `kit-info` | none | Shows the kit version, place, job, and player count. Alias: `ascent-info`. |
-| `shutdown` | `<true> [seconds] [reason]` | Closes this server after a countdown everyone can see. Defaults to 60 seconds; pass `0` to close at once. |
+| `shutdown` | `<true> [seconds] [reason]` | Closes this server after a countdown everyone can see. Defaults to 60 seconds, at most 30 minutes; pass `0` to close at once. |
 
-The kit does not include profile wipes, arbitrary raw-profile editing, offline data mutation, arbitrary code execution, or unrestricted HTTP fetching. Those commands are too easy to misuse and are not needed to operate a fangame.
+Apart from `data-erase`, which exists to answer a deletion request, the kit does not include profile wipes, arbitrary raw-profile editing, offline data mutation, arbitrary code execution, or unrestricted HTTP fetching. Those commands are too easy to misuse and are not needed to operate a fangame.
 
 ## Adding a command
 

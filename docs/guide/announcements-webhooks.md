@@ -12,13 +12,14 @@ Main setup locations:
 
 When a valid win is processed, the server sends a win announcement to clients.
 
-Configure client message formatting in the `client` section of `ReplicatedStorage > Shared > Config > Chat`:
+Configure client message formatting in the `messages` section of `ReplicatedStorage > Shared > Config > Chat`:
 
 | Setting | Purpose |
 | :-- | :-- |
 | `winMessage` | Normal win message. |
 | `allJumpsWinMessage` | All Jumps win message. |
 | `boostsUsedMessage` | Extra boost list line. |
+| `channel` | The chat channel win messages appear in. |
 | `fontFace` and `fontSize` | Normal message styling. |
 | `fancyFontFace` and `fancyFontSize` | Styling for difficulties with `fancyFont = true`. |
 
@@ -42,13 +43,17 @@ Global notifications use the MessagingService topic `GlobalNotification`.
 ## Discord Webhooks
 
 Configure webhooks in the `webhooks` section of `ReplicatedStorage > Shared > Config > Chat`.
-They are disabled by default. Enable them only after creating the required Roblox secrets.
+Win posts are on as shipped, and a place with no secrets set up gets a warning
+in the Output for each post instead. Create the secrets below, or set `enabled`
+to `false`.
 
 | Setting | Purpose |
 | :-- | :-- |
 | `enabled` | Turns win-webhook posting on or off. |
 | `normalMessage` | Normal win template. |
 | `allJumpsMessage` | All Jumps win template. |
+| `rushMessage` | Normal tower rush win template. |
+| `allJumpsRushMessage` | All Jumps tower rush win template. |
 | `boostsUsedMessage` | Optional boost list suffix. |
 | `antiCheat` | Posts a report when a win fails the server checks. Off by default. |
 
@@ -58,9 +63,10 @@ Supported placeholders:
 - `{EndingName}`
 - `{DifficultyEmoji}`
 - `{Time}`
-- `{BoostList}`
+- `{BoostList}`, in `boostsUsedMessage`
+- `{TowerCount}`, in the two rush templates: how many towers the rush had
 
-Create these Roblox secrets in **Game Settings -> Security -> Secrets**:
+Create these Roblox secrets in **Creator Dashboard › Experience › Secrets**:
 
 | Secret | Used For |
 | :-- | :-- |

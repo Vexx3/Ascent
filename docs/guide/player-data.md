@@ -17,12 +17,15 @@ In Studio Explorer:
 | `allJumps` | All Jumps completion points. |
 | `elo` | What the player has beaten, scored by difficulty, both modes in one number. See [Player Elo](./elo). |
 | `eloTowers`, `eloAjTowers` | Tower IDs credited toward the Elo, kept apart because each mode is worth a different amount. Independent of ordinary completion points. Server-only. |
-| `eloHistoryImported` | True once a profile from the old kit has had its completions credited toward Elo, so they cannot be credited twice. False on a profile that never came from it. |
+| `eloHistoryImported` | True once a profile from the old kit has had its completions credited toward Elo, so they cannot be credited twice. False on a profile that never came from it. Server-only. |
 | `completedTowers` | Completed normal tower acronyms. |
 | `completedAjTowers` | Completed All Jumps tower acronyms. |
 | `towerStats` | Attempts, wins, time spent, and best times by tower. |
 | `completedTowerRushes` | Completed rush acronyms. |
 | `towerRushStats` | Attempts, wins, time spent, and best times by rush. |
+| `backpackSlots` | Which slot each backpack item sits in, keyed by tool name. |
+| `backpackFilters` | Which backpack items the player has switched off: whole groups (`Boost`, `Heal`, `Other`), single items, and the items pulled back out of a switched-off group. |
+| `uiLayout` | Where the player moved each on-screen control with Edit UI Layout, and its size — `x`, `y` and `scale`, keyed by control name. |
 | `tickets` | Current ticket balance. |
 | `claimedGamePassRewards` | One-time pass rewards already claimed. Server-only. |
 | `ownedShopItems` | Permanent shop item IDs. |
@@ -50,7 +53,7 @@ Keep Studio on `Mock` until you intentionally need persistent test data. Changin
 
 Scribe can report `still-loading` when its normal wait ends while the profile is still within the load window. The kit retries only that reason; other lifecycle reasons are terminal. The client allows the full load window before leaving the loading screen in its failure state.
 
-Administrators can use `data-summary` for a safe summary and `data-save` to request an immediate Scribe flush. The older `playerdata` and `savedata` names remain convenient aliases. The kit does not expose raw profile editing or wipe commands.
+Administrators can use `data-summary` for a safe summary and `data-save` to request an immediate Scribe flush. The older `playerdata` and `savedata` names remain convenient aliases. The kit does not expose raw profile editing. The one command that deletes a save is `data-erase`, which exists to answer a deletion request and refuses while that player is in the server — see [Commands](./commands.md).
 
 ## Leaderboards
 
@@ -112,9 +115,10 @@ on the client yourself.
 Scribe allows **twelve ordered reads a minute** across every board. Three are
 spent here, and a bundle asking for more than twelve does not start.
 
-In Studio nothing reaches these stores. `Config > Project` saves in mock mode
-and Scribe swaps in an in-memory ordered store to match, so a board stays empty
-until a published server writes to it.
+In Studio nothing reaches these stores while `dataStoreStudioMode` in
+`Config > Project` is `Mock`, as shipped, or `NoSave`: Scribe swaps in an
+in-memory ordered store to match, so a board holds only the players in that test
+and is gone when it stops. `Live` writes to the real stores.
 
 ## Bringing An Older Kit's Players Across
 
@@ -241,7 +245,7 @@ See the official Scribe guides for [templates](https://scribe.ericplane.dev/temp
 
 ## Reading Saved Data On The Client
 
-`Client > init` watches each part of the profile separately, and hands each piece to whatever needs it. Follow that when you add a reader.
+The kit's `Client` LocalScript, in `StarterPlayer > StarterPlayerScripts`, watches each part of the profile separately, and hands each piece to whatever needs it. Follow that when you add a reader.
 
 Scribe can observe any field or container, and it also lets you observe the root. **Do not observe the root.** A root observer re-reads all of the saved data and re-runs every listener on it whenever *anything* is written, so a player earning a ticket would rebuild the backpack, the on-screen layout and the settings menu along with it. Watch the container you actually read:
 
@@ -251,7 +255,7 @@ Data.settings.Observe(function(settings)
 end)
 ```
 
-A reader that spans several top-level fields is the one case that needs more than one observer. `init` names those fields in a list and shares a small helper that wakes once a frame, so the five fields a tower win writes in one transaction redraw the board once rather than five times.
+A reader that spans several top-level fields is the one case that needs more than one observer. `Client` names those fields in a list and hands them to `Shared > Accounts > ProfileWatch`, a small helper that wakes once a frame, so the fields a tower win writes in one transaction redraw the board once rather than once each.
 
 ## What A Player Is Told When Data Fails
 
@@ -272,9 +276,10 @@ alongside would throw away data the badges cannot replace.
 
 ::: warning It needs badge IDs in `Config > Towers`
 A tower's `BadgeID` attribute is only readable in the place that tower is in,
-and a fangame is several places. Recounting from the hub while the catalogue
-only knows the hub's badges would clear everything a player earned elsewhere and
-refill a fraction of it — the command would cause the loss it exists to repair.
+and a fangame is several places. Recounting in one place while the catalogue
+only knew that place's badges would clear everything a player earned elsewhere
+and refill a fraction of it — the command would cause the loss it exists to
+repair.
 
 So it counts badges named in `Config > Towers`, not attributes. If no tower
 there has a badge, the command says so and changes nothing rather than wiping

@@ -1,7 +1,7 @@
 # Chat
 
 Everything chat-related is in `ReplicatedStorage > Shared > Config > Chat`:
-coloured name tags in `tags`, and the win messages players read in `client`.
+coloured name tags in `tags`, and the win messages players read in `messages`.
 
 Rewards and saved data stay server-owned — nothing on this page changes what a
 player earns, only what they see.
@@ -89,13 +89,9 @@ neither. The startup check says so by name if you leave one in.
 Three ways, checked in this order. **The first match wins** — a player who
 qualifies for several gets one tag, not a stack.
 
-A player is checked against each source in turn, and **the first match wins**:
-
 1. **User ID** — `tags.byUser`, keyed by Roblox user ID.
 2. **Game pass** — `tags.byGamePass`, filled in from each pass's `chatTag`.
 3. **Group rank** — `tags.byGroup`, a group ID and the ranks that earn a tag.
-
-Somebody who qualifies for several gets one tag, not a stack.
 
 **By user ID**
 
@@ -143,7 +139,7 @@ byGroup = {
 
 ## Win messages
 
-In the `client` section.
+In the `messages` section.
 
 | Setting | Purpose |
 | :-- | :-- |
@@ -157,6 +153,10 @@ In the `client` section.
 | `{EndingName}` | Tower or ending name. |
 | `{Time}` | Formatted completion time. |
 | `{BoostList}` | Comma-separated boost names. `boostsUsedMessage` only. |
+
+Each message is shown after `[SERVER]:`, or `[GLOBAL]:` for a win announced
+across servers. Those two prefixes are `wins.serverPrefix` and
+`wins.globalPrefix` in `Config > Messages`.
 
 ## Appearance
 

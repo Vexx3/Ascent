@@ -78,7 +78,7 @@ Saved keybinds live under `settings.keybinds`.
 | `emotes` | `dance2` = `T`, `laugh` = `Y`, `cheer` = `U` | One key per emote, each playing the emote it is named after. |
 
 QuickRestart stays available in All Jumps and Practice. Its default overlaps the
-All Jumps Load key; players can change either binding. Saved custom bindings are
+All Jumps Teleport key; players can change either binding. Saved custom bindings are
 preserved.
 
 These eight are the kit's own and are fixed. **To add a keybind of your own**,
@@ -132,11 +132,11 @@ folders and rate-limits reports. Stopping spectating restores local zone selecti
 
 ## Adding A Setting
 
-Follow [Adding A Saved Setting](./custom-settings.md) for a complete example,
-including every source file, the Studio UI row, the network schema, and a
-save-and-rejoin check. The example adds a **Hide Health Bar** toggle using the
-existing settings system and Scribe account; it needs no extra datastore or
-remote event.
+Follow [Adding A Saved Setting](./custom-settings.md). A setting of your own is
+one declaration in `Config > CustomSettings`: the row is copied from the menu's
+templates, and the saving and the server's check come with it, so it needs no
+network message, datastore or remote event. The page's example adds a **Hide
+Health Bar** toggle and the script that acts on it.
 
 ## See Also
 

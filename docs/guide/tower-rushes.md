@@ -19,8 +19,14 @@ rushes = {
 | Field | Type | Default | Purpose |
 | :-- | :-- | :-- | :-- |
 | `towers` | `{ string }` | — | Ordered acronyms. Every acronym must also be a registered normal tower. |
-| `winroomMarker` | `string` | none | Marker used after the final tower. |
+| `winroomMarker` | `string` | `"WinroomSpawn"` | Marker used after the final tower. |
 | `noBoosts` | `boolean` | `false` | Optional. Kills a player who equips a boost during this rush. |
+
+**Every tower in a rush has to stand in the same Area.** A rush plays its towers
+in the server the player is already in, and each Area is its own place, so a
+rush that reaches into another one could never finish. The kit refuses to start
+it, tells the player with `towers.rushUnavailable` from `Config > Messages`, and
+names the missing towers in the Output window.
 
 ## Add Its Display Entry
 
@@ -46,7 +52,7 @@ A `BasePart` under `Workspace > Portals` holding a `StringValue` named
 ## Completion Behavior
 
 - Individual towers record their normal or All Jumps completion as the rush advances.
-- The finished rush records separate stats and its configured badge.
+- The finished rush records separate stats and awards the `badgeId` on its `towers` entry.
 - Tower tickets are not awarded during the rush flow.
 - The player is sent to `winroomMarker` after the final tower.
 
