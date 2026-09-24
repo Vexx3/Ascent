@@ -32,7 +32,8 @@ attempt is also reported to `ANTICHEAT_WEBHOOK`. These are not soft refusals.
 The minimum time and checkpoint checks are skipped for a player who has used a
 debug item — a Tool with a `DebugItem` attribute, which is what the tools in
 `ServerStorage > StarterPackStudio` get in a Studio playtest. A test run with
-one of those equipped proves nothing about the anti-cheat.
+one of those equipped proves nothing about the anti-cheat, so it earns nothing
+either: it goes to the winroom, and the player is told it did not count.
 
 ## Standard Ending
 

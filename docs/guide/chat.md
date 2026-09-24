@@ -90,7 +90,7 @@ Three ways, checked in this order. **The first match wins** — a player who
 qualifies for several gets one tag, not a stack.
 
 1. **User ID** — `tags.byUser`, keyed by Roblox user ID.
-2. **Game pass** — `tags.byGamePass`, filled in from each pass's `chatTag`.
+2. **Game pass** — a VIP pass's own `chatTag` in `Config > GamePasses`.
 3. **Group rank** — `tags.byGroup`, a group ID and the ranks that earn a tag.
 
 **By user ID**
@@ -105,7 +105,7 @@ byUser = {
 
 ```luau
 VIP = {
-	id = 1954950943,
+	id = 1234567890,
 	kind = "VIP",
 	ticketMultiplier = 1.25,
 	trail = "VIPTrail",

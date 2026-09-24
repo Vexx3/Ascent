@@ -25,6 +25,14 @@ ReplicatedStorage > Shared > Config
 Each file returns one ordinary Luau table. Edit the values; you should not need
 to change kit code to make a normal fangame.
 
+::: tip Config is checked when a server starts
+Anything that does not add up — a tower naming an Area that does not exist, an
+unlock rule naming a tower Config does not have, a difficulty renamed in one
+place and not another, a game pass with no ID, a place ID that is not in your
+experience — is listed in the Output in one block headed **Ascent Config**,
+naming the line to open. Nothing there stops the game.
+:::
+
 ::: warning Names that are saved forever
 Tower acronyms, shop item keys, cosmetic keys, game pass keys, custom setting
 keys, and World and Area IDs are written into every player's save. Renaming one after release loses
@@ -35,6 +43,12 @@ Studio save key first.
 ## Project
 
 Settings that apply to your whole game.
+
+### Config version
+
+| Field | Type | Default | What it does |
+| :-- | :-- | :-- | :-- |
+| `configVersion` | `number` | `1` | Which shape of Config this is. A release that changes Config raises the number it expects, and the Output says so when yours is behind. Change it only after following that release's Updating steps. See [Updating Ascent](./updating.md). |
 
 ### What your game calls a tower
 
@@ -157,7 +171,7 @@ progress is not moved for you.
 | :-- | :-- | :-- | :-- |
 | `timerSyncInterval` | `number` | `2` | Seconds between timer updates sent to players. |
 | `checkpointInterval` | `number` | `0.25` | How often the server checks whether players reached a checkpoint. |
-| `restartCooldown` | `number` | `0.1` | Shortest gap between restarts from one player. |
+| `restartCooldown` | `number` | `0.1` | Shortest gap between restarts from one player. A restart that rebuilds the tower — any Normal-mode restart — waits at least half a second whatever this says. |
 | `restartResetsTowerRush` | `boolean` | `true` | Restarting during a rush returns to its first tower. |
 
 ### Winpads and warnings
@@ -411,7 +425,7 @@ feature back on gives it back exactly as it was.
 | Field | Type | Default | What it does |
 | :-- | :-- | :-- | :-- |
 | `cooldownDays` | `number` | `7` | Days before the same tower pays again. `0` disables the cooldown. |
-| `rewards` | `{ [string]: number }` | — | Tickets per difficulty name. `0` pays nothing. |
+| `rewards` | `{ [string]: number }` | — | Tickets per difficulty name. `0` pays nothing, and so does a difficulty left out — the Output names it. |
 | `perTower` | `{ [string]: table }` | `{}` | Per-tower overrides, keyed by acronym. |
 | `perTower[x].multiplier` | `number` | — | Scales that tower's reward. |
 | `perTower[x].allowRebeats` | `boolean` | — | Ignores the cooldown, so every win of that tower pays. |
@@ -441,7 +455,7 @@ Shop item fields:
 | `category` | `"Items" \| "Trails" \| "Auras"` | yes | Which tab it appears in. |
 | `rarity` | `string` | yes | Picks its color from `rarityColors`. |
 | `icon` | `string` | yes | Roblox image ID. |
-| `featuredOnly` | `boolean` | no | Only buyable while featured. |
+| `featuredOnly` | `boolean` | no | Lists the item only in the Featured page's Items list, never in All. It is always buyable and never discounted. |
 | `template` | `string` | no | Tool in `ServerStorage > TicketShopItems > Tools` to grant. Left out, the Tool is found by `name`. |
 
 See [Ticket Shop](./ticket-shop.md).
@@ -485,7 +499,7 @@ description, image, price, and sale state, so only kit behavior belongs here.
 
 | Field | Type | Applies to | What it does |
 | :-- | :-- | :-- | :-- |
-| `id` | `number` | all | The Roblox pass ID. |
+| `id` | `number` | all | The Roblox pass ID. `0`, as shipped, means the pass is off. |
 | `kind` | `"Tool" \| "VIP" \| "PersonalServers"` | all | What the kit does with it. |
 | `disabled` | `boolean` | all | Turn the pass off without deleting it. |
 | `giftProductId` | `number` | all | A developer product that gifts this pass. Leave it out and the pass has no Gift button. See [Gifting A Pass](./game-passes.md#gifting-a-pass). |
@@ -560,11 +574,10 @@ Anything in curly braces is filled in for you: `{PlayerName}`, `{EndingName}`,
 | :-- | :-- |
 | `tags.styles` | What each tag looks like: `text`, plus `color` for a flat tag or `colors` for a [gradient](./chat.md#gradients). |
 | `tags.nameColor` | Colours a player's name once a gradient tag has moved it into the message body. Optional. |
-| `tags.byUser` | Give a tag to one player by user ID. |
-| `tags.byGamePass` | Filled in from `Config > GamePasses`. |
+| `tags.byUser` | Give a tag to one player by user ID. A VIP pass gives its own `chatTag` from `Config > GamePasses`. |
 | `tags.byGroup` | Give a tag to everyone in a Roblox group. |
 | `messages` | In-game win messages, their channel, and their fonts. |
-| `webhooks` | Discord messages, `enabled` to turn them off, and `antiCheat` to post a report when a win fails the server checks (off as shipped). |
+| `webhooks` | Discord messages, `enabled` to turn them on (off as shipped, until the secrets exist), and `antiCheat` to post a report when a win fails the server checks (also off). |
 | `antiCheatKickMessages` | Picked at random when a win fails server checks. |
 
 See [Chat](./chat.md) and
@@ -577,12 +590,13 @@ See [Chat](./chat.md) and
 | `enabled` | `boolean` | `true` | Turns the admin console on or off. |
 | `allowStudio` | `boolean` | `true` | Every Studio tester gets access. |
 | `activationKeys` | `{ Enum.KeyCode }` | `{ F4 }` | Keys that open the console. |
-| `userIds` | `{ number }` | — | Roblox user IDs allowed in a live server. |
+| `userIds` | `{ number }` | `{}` | Roblox user IDs allowed in a live server, such as your moderators. |
 | `maxTicketChange` | `number` | `1000000` | Largest single change `tickets-add` accepts. |
 | `maxTicketBalance` | `number` | `1000000000` | Largest balance `tickets-set` accepts. |
 | `saveTimeout` | `number` | `15` | Seconds a command waits for a save to confirm. |
 
-The owner of a user-owned experience is always allowed. Every command is checked
+Whoever owns the experience is always allowed — you, or the owner rank of the
+group it belongs to. Every command is checked
 again on the server, so hiding the console on an unauthorized client is not
 treated as security. See [Admin Commands](./commands.md).
 
@@ -647,7 +661,18 @@ chat tag. Reword them to suit your game, or translate them.
 | `teleports` | Why a teleport did not happen. |
 | `friends` | The Join Friend tab. |
 | `personalServers` | Creating, joining, sharing and closing a personal server. |
-| `towers` | Things that go wrong on the way into a run. |
+| `durations` | "a week", "3 days", "10 minutes": how long something lasts, in notifications. |
+| `towers` | Things that go wrong on the way into a run, a Studio test run, and the Exit button. |
+| `antiCheat` | Why the anti-cheat removed somebody, as their kick screen says it. |
+| `locks` | Why an Area is locked, on its card and when a player tries to go in. |
+| `teleportMenu` | The Teleport menu's buttons. |
+| `shop` | The ticket shop: buttons, the item panel, and what a purchase says. |
+| `cosmetics` | Equipping a trail or an aura, and how a locked one is unlocked. |
+| `completions` | The Completions chart and its details panel. |
+| `spectate` | The spectate panel. |
+| `settingsMenu` | Keybind rows, the music line and the place version. |
+| `editLayout` | The buttons along the bottom of Edit UI Layout. |
+| `allJumpsLeaderstat` | The All Jumps column on the player list. |
 | `shopRotation` | The featured row changing over. |
 | `gifts` | Gifting a game pass. |
 | `shutdown` | The countdown shown before a server closes. |
@@ -662,6 +687,13 @@ plural rule.
 
 Win announcements and the webhook messages that mirror them are in
 [`Chat`](#chat) instead, since those belong together.
+
+::: warning After an update
+A Config carried over from an older release is missing any group added since,
+and the kit reads them. The Output names each missing group when a server
+starts; copy it in from the new release's `Messages`. See
+[Updating Ascent](./updating.md).
+:::
 
 ## Sharing Config between your places
 
@@ -713,7 +745,7 @@ it rather than claiming a change it could not make.
 
 The shape of every Config file is described in
 `ReplicatedStorage > Shared > ConfigTypes`, which is what makes Studio
-autocomplete them and warn you when a value has the wrong shape or a name is
-misspelled. It sits outside `Config` on purpose: it is not a setting, and
+autocomplete them. What a type cannot catch — a name that points at nothing —
+the server reports when it starts. It sits outside `Config` on purpose: it is not a setting, and
 `Config` should hold nothing you would not want to edit. Read it if you want the
 exact shape of something; you never need to change it to make a fangame.

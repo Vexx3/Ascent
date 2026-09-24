@@ -8,6 +8,17 @@ Most changes belong in `ReplicatedStorage > Shared > Config`, not in code. Reach
 for this page when a config value genuinely cannot express what you want.
 :::
 
+## Stable and not
+
+[Hooking Into the Kit](./hooks.md) is the stable part: `Server > Events`,
+`Client > Events`, `Server > CustomData` and the `CustomCommands` folder keep
+their names and what they pass for every 1.x release, and a Script built on them
+survives [updating](./updating.md). Start there.
+
+Everything else on this page is the kit's own code. It is documented because
+it is useful to call, but a release may change it, and each change is listed
+under **Breaking** in the [changelog](../changelog.md).
+
 ## Where the code lives
 
 The file path *is* the Studio path — nothing is renamed on the way in, so an
@@ -15,9 +26,9 @@ error in the Output window names the file to open.
 
 | Tree | Runs on | Studio location | Holds |
 | :-- | :-- | :-- | :-- |
-| `Server` | Server | `ServerScriptService > Server` | `Towers/TowerRegistry`, `Accounts/Progress`, the Cosmetics services, `Shop/PermanentTools`, `Announcements/AnnouncementsService`, `Announcements/Webhook`, `Shutdown/ShutdownService`, `Commands/Catalog` |
-| `Shared` | Both | `ReplicatedStorage > Shared` | `Config/*`, `Accounts/AccountData`, `Towers/Difficulty`, `Towers/TowerTypes`, `PlayerAttributes`, `Commands/Authorization`, `ConfigTypes` |
-| `Client` | Client | `StarterPlayer > StarterPlayerScripts > Client` | `Towers/RunController`, `Towers/Hud`, `Menu/MenuController`, Shop, Cosmetics, Settings, Teleport, `ClientObjects`, the Commands controller |
+| `Server` | Server | `ServerScriptService > Server` | `Events`, `CustomData`, `Towers/TowerRegistry`, `Accounts/Progress`, the Cosmetics services, `Shop/PermanentTools`, `Announcements/AnnouncementsService`, `Announcements/Webhook`, `Shutdown/ShutdownService`, `Commands/Catalog` |
+| `Shared` | Both | `ReplicatedStorage > Shared` | `Config/*`, `KitVersion`, `Accounts/AccountData`, `Towers/Difficulty`, `Towers/TowerTypes`, `PlayerAttributes`, `Commands/Authorization`, `ConfigTypes` |
+| `Client` | Client | `StarterPlayer > StarterPlayerScripts > Client` | `Events`, `Towers/RunController`, `Towers/Hud`, `Menu/MenuController`, Shop, Cosmetics, Settings, Teleport, `ClientObjects`, the Commands controller |
 
 ## Saved data
 
@@ -155,7 +166,7 @@ the worked examples for both sides.
 
 | Module | Function |
 | :-- | :-- |
-| `Server > Announcements > AnnouncementsService` | `globalNotificationAsync(message, duration?)`, `antiCheatKick(player, reason) -> boolean`, true only the first time for a player |
+| `Server > Announcements > AnnouncementsService` | `winAnnouncement(run, endingName, difficultyName, time?, towerCount?)`, which never waits; `globalNotificationAsync(message, duration?)`; `antiCheatKick(player, reason) -> boolean`, true only the first time for a player |
 | `Server > Announcements > Webhook` | `postAsync(secretName, payload) -> boolean` |
 
 `Webhook.postAsync` posts JSON to the Discord webhook stored in the named
@@ -169,8 +180,9 @@ local Webhook = require(ServerScriptService.Server.Announcements.Webhook)
 Webhook.postAsync("NORMAL_WEBHOOK", { content = "Hello from my fangame" })
 ```
 
-A missing secret is a warning and nothing else, so a place with no webhooks set
-up loses the posts and nothing more.
+A missing secret is one warning and nothing else, so a place with no webhooks
+set up loses the posts and nothing more. Every post goes out with
+`allowed_mentions` emptied, so nothing in it pings anyone.
 
 ## Shutdown
 
@@ -181,6 +193,7 @@ whose owner left.
 | Function | Signature |
 | :-- | :-- |
 | `announce` | `(closeAt: number, reason: string?) -> ()` |
+| `cancel` | `(closeAt: number) -> ()`, calls off that close if it is still the one counting down |
 | `pending` | `() -> boolean` |
 
 `closeAt` is an `os.time` stamp. Players are told immediately and again at 5m,

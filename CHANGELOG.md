@@ -1,6 +1,85 @@
 # Changelog
 
-## Unreleased
+## 1.0.0
+
+The first stable release. From here on, the names in
+[Hooking Into the Kit](https://kiels.dev/Ascent/guide/hooks) -- the server's
+`Events`, `CustomData` and the `CustomCommands` folder -- stay as they are
+within 1.x, and every release says under **Updating** what, if anything, has to
+be done by hand.
+
+### Updating
+
+Coming from 1.0.0-rc.3, follow [Updating Ascent](https://kiels.dev/Ascent/guide/updating)
+and then:
+
+1. **Add `configVersion = 1` to `Config > Project`.** The server now compares
+   it with the Config shape the kit expects and says so in the Output when they
+   differ, which is how every later release will tell you Config needs editing.
+2. **Bring `Config > Messages` up to date.** It gained groups for the shop,
+   cosmetics, Completions, lock reasons, spectating, the settings menu and more,
+   and the kit reads them. Replace it with this release's and copy back any
+   wording of your own. The Output names any group still missing.
+3. **In `Config > Chat`, delete the loop at the top and the `byGamePass =
+   gamePassTags` line.** A VIP pass's tag comes from its `chatTag` in
+   `Config > GamePasses` as before; the kit works it out itself now.
+4. **Check `Config > Admin.userIds` and `Config > Chat.tags.byUser`.** Earlier
+   releases shipped the kit author's own account in both. Take it out if it is
+   still there. Whoever owns the experience -- you, or the owner of the group it
+   belongs to -- has the console without being listed.
+5. **Install the new Tower Setup plugin.** Its Setup tab now says whether it
+   matches the kit the place runs.
+6. Publish every place, then check the Output of one live server: anything
+   Config gets wrong is now reported there when it starts.
+
+Nothing saved changes, and no player needs migrating. The save gains an empty
+`custom` table for your own values, which Scribe fills in on load.
+
+### Security
+
+**A locked Area is enforced on arrival, not only in the menu.** The menu and
+the server checked an Area's requirements before sending anyone, but a teleport
+between the places of one experience does not have to come from the kit: a
+modified client can start one, and following a friend from the Roblox friends
+list lands a player in whatever server the friend is in. A tower place now
+checks each player who arrives once their data has loaded, and sends anyone who
+has not unlocked it back to the hub with the reason. Badges only count against
+a player when Roblox answered, Studio is never checked, and the administrators
+in `Config > Admin` are let through so a locked Area can still be tested.
+
+**The shipped Config no longer names anybody.** `Config > Admin` gave console
+access, and `Config > Chat` an Owner tag, to the kit author's account in every
+game built from the kit; the game passes and developer products were the
+author's too. Both lists ship empty, the passes ship with `id = 0` -- which is
+off -- and a game owned by a group now gives the console to the group's owner
+without listing them.
+
+**Every message a client sends is bounded, rate-limited and answered.**
+
+- Strings and lists in `game.blink` carry a length, and Blink refuses a message
+  over it before any handler runs.
+- The settings, UI layout, backpack, cosmetics and shop requests each have a
+  rate limit. They allow a good run of genuine clicks and drop a flood.
+- Every client message now has a listener from the moment the server starts.
+  Blink keeps a message nothing listens for and only warns after 256, so one
+  sent to a feature that was switched off -- or to the hub, which listens to
+  almost nothing -- piled up for as long as the server ran.
+- Looking another player up in Completions reads their save from the
+  datastore, from the same budget every profile load and save spends. A lookup
+  is now kept for a minute, each player gets ten before waiting, and none is
+  made while the budget is low.
+
+**A gift note is shown as text.** The note is filtered, but a filter leaves
+RichText tags alone, so a note could draw giant text or a fake system line on
+the recipient's screen.
+
+**Runs that used a Studio test tool earn nothing.** A tool from
+`ServerStorage > StarterPackStudio` skips the minimum time and the checkpoint
+check, and the run still paid out its completion, badges and tickets. It still
+reaches the winroom, so an ending can be tested with one, and the player is told
+it did not count.
+
+**Webhook posts ping nobody**, whatever a player's name spells.
 
 ### Breaking
 
@@ -13,13 +92,65 @@ one needs the new name:
 | :-- | :-- | :-- |
 | `Server > Towers > TowerRegistry` | `loadForPlayer`, `resetClientObjects` | `loadForPlayerAsync`, `resetClientObjectsAsync` |
 | `Server > Accounts > Progress` | `incrementTowers`, `incrementAllJumps`, `incrementTowerAttempt`, `incrementRushAttempt`, `addTowerTimeSpent` | the same, each ending in `Async` |
-| `Server > Announcements > AnnouncementsService` | `globalNotification` | `globalNotificationAsync` |
+| `Server > Announcements > AnnouncementsService` | `globalNotification`, `winAnnouncementAsync` | `globalNotificationAsync`, `winAnnouncement` (it no longer waits) |
+| `Shared > Commands > Authorization` | `isAuthorized` | `isAuthorizedAsync` (a group-owned game asks Roblox for the rank) |
 
 Nothing saved changes; only the names a script calls.
 
+**`Config > Chat.tags.byGamePass` is gone.** It was code sitting in the one
+folder that should hold none; see **Updating**.
+
+**Webhooks ship switched off**, since they post nothing until the secrets
+exist and warned on every win until then. Set `webhooks.enabled = true` in
+`Config > Chat` once they are set up.
+
 ### Fixed
 
-**A `%` in a message no longer breaks it.** Win, kick, shutdown, anti-cheat
+**A win announced across servers could be lost.** A difficulty that announces
+globally made the win wait for Roblox's cross-server messaging before it was
+saved, so a player who left in that moment lost the completion, its points and
+tickets -- and for a rush, the whole rush -- while keeping the Elo. The hardest
+towers were the ones this hit. The announcement no longer holds anything up.
+
+**Looking up a player in Completions could show somebody else.** The user ID
+travelled as a 32-bit number, which newer accounts are past, so a lookup read
+a different, older account and showed it under the name typed.
+
+**Tower client objects went to every player in the server.** Anything parented
+to a Player replicates to every client, so each tower load and each Normal-mode
+restart sent the whole tower's client objects -- thousands of instances in a big
+tower -- to everyone, and each player's everpresent objects sat on every client
+for the session. They now go through the player's own PlayerGui, which only
+they receive, and the client waits for the whole folder before copying it
+rather than copying the moment its first part arrives.
+
+**A personal server's closing countdown could not be called off.** An owner who
+left and came back inside the grace period still had their guests told the
+server was closing, and a second departure then closed it with no warning.
+
+**A slow moment of Roblox's group service took group cosmetics off players.**
+A failed group lookup read as "not a member", and the server unequipped the
+cosmetic and saved that. A lookup is now remembered for five minutes and a
+failure changes nothing.
+
+**Rejoin in a personal server opened a public one.** A reserved server cannot
+be joined by its instance ID; its access code is used instead.
+
+**The shop could charge more than it showed.** A purchase that arrived just
+after the featured row rotated was charged full price for an item shown at a
+discount. The server now refuses a price higher than the one shown, and says
+why.
+
+**A global win showed twice on the server it came from** when two landed close
+together, and a player whose data was slow to load past two minutes stayed on
+the loading screen for good. A webhook refused outright is no longer asked
+twice more, and an empty `antiCheatKickMessages` no longer stops the kick it
+was announcing.
+
+**Restarting as fast as a key repeats rebuilt the tower each time.** A restart
+that rebuilds the tower now waits at least half a second whatever
+`restartCooldown` says, and walking back into your own tower's portal counts as
+a restart rather than a reload with no limit.
 and shop-rotation messages filled their placeholders with `gsub`, which reads
 `%` in the inserted text as a pattern escape. An ending called "100% Ending", a
 boost named with a percent sign, or a shutdown reason like "50% off sale" made
@@ -103,6 +234,37 @@ whenever a Config script changes.
 
 ### Added
 
+**Hooks for your own Scripts.** `ServerScriptService > Server > Events`
+announces a tower won, a rush won, a tower loaded or left, a shop purchase, a
+game pass applied, tickets awarded and a player's data ready, and
+`Events.waitForStartAsync()` waits for the kit to finish starting. The client
+has its own for what the player sees. `Server > CustomData` saves numbers,
+strings and flags of your own with each player, and a
+`ServerScriptService > CustomCommands` folder adds admin commands. All three
+live outside the kit's folders, so updating the kit leaves them alone.
+[Hooking Into the Kit](https://kiels.dev/Ascent/guide/hooks)
+
+**Config is checked when the server starts.** A tower naming an Area that does
+not exist, an unlock rule naming a tower or difficulty Config does not have, a
+renamed difficulty that now pays no tickets, overlapping difficulty bands, a
+game pass with no ID, the same key for live and Studio saves, and place IDs
+that are not places in your experience are each reported in one block,
+naming the line to open.
+
+**The rest of what players read moved into `Config > Messages`,** so it can
+be reworded or translated in one place. The shop, cosmetics, Completions,
+spectating, the settings menu, lock reasons and the teleport menu had their
+text written into the code.
+
+**One version, checked.** `Shared > KitVersion` is the kit's version, the build
+refuses to run when it and the package disagree, the hub reports it as well as
+the tower places, and `kit-info` answers with it and the Config version.
+
+**Output messages say where and how.** The warnings for a tower with no
+checkpoints or minimum time, a missing spawn, an R15 character, a part in
+`Portals` that is not a portal, a missing damage remote and a win message with
+no channel each name the thing to open and the setting that silences them.
+
 **The hub can be Ring Select: the map of your game.** A lobby whose whole job
 is to show your Worlds and Areas, how far through each one the player is and
 what is still locked, and to send them in. It draws entirely from
@@ -156,7 +318,7 @@ final Area. Subrealms are shown as well, since nothing in the shipped file used
 to demonstrate one.
 
 They are meant to be deleted or rewritten: only Ring 1 is real, and the rest
-point at the hub until their places exist. The suite now checks the shipped ones
+point at Ring 1 until their places exist. The suite now checks the shipped ones
 both ways -- every Area has to open for a player who has beaten everything, and
 at least one has to lock a new player -- because a rule naming a difficulty or a
 tower that does not exist only warns, which reads as the Area simply being open.

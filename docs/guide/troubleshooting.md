@@ -48,7 +48,7 @@ before you press Play.
 
 ## Towers
 
-### "\<Tower\> has no checkpoints!"
+### "\<Tower\> has no checkpoints"
 
 The tower has no folder in `ServerStorage > TowerCheckpoints`, or that folder
 has no parts in it. The [Tower Setup window](./tower-setup-plugin.md) creates
@@ -177,9 +177,9 @@ tower is reported at startup, because that is always a typo.
 
 ### An item never appears in the shop
 
-`featuredOnly = true` means it only shows while it is featured. Featured items
-rotate on `featured.refreshMinutes` and are picked from
-`featured.categories`.
+`featuredOnly = true` keeps an item out of All and lists it only in the Featured
+page's Items list, which needs an `ItemsList` there in the menu. It is always
+buyable; the rotation never picks it, so it is never discounted.
 
 An item is also left out when its `category` is not `Items`, `Trails` or
 `Auras`, when its `rarity` is not one of the five the kit has, or when its
@@ -215,6 +215,21 @@ tower's `area` must be an Area `id` from `Config > Worlds`, or the kit cannot
 tell which World the tower belongs to. `scope = "All"` counts every tower
 instead.
 
+### A player was sent back to the hub on arrival
+
+They reached an Area they have not unlocked by a route other than the menu —
+following a friend from the Roblox friends list, usually. The server checks each
+arriving player against the Area's `requirements`, tells them the reason and
+sends them to the hub. The Output says who and why. Studio is never checked, and
+the administrators in `Config > Admin` are let through, so you can test a
+locked Area.
+
+### "The shop just rotated and that price changed"
+
+The purchase arrived just after the featured row changed, so the item no longer
+has the discount the player saw. The server refuses rather than charge more
+than was shown; buying again at the new price works.
+
 ### Personal server codes do not work
 
 Codes live in a MemoryStore shared by every place in your experience. All the
@@ -235,8 +250,15 @@ has the full table of symptoms.
 ### F4 does nothing
 
 Check `Config > Admin`: `enabled` must be `true`, and your Roblox user ID must
-be in `userIds`. The experience owner is always allowed. In Studio,
+be in `userIds`. The experience's owner is always allowed — for a group-owned
+game, whoever holds the group's owner rank. In Studio,
 `allowStudio` grants access to every tester.
+
+### "Ascent Config: ... need a look"
+
+The server compares Config against itself when it starts and lists what does
+not add up, naming the line to open. Each entry says what it breaks. None of
+them stop the game, and an empty Output means there is nothing left to fix.
 
 ### A command exists but does nothing
 

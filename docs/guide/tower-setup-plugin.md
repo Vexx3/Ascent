@@ -72,6 +72,11 @@ means "not set", as on a badge ID, clearing the box clears the value.
 
 One question asked of three places, ordered by how far the failure reaches.
 
+Above them, the summary says which release of Ascent the place runs and whether
+this window came from the same one. A window from another release checks the
+place against rules that are not its own, so install the plugin that came with
+your kit. See [Updating Ascent](./updating.md#the-tower-setup-window).
+
 ### Menus
 
 The menus are the one part of the kit that is yours to lay out. `StarterGui` is
@@ -511,7 +516,7 @@ does.
 | Category | **Left out of the shop.** The shop does not know what it is selling. |
 | Rarity | **Left out of the shop.** It only sells items rated one of the five rarities. |
 | Icon | No picture. |
-| Only sold while featured | Always on sale. |
+| Listed only on the Featured page | Listed in All as well. It is always on sale either way. |
 | Tool | Find the Tool by the display name instead. Only for `Items`. |
 
 **"Not in the shop yet"** lists every Tool in `ServerStorage > TicketShopItems >

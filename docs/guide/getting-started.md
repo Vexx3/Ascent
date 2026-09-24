@@ -19,7 +19,8 @@ updates are announced. You receive:
 | `Tower Setup.rbxm` | The Studio plugin that checks your place while you build. See [Tower Setup Window](./tower-setup-plugin.md). |
 
 Each new version is listed in the [changelog](../changelog.md), with anything
-you have to change by hand under **Breaking**.
+you have to change by hand under **Updating**. [Updating Ascent](./updating.md)
+covers moving a game onto a new release.
 
 ## Before You Start
 
@@ -132,6 +133,35 @@ your game is finished.
 Publish every place you listed in `Config > Worlds`. Teleports and Personal
 Servers only work in a published game, never in a Studio playtest.
 
+## Before You Publish
+
+Go through this once before real players arrive. Most of it is reported in the
+Output when a server starts, in a block headed **Ascent Config** or **Ascent
+setup** — an empty Output is the goal.
+
+- **Save keys** in `Config > Project` are your own, and different from each
+  other. They cannot change after release.
+- **Place IDs** in `Config > Worlds` — `hubPlaceId` and every Area — are
+  your published places. The server says so if one is not in your experience.
+- **Admins** in `Config > Admin.userIds` are the people you mean. The
+  experience's owner is always one.
+- **Game passes** in `Config > GamePasses` have your pass IDs, or
+  `disabled = true` for the ones you do not sell. A pass left at `id = 0` is
+  off.
+- **Badges** in `Config > Towers` and on your winpads are your own.
+- **Leaderboards** `LB_Towers`, `LB_AllJumps` and `LB_Elo` are registered
+  in the Creator Dashboard if you want Roblox to draw them. See
+  [Player Data](./player-data.md).
+- **Webhooks**, if you want them: the secrets are set, and
+  `webhooks.enabled = true` in `Config > Chat`. See
+  [Announcements & Webhooks](./announcements-webhooks.md).
+- **Avatar** is R6 under **Game Settings → Avatar**, and the two teams in
+  `Config > Project.teamNames` exist.
+- **Every tower** has checkpoints and a minimum time. The Tower Setup
+  window's Towers tab shows which do not.
+- **Build warnings** in `Config > Project` are turned off once nothing is
+  left to fix, so the Output stays quiet in live servers.
+
 ## Where To Go Next
 
 | If you want to | Read |
@@ -142,5 +172,7 @@ Servers only work in a published game, never in a Studio playtest.
 | Sell things for tickets | [Tickets](./tickets.md) and [Ticket Shop](./ticket-shop.md) |
 | Sell game passes | [Game Passes](./game-passes.md) |
 | Add a setting of your own | [Adding A Saved Setting](./custom-settings.md) |
+| React to wins, save values of your own, add commands | [Hooking Into the Kit](./hooks.md) |
+| Move to a new release of Ascent | [Updating Ascent](./updating.md) |
 | Write your own systems on top | [Extending the Kit](./extending-gameplay.md) |
 | Fix something that is not working | [Troubleshooting](./troubleshooting.md) |

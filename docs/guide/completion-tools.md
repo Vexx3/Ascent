@@ -50,7 +50,7 @@ Tools can affect win legitimacy when equipped inside a tower.
 | Attribute | Type | Effect |
 | :-- | :-- | :-- |
 | `BoostName` | `string` | Marks the run as boosted and records a display name for announcements. |
-| `DebugItem` | `boolean` | Marks the run as a debug run: the winpad skips its minimum-time and checkpoint checks, and the win earns no Elo. |
+| `DebugItem` | `boolean` | Marks the run as a debug run: the winpad skips its minimum-time and checkpoint checks, and the run earns nothing — no completion, badges, tickets or Elo. |
 
 A Tool tagged `Boost` counts as a boost too, and announces under its own name —
 see [Marking A Tool As A Boost](./boost-items.md#marking-a-tool-as-a-boost).
@@ -59,7 +59,8 @@ If an older tool contains a nonempty `StringValue` named `BoostName`, the kit re
 
 In Studio, the kit moves every Tool in `ServerStorage > StarterPackStudio` into
 `StarterPack` and sets `DebugItem` on it, so a run where one is equipped inside a
-tower is marked as a debug run.
+tower is marked as a debug run. It still reaches the winroom, so an ending can be
+tested with one, and the player is told it did not count.
 
 ## No-Boost Towers
 
