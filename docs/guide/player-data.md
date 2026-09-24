@@ -26,6 +26,7 @@ In Studio Explorer:
 | `backpackSlots` | Which slot each backpack item sits in, keyed by tool name. |
 | `backpackFilters` | Which backpack items the player has switched off: whole groups (`Boost`, `Heal`, `Other`), single items, and the items pulled back out of a switched-off group. |
 | `uiLayout` | Where the player moved each on-screen control with Edit UI Layout, and its size — `x`, `y` and `scale`, keyed by control name. |
+| `custom` | Your own values, set through `Server > CustomData`: `numbers`, `strings` and `flags`, each keyed by the name you chose. Empty until you use it. See [Hooking Into the Kit](./hooks.md#saving-values-of-your-own). |
 | `tickets` | Current ticket balance. |
 | `claimedGamePassRewards` | One-time pass rewards already claimed. Server-only. |
 | `ownedShopItems` | Permanent shop item IDs. |
@@ -226,6 +227,13 @@ unsure about is better left at its default than guessed, because a reset setting
 annoys a player once while a wrong one confuses them forever.
 
 ## Add A Saved Field
+
+::: tip Values of your own need no template change
+`Server > CustomData` saves numbers, text and true/false values under names
+you choose, with no edit to the kit — so an update never overwrites it. See
+[Hooking Into the Kit](./hooks.md#saving-values-of-your-own). The steps below
+are for changing the kit's own shape.
+:::
 
 ::: tip If it is a player setting, do not do this
 A switch, a slider, a cycle button or a rebindable key is one line in

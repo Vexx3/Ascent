@@ -213,8 +213,9 @@ Both buttons are optional. A menu without them loses the preview and nothing
 else.
 
 ::: tip Nobody else sees it
-The mannequin is built for one player and parented to them, so two people can
-preview different trails at the same time and the `Rig` standing in your lobby
+The mannequin is built for one player and handed over through their own
+PlayerGui, which no other client receives, so two people can preview different
+trails at the same time and the `Rig` standing in your lobby
 never changes. It is hidden for the player previewing, because their copy is
 standing in the same spot.
 :::

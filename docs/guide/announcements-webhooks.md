@@ -43,13 +43,12 @@ Global notifications use the MessagingService topic `GlobalNotification`.
 ## Discord Webhooks
 
 Configure webhooks in the `webhooks` section of `ReplicatedStorage > Shared > Config > Chat`.
-Win posts are on as shipped, and a place with no secrets set up gets a warning
-in the Output for each post instead. Create the secrets below, or set `enabled`
-to `false`.
+Win posts are **off** as shipped, since there is nowhere to post them until the
+secrets below exist. Create the secrets, then set `enabled = true`.
 
 | Setting | Purpose |
 | :-- | :-- |
-| `enabled` | Turns win-webhook posting on or off. |
+| `enabled` | Turns win-webhook posting on or off. Off as shipped. |
 | `normalMessage` | Normal win template. |
 | `allJumpsMessage` | All Jumps win template. |
 | `rushMessage` | Normal tower rush win template. |
@@ -81,9 +80,12 @@ follows `webhook` on the matching entry in `categories`, falling back to
 `NORMAL_WEBHOOK`. Point a category at a secret name of your own and that is
 where its wins go — see [Difficulty Categories](./difficulties.md#difficulty-categories).
 
-A missing secret is a warning in the Output and nothing else, so a place that
-has not set one up loses the posts and nothing more. A post that fails is tried
-twice more, a couple of seconds apart, before it is given up on.
+A missing secret is one warning in the Output and nothing else, so a place that
+has not set one up loses the posts and nothing more. A post that fails because
+Discord is busy is tried twice more, a couple of seconds apart; one Discord
+refuses outright — a deleted webhook, or a plain `discord.com` link, which
+Discord does not accept from Roblox — is not asked again. No post pings anyone,
+whatever a player's name spells.
 
 HTTP requests must be enabled in Roblox Game Settings for webhook posting.
 

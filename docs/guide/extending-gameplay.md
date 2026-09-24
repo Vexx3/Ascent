@@ -5,6 +5,14 @@ Most changes belong in `Shared > Config`, in your tower instances, or in
 `ServerStorage` assets. Only write code when the behaviour itself has to change.
 :::
 
+::: tip Then try the hooks
+Reacting to a win, saving a value of your own or adding an admin command needs
+no edit to the kit at all: see [Hooking Into the Kit](./hooks.md). Code written
+that way survives [updating Ascent](./updating.md); an edit inside the kit's own
+scripts is overwritten by the next update. This page is for when the kit's own
+behaviour has to change.
+:::
+
 ## Where code goes
 
 The Studio hierarchy groups code by feature.
@@ -107,6 +115,10 @@ client code may reach `Client` and `Shared`; shared code may reach only
 at run time.
 
 ## Adding a server feature
+
+A feature that only reacts to the kit belongs in a Script of your own, listening
+to [`Events`](./hooks.md#server-events). One that has to be part of the kit's
+startup is added like this — and has to be added again after each update:
 
 1. Create a Folder `Server > <Feature>` holding a ModuleScript
    `<Feature>Service` that returns a table with a `start()` function.

@@ -47,7 +47,7 @@ Tool named SpeedCoil
 | :-- | :-- | :-- |
 | Tag `Boost` | tag | Marks the tool as a boost. It announces under its own name. |
 | `BoostName` | `string` | Marks it too, and sets the name announcements print. |
-| `DebugItem` | `boolean` | Marks the tool as a debug item. A win with one equipped skips the winpad's minimum-time and checkpoint checks and earns no Elo. |
+| `DebugItem` | `boolean` | Marks the tool as a debug item. A run that used one skips the winpad's minimum-time and checkpoint checks, and earns nothing: no completion, badges, tickets or Elo. |
 
 Tools brought over from an older kit carry `BoostName`, including as the
 `StringValue` those kits used, so both keep working and neither is going away.

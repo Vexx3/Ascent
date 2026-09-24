@@ -21,9 +21,7 @@ local Admin: ConfigTypes.Admin = {
 	enabled = true,
 	allowStudio = true,
 	activationKeys = { Enum.KeyCode.F4 },
-	userIds = {
-		123456789,
-	},
+	userIds = {},
 
 	maxTicketChange = 1_000_000,
 	maxTicketBalance = 1_000_000_000,
@@ -34,13 +32,19 @@ local Admin: ConfigTypes.Admin = {
 - `enabled` turns the console on or off.
 - `allowStudio` lets every Studio test player use it.
 - `activationKeys` changes the key that opens Cmdr.
-- `userIds` lists administrators by Roblox user ID.
+- `userIds` lists administrators by Roblox user ID, such as your moderators:
+  `userIds = { 123456789, 987654321 }`. It ships empty.
 - `maxTicketChange` and `maxTicketBalance` are the guard rails on `tickets-add`
   and `tickets-set`, so one mistyped number cannot ruin a player's balance.
 - `saveTimeout` is how many seconds a command waits for a save to be confirmed
   before it reports the save as pending.
 
-The owner of a user-owned experience is automatically authorized. Every server command is checked again on the server; hiding the console on an unauthorized client is not treated as security.
+Whoever owns the experience is always authorized and needs no listing: you, for
+an experience you own, or the owner rank of the group it belongs to. Every server command is checked again on the server; hiding the console on an unauthorized client is not treated as security.
+
+Commands of your own go in a `ServerScriptService > CustomCommands` folder,
+outside the kit, so an update leaves them alone. See
+[Hooking Into the Kit](./hooks.md#admin-commands-of-your-own).
 
 ## Built-in Cmdr commands
 

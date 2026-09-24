@@ -45,6 +45,7 @@ export default defineConfig({
             { text: 'Getting Started', link: '/guide/getting-started' },
             { text: 'Studio Structure', link: '/guide/studio-structure' },
             { text: 'Configuration Reference', link: '/guide/configuration' },
+            { text: 'Updating Ascent', link: '/guide/updating' },
             { text: 'Moving An Old Kit Across', link: '/guide/migrating' },
             { text: 'Troubleshooting', link: '/guide/troubleshooting' },
           ],
@@ -91,6 +92,7 @@ export default defineConfig({
           items: [
             { text: 'API Reference', link: '/guide/api' },
             { text: 'Player Data', link: '/guide/player-data' },
+            { text: 'Hooking Into the Kit', link: '/guide/hooks' },
             { text: 'Extending the Kit', link: '/guide/extending-gameplay' },
             { text: 'Adding A Saved Setting', link: '/guide/custom-settings' },
             { text: 'Changelog', link: '/changelog' },

@@ -85,6 +85,18 @@ This example requires:
 
 All fields are optional. Every completed tower counts once, and a harder completion also counts toward easier `+` requirements.
 
+A requirement naming a tower or a difficulty Config does not have can never be
+met, so it keeps the Area locked; the Output lists it when a server starts.
+
+**Requirements are checked on arrival too.** A teleport between the places of
+one experience does not have to come from the kit's menu — following a friend
+from the Roblox friends list is enough — so each tower place checks the player
+who arrives once their data has loaded, and sends anyone who has not unlocked
+it back to the hub, telling them why. A badge only counts against them when
+Roblox answered the lookup. Studio is never checked, and the administrators in
+`Config > Admin` are let through, so a locked Area can still be built and
+tested.
+
 ### Locking an Area behind a badge
 
 ```luau
@@ -373,7 +385,8 @@ The included `PersonalServers` game pass is enabled in `Config > GamePasses`.
 - Turning the toggle off invalidates the active share code and hides `ServerCodeFrame`.
 - Anyone can enter that code and click `JoinCode`; joining does not require the pass.
 - The reserved access code never goes to a client. The settings endpoint sends the 16-character lowercase hexadecimal share code only to the owner; guests receive only whether sharing is enabled.
-- When the owner leaves, the code expires and remaining players return to the hub after `ownerLeaveGracePeriod` (10 minutes by default).
+- When the owner leaves, the code expires and remaining players return to the hub after `ownerLeaveGracePeriod` (10 minutes by default). If the owner comes back within it, the countdown is called off.
+- **Rejoin** in the settings menu puts a player back into the same personal server, through its access code rather than a public server.
 
 A personal server belongs to **one Area**, because a reserved server is reserved
 in one place.

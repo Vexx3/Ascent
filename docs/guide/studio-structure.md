@@ -19,6 +19,8 @@ Start here. Almost every change a fangame makes belongs in one of these.
 | `ServerStorage > TicketShopItems > Tools` | Permanent shop and game-pass Tool templates. |
 | `ServerStorage > Cosmetics` | Trail and aura templates. |
 | `ServerStorage > CompletionTools` | Tools awarded for configured completions. |
+| `ServerScriptService > CustomCommands` | Admin commands of your own. Optional; see [Hooking Into the Kit](./hooks.md#admin-commands-of-your-own). |
+| Your own Scripts in `ServerScriptService` and `StarterPlayerScripts` | Code of yours, built on [the hooks](./hooks.md) so updates leave it alone. |
 
 `Workspace > Lobby` is optional and is only used by the `Unload All`
 tower-visibility setting, which moves it out of Workspace while the player is
@@ -42,6 +44,8 @@ all of it.
 | The backpack | `Client > Backpack` is the vendored Purse; the kit's own four sit beside it as `BackpackFilters`, `BackpackIcon`, `BackpackIdentity` and `BackpackLayout` |
 | Saved progression and Elo | `Server > Accounts`, `Shared > Accounts` |
 | The administrator console | `Server > Commands`, `Client > Commands` |
+| Hooks for your own code | `Server > Events`, `Server > CustomData`, `Client > Events` |
+| Config checked at startup | `Server > ConfigChecks`, `Server > AssetChecks` |
 
 **A feature folder says which file to open first.** Its entry module is
 `<Feature>Service` on the server and `<Feature>Controller` on the client — so
@@ -74,7 +78,7 @@ ReplicatedStorage
 │  ├─ Teleport            -- Areas, TeleportRequirements
 │  ├─ Towers              -- Difficulty, Time, Touch, Attributes, TowerTypes
 │  ├─ Network             -- BlinkClient
-│  └─ ConfigTypes         -- and ClientInput, Formatting, InstanceDelivery, Instances, Licenses, PlayerAttributes, Rarities, Tags
+│  └─ ConfigTypes         -- and ClientInput, Formatting, InstanceDelivery, Instances, KitVersion, Licenses, PlayerAttributes, Rarities, Tags
 ├─ Packages
 ├─ Framework              -- the legacy EToH framework, protected
 └─ AscentInputs           -- the input actions keybinds use
@@ -91,12 +95,13 @@ ServerScriptService
 │  ├─ Settings            -- SettingsService
 │  ├─ Shop                -- ShopService, GamePasses, Gifting, PermanentTools, Tickets
 │  ├─ Shutdown            -- ShutdownService, PlaceVersion
-│  ├─ Teleport            -- TeleportService, Friends, PersonalServers, AreaBadges
+│  ├─ Teleport            -- TeleportService, Friends, PersonalServers, AreaBadges, AreaGate
 │  ├─ Towers              -- TowerRegistry, Timer, Winpads, AllJumps, TowerRush, TowerRemotes, AntiCheatLog, Spectate, Godmode, Navigation, …
 │  ├─ ClientObjects
 │  ├─ Network             -- BlinkServer, NetworkSchema
-│  └─ AssetChecks         -- and Backpack, Cooldown, Retry
-└─ ServerPackages
+│  └─ AssetChecks         -- and Backpack, ConfigChecks, Cooldown, CustomData, Events, NetworkDefaults, Retry
+├─ ServerPackages
+└─ CustomCommands         -- optional: admin commands of your own
 StarterPlayer
 └─ StarterPlayerScripts
    └─ Client              -- the client entry point
@@ -113,7 +118,7 @@ StarterPlayer
       ├─ Towers           -- RunController, Hud, Completions, Spectate, TowerDisplay, TowerVisibility, AllJumpsController, ResetButton
       ├─ UI               -- Screens, WarnOnce, Components
       ├─ ScriptRepo       -- the bundled client-object scripts
-      └─ BackpackFilters  -- and BackpackIcon, BackpackIdentity, BackpackLayout, Chat
+      └─ BackpackFilters  -- and BackpackIcon, BackpackIdentity, BackpackLayout, Chat, Events
 ServerStorage
 ├─ TowerCheckpoints
 ├─ TowerClientObjects

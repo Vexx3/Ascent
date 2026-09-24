@@ -57,7 +57,9 @@ listed categories and refreshes on the configured minute boundary.
 `discountPercent` takes that much off an item while it is featured. `0` turns
 the discount off, it is capped at 90, and a featured item never drops below 1
 ticket. The server works the price out itself rather than trusting the one the
-client showed.
+client showed, and refuses a purchase when its price is higher than the one the
+player saw — a purchase that lands just after the row rotates is told the price
+changed rather than charged more.
 
 Because the window is a division of the clock rather than a timer, every server
 works out the same boundary on its own — they rotate together without anything

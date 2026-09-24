@@ -9,24 +9,24 @@ The kit supports any number of tool passes, one built-in VIP pass, and the built
 ```luau
 return {
 	VIP = {
-		id = 1954950943,
+		id = 0,
 		kind = "VIP",
 		ticketMultiplier = 1.25,
 		trail = "VIPTrail",
 		chatTag = "VIP",
 		tickets = 200,
-		giftProductId = 3713484894,
+		-- giftProductId = 1234567890,
 	},
 
 	PersonalServers = {
-		id = 1952175550,
+		id = 0,
 		kind = "PersonalServers",
-		giftProductId = 3713484932,
+		-- giftProductId = 1234567890,
 	},
 }
 ```
 
-The IDs that ship belong to the kit's own experience. Replace each `id` with a pass you created in yours, and each `giftProductId` with a developer product of yours — or delete the line to hide the Gift button. A pass from another experience cannot be sold in yours, so the Shop hides it.
+Both ship with `id = 0`, which is off: nothing is sold and nothing is granted until you create the pass in your experience's **Monetization > Passes** and put its ID in. One you do not sell is better set to `disabled = true`, which also stops the Output reminding you about it at startup. To let a pass be gifted, uncomment `giftProductId` and put a developer product of yours there.
 
 These are the only built-in entries. The table key is the stable name Scribe uses for ownership and one-time rewards. Do not rename a live pass key.
 
@@ -134,7 +134,7 @@ To make a pass giftable:
 
 ```luau
 VIP = {
-	id = 1954950943,
+	id = 1234567890,
 	kind = "VIP",
 	-- ...
 	giftProductId = 1234567890,
