@@ -575,7 +575,6 @@ Anything in curly braces is filled in for you: `{PlayerName}`, `{EndingName}`,
 | Section | What it controls |
 | :-- | :-- |
 | `tags.styles` | What each tag looks like: `text`, plus `color` for a flat tag or `colors` for a [gradient](./chat.md#gradients). |
-| `tags.nameColor` | Colours a player's name once a gradient tag has moved it into the message body. Optional. |
 | `tags.byUser` | Give a tag to one player by user ID. A VIP pass gives its own `chatTag` from `Config > GamePasses`. |
 | `tags.byGroup` | Give a tag to everyone in a Roblox group. |
 | `messages` | In-game win messages, their channel, and their fonts. |

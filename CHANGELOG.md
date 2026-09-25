@@ -168,6 +168,14 @@ that rebuilds the tower now waits at least half a second whatever
 `restartCooldown` says, and walking back into your own tower's portal counts as
 a restart rather than a reload with no limit.
 
+**A gradient chat tag no longer turns the player's name white.** A UIGradient
+colours the whole chat prefix, so the name was moved into the message to keep
+the fade off it, and took the message's colour there. A gradient tag is now
+coloured one character at a time, in front of the name like a flat tag, and
+the name keeps the colour the chat gives it. `tags.nameColor` in
+`Config > Chat` existed only for that; delete it if you set it.
+[Gradients](https://kiels.dev/Ascent/guide/chat#gradients)
+
 **A saved name spelled like one of Scribe's own no longer breaks.** Scribe
 answers `Count`, `Max`, `Default`, `Toggle` and two dozen other names with a
 method of its own, so `CustomData.get(player, "Count")` errored, and so would a

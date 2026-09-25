@@ -44,44 +44,26 @@ styles = {
 }
 ```
 
-Any number of stops, spread evenly, with the first at the start and the last
-at the end. Three stops put the middle colour exactly halfway.
+Any number of stops, spread evenly across the tag's characters: the first
+character is the first colour and the last character the last. Three stops put
+the middle colour on the middle character.
 
-This is Roblox's own `UIGradient`, applied to the chat window's prefix through
-[`OnChatWindowAdded`](https://create.roblox.com/docs/reference/engine/classes/TextChatService).
-Rich text has no gradient markup, so that built-in is the only way to fade chat
-text -- and being a true gradient, it is smooth rather than stepped.
+Only the tag is coloured. It sits in front of the player's name exactly like a
+flat tag, and the name keeps the colour the chat gives it. Rich text has no
+gradient markup, so each character gets a shade of its own: a short tag reads
+as a smooth fade, a long one in visible steps. Roblox's `UIGradient` would be
+smoother, but it colours the whole prefix, name included.
 
-Gradient tags are drawn by the chat window, so they appear there and not in
-bubble chat, which draws no prefix at all.
-
-A UIGradient covers a whole label, and the chat prefix normally holds the tag
-and the player's name together. So the kit does what Roblox's own example
-does: it makes the prefix the tag on its own and moves the name to the front
-of the message. The fade lands on the tag and nothing else.
-
-That leaves the name sitting in the message body, where it takes the message's
-colour rather than the one the chat gives a name. Set `nameColor` to give it
-one of your own:
-
-```luau
-tags = {
-	styles = { --[[ ... ]] },
-	nameColor = Color3.fromRGB(245, 205, 48),
-}
-```
-
-It applies only to players wearing a gradient tag; everyone else's name is
-untouched. Flat tags do not move the name at all.
+Tags appear in the chat window, not in bubble chat, which draws no prefix.
 
 `colors` wins when a tag has both, and a single entry in `colors` is just a
 flat tag -- one colour has nothing to fade to. A tag with neither is reported
 in the Output at startup and shows uncoloured.
 
-::: tip Markup inside a gradient tag
-Ordinary rich text in the tag's own `text`, like `<b>`, works fine. A **colour**
-does not: the gradient multiplies with it rather than replacing it, so you get
-neither. The startup check says so by name if you leave one in.
+::: tip Keep a gradient tag's text plain
+Its text is coloured a character at a time, so markup like `<b>` would be cut
+into pieces. It shows as written instead, and the startup check names the tag.
+A flat tag can hold any rich text.
 :::
 
 ### Hand them out
