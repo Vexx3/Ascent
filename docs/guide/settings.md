@@ -13,20 +13,21 @@ one, on purpose: a second copy on this page would drift
 
 ## Dying And Resetting
 
-Damage and the reset button are two different things here.
+What a death does depends on the mode and on the player's **Restart on Death**
+setting (`restartOnDeath`):
 
-- **Dying to damage** in All Jumps or Practice returns the player to their
-  last checkpoint, or to the tower's spawn if they have not placed one. It
-  never restarts the tower. Normal mode has no checkpoints, so a death there
-  ends the run.
-- **Resetting**, with Roblox's own Reset button, does the same -- unless
-  **Reset on Death** (`resetOnDeath`) is on, which restarts the tower. That
-  toggle is the only thing that restarts a tower by itself.
+- **Off**, the default: dying in Normal mode ends the run. In All Jumps and
+  Practice it returns the player to their last checkpoint, or to the tower's
+  spawn if they have not placed one.
+- **On**: any death in a tower starts it again from the bottom, in every mode,
+  and clears an All Jumps or Practice checkpoint. It happens at once, without
+  waiting for the respawn.
 
-A Humanoid cannot tell a reset from a killbrick, so the kit binds the reset
-button in `StarterPlayerScripts > Client > Towers > ResetButton` and carries
-out the reset on the server. Removing that script leaves the button doing
-nothing.
+Roblox's own Reset button is a death like any other and follows the same rule.
+The kit binds it in `StarterPlayerScripts > Client > Towers > ResetButton` so
+that the server does the killing: a reset done on the client cannot be revived,
+so the player would sit through the respawn first. Removing that script leaves
+the button doing nothing.
 
 ## FPS Cap
 
@@ -124,6 +125,13 @@ FPS, never the local player's. The topbar and spectator reports share one render
 counter. Reports continue once per second when rendering pauses; a missing report
 is shown as `FPS: --` after five seconds. These are client-reported display values,
 not trusted gameplay statistics.
+
+`SpectateFrame.PlayerFrame.SpectatorCount` shows how many players are spectating
+the one on the panel, whoever is reading included, and hides when nobody is.
+Spectating yourself shows how many are watching you. Each client tells the server
+whom it is watching, and the server keeps the count as a `SpectatorCount`
+attribute on the watched player. The label is optional; its wording is
+`spectator` and `spectators` in `Config > Messages > spectate`.
 
 The supplied EToH music manager follows the spectated player's music zone and
 reported track, with playback-position correction. Local volume and mute stay

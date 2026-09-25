@@ -43,7 +43,7 @@ one that waits or errors holds nothing up.
 | `towerWon` | `player, win` | A tower is beaten and saved, including each tower of a rush. |
 | `rushWon` | `player, rush` | The last tower of a rush is beaten. |
 | `towerLoaded` | `player, acronym, mode` | An attempt at a tower has loaded: entering it, restarting it, or reaching the next tower of a rush. |
-| `towerLeft` | `player, acronym` | A player leaves a tower without winning: the exit button, dying in Normal mode, or leaving the game. |
+| `towerLeft` | `player, acronym` | A player leaves a tower without winning: the exit button, dying in Normal mode with Restart on Death off, or leaving the game. |
 | `shopPurchased` | `player, itemId, price` | A ticket shop purchase is saved. |
 | `gamePassApplied` | `player, passName` | The kit applies what a game pass gives: joining with it, buying it, or being gifted it. `passName` is its key in `Config > GamePasses`. |
 | `ticketsAwarded` | `player, amount, source` | Tickets are added. `source` is `"Tower"` or `"GamePass"`. |
