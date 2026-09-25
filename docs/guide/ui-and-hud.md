@@ -27,6 +27,32 @@ When `hideTimer` is enabled, `TimerPanel` and its `UIStroke` become transparent 
 
 The server sends timer corrections through `UpdateTowerTimer`; the client advances the displayed timer locally between syncs.
 
+## Hide UI
+
+**Hide UI**, in the Visual settings, is a focus mode for climbing. The parts
+of the HUD a climb does not need fade out, and fade back in while the pointer
+is over them:
+
+- `MainMenu > ButtonsHolder`: the Menu and Spectate buttons.
+- `MainMenu > PlaceVersionLabel`.
+- The music system's `LegacyMusicGui > Button`.
+
+A faded button still works where it always was. A phone has no pointer, so a
+tap on a faded button presses it and shows it for three seconds, and a
+controller shows whatever it has selected. Everything shows while the player
+is arranging controls in Edit UI Layout. Switching the setting off fades it
+all back in exactly as authored.
+
+The timer, health bar, keys, boost timers, backpack and touch controls never
+fade. The player needs them while climbing.
+
+**To fade a HUD element of your own**, give it the CollectionService tag
+`HideUI` in Studio (**Properties → Tags**). Tag the frame that holds it rather
+than each part: everything inside a tagged element fades with it.
+
+The settings row is `SettingsMenu > VisualFrame > HideUI`, a copy of the
+other toggles there. A menu without it simply does not offer the setting.
+
 ## Main Menu
 
 The main menu handles:

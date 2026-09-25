@@ -31,9 +31,13 @@ and then:
    `allJumpsTeleport = "Q"`**, unless you already gave them keys of your own.
    The old defaults shared keys with Corner Flip and Quick Restart (see
    **Fixed**), and the Output says so on every start until they differ.
-6. **Install the new Tower Setup plugin.** Its Setup tab now says whether it
+6. **Copy `SettingsMenu > VisualFrame > HideUI` from the new place into your
+   menu** for the new Hide UI setting, and add `hideUI = false` to
+   `Config > Settings` if you want to choose its default. Without the row the
+   setting is not offered; without the line it starts off.
+7. **Install the new Tower Setup plugin.** Its Setup tab now says whether it
    matches the kit the place runs.
-7. Publish every place, then check the Output of one live server: anything
+8. Publish every place, then check the Output of one live server: anything
    Config gets wrong is now reported there when it starts.
 
 Nothing saved changes, and no player needs migrating. The save gains an empty
@@ -265,6 +269,15 @@ strings and flags of your own with each player, and a
 `ServerScriptService > CustomCommands` folder adds admin commands. All three
 live outside the kit's folders, so updating the kit leaves them alone.
 [Hooking Into the Kit](https://kiels.dev/Ascent/guide/hooks)
+
+**Hide UI, a focus mode for climbing.** A Visual setting that fades the Menu
+and Spectate buttons, the music button and the place version out of the way,
+and back in while the pointer is over one, so the screen is left to the tower.
+A faded button still works: a tap on a phone presses it and shows it for a few
+seconds. Switching the setting off puts everything back as authored. The timer,
+health, keys, boosts and touch controls never fade. Tag an element of your own
+`HideUI` in Studio and it fades with them.
+[UI & HUD](https://kiels.dev/Ascent/guide/ui-and-hud#hide-ui)
 
 **Config is checked when the server starts.** A tower naming an Area that does
 not exist, an unlock rule naming a tower or difficulty Config does not have, a
