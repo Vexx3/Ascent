@@ -521,7 +521,7 @@ affects people who have never played.
 | Field | Type | Default |
 | :-- | :-- | :-- |
 | `quickResetDelay` | `number` (0 to off) | `1` |
-| `resetOnDeath` | `boolean` | `false` |
+| `restartOnDeath` | `boolean` | `false` |
 | `highFPSPhysicsFix` | `boolean` | `false` |
 | `fpsCap` | `"Off"` or a rate from `fpsCaps`, as text | `"Off"` |
 | `alignmentButtons` | `boolean` | `false` |

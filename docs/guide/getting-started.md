@@ -120,7 +120,7 @@ Press **Play** and check the whole loop:
 - you spawn, enter the tower, and the timer starts;
 - touching the winpad after passing every checkpoint wins the tower and awards tickets;
 - skipping a checkpoint, or reaching the top faster than the tower's minimum time, does not — the server kicks you for it;
-- dying in Normal mode ends the run, and in Practice or All Jumps puts you back at the position you last saved, or at the tower's spawn;
+- dying in Normal mode ends the run, and in Practice or All Jumps puts you back at the position you last saved, or at the tower's spawn; with **Restart on Death** on, any death starts the tower again instead;
 - Practice and All Jumps modes work; and
 - rejoining keeps your completion.
 

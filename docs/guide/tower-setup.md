@@ -80,7 +80,8 @@ be able to get past one without going through it. `CanCollide` off.
 
 Two modes change what dying does. In **Practice** and **All Jumps**, dying puts
 the player back at the position they last saved with the Place key, or at the
-tower's spawn — not at one of these checkpoints. The anti-cheat does not change:
+tower's spawn — not at one of these checkpoints. A player with **Restart on
+Death** on starts the tower again instead, in every mode. The anti-cheat does not change:
 an All Jumps win is checked exactly like a Normal one, and Practice never
 completes a tower at all.
 

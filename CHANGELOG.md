@@ -35,13 +35,21 @@ and then:
    menu** for the new Hide UI setting, and add `hideUI = false` to
    `Config > Settings` if you want to choose its default. Without the row the
    setting is not offered; without the line it starts off.
-7. **Install the new Tower Setup plugin.** Its Setup tab now says whether it
+7. **Rename `resetOnDeath` to `restartOnDeath` in `Config > Settings`**, and the
+   `SettingsMenu > GameplayFrame > ResetonDeath` row to `RestartonDeath` with its
+   label. The Output names the Config line until it is renamed; the row still
+   works under its old name. See **Changed** for what the setting does now.
+8. **Install the new Tower Setup plugin.** Its Setup tab now says whether it
    matches the kit the place runs.
-8. Publish every place, then check the Output of one live server: anything
-   Config gets wrong is now reported there when it starts.
+9. **Publish every place at the same time, then shut down the old servers.**
+   This release runs Scribe 2.5.0, whose save has a new shape, and a server
+   still on the old version refuses a player whose save a new one has written.
+   Then check the Output of one live server: anything Config gets wrong is now
+   reported there when it starts.
 
-Nothing saved changes, and no player needs migrating. The save gains an empty
-`custom` table for your own values, which Scribe fills in on load.
+Nothing a player has saved is lost. The save gains an empty `custom` table for
+your own values, which Scribe fills in on load, and each player's Reset on
+Death choice carries across to Restart on Death the first time they join.
 
 ### Security
 
@@ -159,6 +167,13 @@ was announcing.
 that rebuilds the tower now waits at least half a second whatever
 `restartCooldown` says, and walking back into your own tower's portal counts as
 a restart rather than a reload with no limit.
+
+**A saved name spelled like one of Scribe's own no longer breaks.** Scribe
+answers `Count`, `Max`, `Default`, `Toggle` and two dozen other names with a
+method of its own, so `CustomData.get(player, "Count")` errored, and so would a
+custom setting, an emote or a tower acronym called one of them. Saved names are
+now looked up with Scribe 2.5's `Child`, which reaches the entry whatever it is
+called.
 
 **A `%` in a message no longer breaks it.** Win, kick, shutdown, anti-cheat
 and shop-rotation messages filled their placeholders with `gsub`, which reads
@@ -279,6 +294,13 @@ health, keys, boosts and touch controls never fade. Tag an element of your own
 `HideUI` in Studio and it fades with them.
 [UI & HUD](https://kiels.dev/Ascent/guide/ui-and-hud#hide-ui)
 
+**The spectate panel says how many are watching.**
+`SpectateFrame > PlayerFrame > SpectatorCount` shows how many players are
+spectating the one on the panel, you included, and hides when nobody is.
+Spectate yourself and it says how many are watching you. The label is optional,
+so copy it across from the new place to have it; a panel without it works as
+before.
+
 **Config is checked when the server starts.** A tower naming an Area that does
 not exist, an unlock rule naming a tower or difficulty Config does not have, a
 renamed difficulty that now pays no tickets, overlapping difficulty bands, a
@@ -381,6 +403,18 @@ that otherwise covered them all.
 [Seeing checkpoints while you build](https://kiels.dev/Ascent/guide/tower-setup-plugin#seeing-checkpoints-while-you-build)
 
 ### Changed
+
+**Reset on Death is Restart on Death, and it covers every death.** It used to
+restart the tower only for Roblox's Reset button; a killbrick still ended a
+Normal run or sent All Jumps and Practice to their checkpoint. On, any death or
+reset in a tower now starts it again from the bottom, in every mode, straight
+away rather than after the respawn. Off, nothing changes. The saved setting,
+the Config field and the menu row are renamed to match; each player's choice
+carries across. [Dying And Resetting](https://kiels.dev/Ascent/guide/settings#dying-and-resetting)
+
+**Scribe 2.5.0.** Server and client must be published together, and every
+place at once; see **Updating**. A gift refused because the buyer already has
+too many on the way now says so, instead of "couldn't send that gift".
 
 **The guide and the issue tracker have a public home.**
 [github.com/Vexx3/Ascent](https://github.com/Vexx3/Ascent) holds the guide
