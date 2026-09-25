@@ -27,9 +27,13 @@ and then:
    releases shipped the kit author's own account in both. Take it out if it is
    still there. Whoever owns the experience -- you, or the owner of the group it
    belongs to -- has the console without being listed.
-5. **Install the new Tower Setup plugin.** Its Setup tab now says whether it
+5. **In `Config > Settings.keybinds`, set `allJumpsPlace = "E"` and
+   `allJumpsTeleport = "Q"`**, unless you already gave them keys of your own.
+   The old defaults shared keys with Corner Flip and Quick Restart (see
+   **Fixed**), and the Output says so on every start until they differ.
+6. **Install the new Tower Setup plugin.** Its Setup tab now says whether it
    matches the kit the place runs.
-6. Publish every place, then check the Output of one live server: anything
+7. Publish every place, then check the Output of one live server: anything
    Config gets wrong is now reported there when it starts.
 
 Nothing saved changes, and no player needs migrating. The save gains an empty
@@ -151,6 +155,8 @@ was announcing.
 that rebuilds the tower now waits at least half a second whatever
 `restartCooldown` says, and walking back into your own tower's portal counts as
 a restart rather than a reload with no limit.
+
+**A `%` in a message no longer breaks it.** Win, kick, shutdown, anti-cheat
 and shop-rotation messages filled their placeholders with `gsub`, which reads
 `%` in the inserted text as a pattern escape. An ending called "100% Ending", a
 boost named with a percent sign, or a shutdown reason like "50% off sale" made
@@ -170,6 +176,22 @@ model errored on startup. Both look everywhere now.
 
 **Restarting a tower rush reports a load that failed.** It said the restart
 worked whether or not the rush's first tower loaded.
+
+**On a phone, the D-pad setting could hold up the rest.** Switching the touch
+control asks Roblox's control module to choose again, and on a device whose
+touch controls were not up yet that call waited for them -- and so did every
+setting applied after it, which on a phone was most of the menu. The switch now
+runs beside the other settings instead of in front of them.
+
+**All Jumps' on-screen buttons did nothing on a phone** when the menu arrived
+after All Jumps started, which on a live server is often. They were looked for
+once; they are waited for now.
+
+**All Jumps' default keys each did two things.** Teleport was `R`, which is
+also Quick Restart, and Place was `F`, which is also Corner Flip, so a press
+did both. They are `Q` and `E` now. A player who has already played keeps the
+keys saved with them and can change them in Settings; your own Config needs the
+edit in **Updating**.
 
 **A tower acronym with a symbol in it no longer breaks Config.** Acronyms
 like `ToH:AC` are not names Luau accepts as a table key, and the Tower Setup
@@ -248,8 +270,9 @@ live outside the kit's folders, so updating the kit leaves them alone.
 not exist, an unlock rule naming a tower or difficulty Config does not have, a
 renamed difficulty that now pays no tickets, overlapping difficulty bands, a
 game pass with no ID, the same key for live and Studio saves, and place IDs
-that are not places in your experience are each reported in one block,
-naming the line to open.
+that are not places in your experience are each reported, naming the line to
+open. Place IDs come a moment later in a block of their own, since checking
+them asks Roblox.
 
 **The rest of what players read moved into `Config > Messages`,** so it can
 be reworded or translated in one place. The shop, cosmetics, Completions,

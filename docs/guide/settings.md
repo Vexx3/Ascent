@@ -70,8 +70,8 @@ Saved keybinds live under `settings.keybinds`.
 | `quickRestart` | `R` | Quick restart key. |
 | `cornerFlipKeyboard` | `F` | Keyboard corner flip bind. |
 | `cornerFlipController` | `ButtonX` | Controller corner flip bind. |
-| `allJumpsPlace` | `F` | Place All Jumps checkpoint. |
-| `allJumpsTeleport` | `R` | Teleport to All Jumps checkpoint. |
+| `allJumpsPlace` | `E` | Place All Jumps checkpoint. |
+| `allJumpsTeleport` | `Q` | Teleport to All Jumps checkpoint. |
 | `allJumpsRemove` | `V` | Remove All Jumps checkpoint. |
 | `fpsIncrease` | `Equals` | Step the FPS Cap up one option. |
 | `fpsDecrease` | `Minus` | Step the FPS Cap down one option. |

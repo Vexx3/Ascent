@@ -64,8 +64,9 @@ in `Config > Project` to the number it gives. If `Config` is a package, publish
 it once and every other place picks the change up.
 
 When a server starts, it compares Config with what the kit expects and prints
-anything that does not fit in one block headed **Ascent Config**. After an
-update that block is the list of what is left to do.
+anything that does not fit under **Ascent Config**, with place IDs in a second
+block a moment later. After an update those blocks are the list of what is
+left to do.
 
 ## Menus
 

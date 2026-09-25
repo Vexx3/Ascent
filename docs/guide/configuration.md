@@ -29,8 +29,9 @@ to change kit code to make a normal fangame.
 Anything that does not add up — a tower naming an Area that does not exist, an
 unlock rule naming a tower Config does not have, a difficulty renamed in one
 place and not another, a game pass with no ID, a place ID that is not in your
-experience — is listed in the Output in one block headed **Ascent Config**,
-naming the line to open. Nothing there stops the game.
+experience — is listed in the Output under **Ascent Config**, naming the line
+to open. Place IDs come a moment later in a block of their own, since checking
+them asks Roblox. Nothing there stops the game.
 :::
 
 ::: warning Names that are saved forever

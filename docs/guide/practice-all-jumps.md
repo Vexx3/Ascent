@@ -75,9 +75,9 @@ Default keybinds:
 
 | Action | Default Key |
 | :-- | :-- |
-| Place checkpoint | `F` |
+| Place checkpoint | `E` |
 | Remove checkpoint | `V` |
-| Teleport to checkpoint | `R` |
+| Teleport to checkpoint | `Q` |
 
 When All Jumps mode is enabled:
 
