@@ -157,7 +157,7 @@ shows it again.
 
 | Field | Type | Default | What it does |
 | :-- | :-- | :-- | :-- |
-| `dataStoreKey` | `string` | `"BETA_RC_1_SCRIBE"` | Where progress is stored in a published game. |
+| `dataStoreKey` | `string` | `"BETA_RC_3_SCRIBE"` | Where progress is stored in a published game. |
 | `dataStoreKeyStudio` | `string` | `"STUDIO_KEY_1_SCRIBE"` | A separate store used only while testing in Studio. |
 | `dataStoreStudioMode` | `"Mock" \| "Live" \| "NoSave"` | `"Mock"` | `Mock` fakes saving and forgets on stop. `Live` really writes to the Studio key. `NoSave` reads the real save under the Studio key and never writes it. |
 
@@ -530,6 +530,7 @@ affects people who have never played.
 | `towerLoadingBehavior` | `"Load All" \| "Unload Towers" \| "Unload All"` | `"Unload Towers"` |
 | `fpsDisplay` | `boolean` | `false` |
 | `hideTimer` | `boolean` | `false` |
+| `hideUI` | `boolean` | `false` |
 | `hideDisabledItems` | `boolean` | `false` |
 | `invisiblePlayers` | `"Off" \| "Not Friended" \| "Everyone Else" \| "Near" \| "You"` | `"Off"` |
 | `mobileDPad` | `"Off" \| "Mode 1" \| "Mode 2"` | `"Off"` |
