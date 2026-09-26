@@ -648,7 +648,7 @@ name corrected afterwards would otherwise leave those profiles broken -- and
 an untranslated completion is worse than cosmetic: beating that tower again
 records its acronym, which the set does not have, so the completion counts
 twice and the tower score rises for a tower already paid for.
-[What comes across](https://kiels.dev/Ascent/guide/player-data#what-comes-across)
+[What comes across](https://kiels.dev/Ascent/guide/migrating#what-comes-across)
 
 **Looking up another player in Completions no longer hangs on "Loading".**
 The reply described each time as a table while saves hold a number, so any

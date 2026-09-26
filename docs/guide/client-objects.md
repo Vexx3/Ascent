@@ -70,8 +70,3 @@ The player setting `towerLoadingBehavior` controls local tower visibility:
 | `Unload All` | Hides inactive tower `Obby` folders, and `Workspace > Lobby` while inside a tower. |
 
 This is client-side only and does not affect server validation.
-
-## See Also
-
-- [Tower Setup](./tower-setup.md)
-- [Extending the Kit](./extending-gameplay.md)

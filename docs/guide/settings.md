@@ -1,161 +1,92 @@
 # Settings
 
-Player settings are saved inside each player's account data. User-editable defaults live in `ReplicatedStorage > Shared > Config > Settings`; the saved shape lives in `ReplicatedStorage > Shared > Accounts > Template`.
-
-The client settings menu sends updates to the server, and `ServerScriptService > Server > Settings > SettingsService` accepts only supported values before saving.
+Players change their settings in the in-game Settings menu, and their choices are saved. `Config > Settings` sets what a **new** player starts with. The server checks every value before saving it.
 
 ## Saved Settings
 
-Every field, its type and its default are in the
-[Configuration Reference](./configuration.md#settings). That table is the only
-one, on purpose: a second copy on this page would drift
--- two real settings were missing from it.
+| Setting | Tab | Values (default first) | What it does |
+| :-- | :-- | :-- | :-- |
+| `quickResetDelay` | Gameplay | `1` seconds, `0`–`3`, then Off | How long to hold the restart key. |
+| `restartOnDeath` | Gameplay | `false` | See [Dying And Resetting](#dying-and-resetting). |
+| `highFPSPhysicsFix` | Gameplay | `false` | Steadier physics at very high frame rates. |
+| `fpsCap` | Gameplay | `"Off"`, or a rate from `fpsCaps` | See [FPS Cap](#fps-cap). |
+| `towerLoadingBehavior` | Gameplay | `"Unload Towers"`, `"Load All"`, `"Unload All"` | Which towers stay loaded. Unloading makes the game lighter. |
+| `invisiblePlayers` | Gameplay | `"Off"`, `"Not Friended"`, `"Everyone Else"`, `"Near"`, `"You"` | Hides other players. |
+| `keyDisplayLimit` | Gameplay | `5`, `0`–`20` | How many recent key presses the key display shows. `0` hides it. |
+| `alignmentButtons` | Gameplay | `false` | Camera alignment arrows. Touch devices only. |
+| `emoteButtons` | Gameplay | `false` | The on-screen emote picker. The emote keys work either way. |
+| `fpsDisplay` | Visual | `false` | The FPS counter in the topbar. |
+| `hideTimer` | Visual | `false` | Hides the run timer. |
+| `hideUI` | Visual | `false` | Fades the menu buttons while climbing. See [Hide UI](./ui-and-hud.md#hide-ui). |
+| `hideDisabledItems` | Visual | `false` | Hides switched-off backpack items instead of greying them. |
+| `hideCosmetics` | Visual | `"Off"`, `"Everyone Else"`, `"Yours"`, `"All"` | Hides trails and auras. |
+| `hideBubbleChat` | Visual | `false` | Hides chat bubbles. |
+| `transparentAccessories` | Visual | `false` | Fades your own hats and hair when the camera is close. |
+| `musicVolume` | Audio | `0.5`, `0`–`2` | Music volume. |
+| `audioVisualizer` | Audio | `"Off"`, `"Low"`, `"Medium"`, `"High"`, `"OMG Why"`, `"AAAAA"` | Camera shake with the music. |
+| `alignmentDot` | Misc | `false` | Shows the alignment dot, the `dot` frame in the menu's ScreenGui. |
+| `mobileDPad` | Controls | `"Off"`, `"Mode 1"`, `"Mode 2"` | An on-screen D-pad. |
+| `checkpointCamera` | Checkpoint panel | `true` | Going to a checkpoint also turns the camera back. See [Practice & All Jumps](./practice-all-jumps.md#the-checkpoint-panel). |
+| `checkpointTransparency` | Checkpoint panel | `0.5`, `0`–`1` | How see-through checkpoint markers are. |
+
+To add a setting of your own, see [Adding A Saved Setting](./custom-settings.md). It takes one entry in `Config > CustomSettings`.
 
 ## Dying And Resetting
 
-What a death does depends on the mode and on the player's **Restart on Death**
-setting (`restartOnDeath`):
+What a death does depends on **Restart on Death** (`restartOnDeath`):
 
-- **Off**, the default: dying in Normal mode ends the run. In All Jumps and
-  Practice it returns the player to their last checkpoint, or to the tower's
-  spawn if they have not placed one.
-- **On**: any death in a tower starts it again from the bottom, in every mode,
-  and clears an All Jumps or Practice checkpoint. It happens at once, without
-  waiting for the respawn.
+- **Off** (default): dying in Normal mode ends the run. In All Jumps and Practice it returns the player to their last checkpoint, or the tower's spawn.
+- **On**: any death in a tower restarts it from the bottom, in every mode, straight away.
 
-Roblox's own Reset button is a death like any other and follows the same rule.
-The kit binds it in `StarterPlayerScripts > Client > Towers > ResetButton` so
-that the server does the killing: a reset done on the client cannot be revived,
-so the player would sit through the respawn first. Removing that script leaves
-the button doing nothing.
+Roblox's Reset button counts as a death. It is handled by `StarterPlayerScripts > Client > Towers > ResetButton`; don't remove it, or the button stops working.
 
 ## FPS Cap
 
-**Settings > Gameplay > FPS Cap** holds the client to a frame rate, and the
-**FPS Cap Increase** and **FPS Cap Decrease** keys step through the same
-options without opening the menu. Increase stops at the fastest option and
-Decrease stops at Off -- neither wraps, so a press can never uncap somebody
-who meant the opposite.
+**Settings > Gameplay > FPS Cap** limits the frame rate. The **FPS Cap Increase** and **Decrease** keys change it without opening the menu.
 
-The options are yours. `fpsCaps` in `Config > Project` is the list, in the
-order players cycle through it:
+The options are `fpsCaps` in `Config > Project`:
 
 ```luau
 fpsCaps = { 60, 75, 90, 144, 165, 240 },
 ```
 
-**Off is not in that list and cannot be removed** -- the kit puts it first so
-a player is never left unable to turn the cap off, and so Decrease has an end
-to stop at. A value that is not a whole positive frame rate is dropped with a
-warning naming it, rather than becoming an option that caps nothing.
+**Off** is always the first option and can't be removed.
 
-A player saved on a rate you later remove falls back to the Config default.
-
-With **Settings > Visual > FPS Display** on, the counter in the topbar has the cap under the frame rate:
+With **FPS Display** on, the topbar counter shows the cap under the frame rate:
 
 ```
 FPS: 58
 CAP: 60
 ```
 
-It reads `CAP: OFF` while there is none. Both lines are `settingsMenu.fps` and `settingsMenu.fpsCap` in `Config > Messages`.
+It reads `CAP: OFF` when there is no cap.
 
 ::: warning Capping costs CPU
-Roblox gives experience code no framerate cap. The only way to hold a frame
-back is to hold the render thread, and that has to spin rather than wait --
-yielding lets the engine draw the frame anyway. Capping 240 down to 60 means
-burning roughly twelve of every seventeen milliseconds in a busy loop.
-
-So **Off is the default, and Off disconnects the loop entirely**: a player who
-never turns the cap on pays nothing for the feature existing. Offer it, but do
-not default a fangame to a cap.
+Roblox gives games no real frame cap, so the kit holds frames back by keeping the CPU busy. Leave the default at Off; Off costs nothing.
 :::
 
 ## Keybinds
 
-Saved keybinds live under `settings.keybinds`.
-
-| Key | Default | Purpose |
+| Key | Default | Does |
 | :-- | :-- | :-- |
-| `quickRestart` | `R` | Quick restart key. |
-| `cornerFlipKeyboard` | `F` | Keyboard corner flip bind. |
-| `cornerFlipController` | `ButtonX` | Controller corner flip bind. |
-| `allJumpsPlace` | `E` | Place All Jumps checkpoint. |
-| `allJumpsTeleport` | `Q` | Teleport to All Jumps checkpoint. |
-| `allJumpsRemove` | `V` | Remove All Jumps checkpoint. |
-| `fpsIncrease` | `Equals` | Step the FPS Cap up one option. |
-| `fpsDecrease` | `Minus` | Step the FPS Cap down one option. |
-| `emotes` | `dance2` = `T`, `laugh` = `Y`, `cheer` = `U` | One key per emote, each playing the emote it is named after. |
+| `quickRestart` | `R` | Restart the tower. |
+| `cornerFlipKeyboard` | `F` | Corner flip. |
+| `cornerFlipController` | `ButtonX` | Corner flip on a controller. |
+| `allJumpsPlace` | `E` | Place an All Jumps checkpoint. |
+| `allJumpsTeleport` | `Q` | Go to it. |
+| `allJumpsRemove` | `V` | Remove it. |
+| `fpsIncrease` | `Equals` | Raise the FPS Cap. |
+| `fpsDecrease` | `Minus` | Lower the FPS Cap. |
+| `emotes` | `dance2` = `T`, `laugh` = `Y`, `cheer` = `U` | One key per emote. |
 
-QuickRestart stays available in All Jumps and Practice. Its default overlaps the
-All Jumps Teleport key; players can change either binding. Saved custom bindings are
-preserved.
-
-These eight are the kit's own and are fixed. **To add a keybind of your own**,
-declare it in `Config > CustomSettings` — one line, and the row and the saving
-come with it. See [Adding A Saved Setting](./custom-settings.md).
+Give every action its own key; the Output warns about two sharing one. To add a keybind of your own, see [Adding A Saved Setting](./custom-settings.md).
 
 ### Emote keys
 
-`keybinds.emotes` holds one key per emote, named after the emote it plays, and
-every name in it has to appear in `emotes` in `Config > Project`. Pressing a
-key plays that emote and no other.
+Each emote in `keybinds.emotes` must also be in `emotes` in `Config > Project`, and needs an `InputAction` named `Emote_<name>` in `ReplicatedStorage > AscentInputs > Gameplay`. Copy an existing one.
 
-To let players rebind one, add a row to `SettingsMenu > ControlsFrame` named
-after the emote with the first letter capitalised -- `Dance2` for `dance2` --
-holding a `SettingsName` label and a `KeybindButton`, the same as any other
-keybind row. An emote with no row keeps whatever key Config gave it; an emote
-with no key in Config has none until a player sets one.
-
-Each emote also needs an `InputAction` named `Emote_<name>` — `Emote_dance2` for
-`dance2` — under `ReplicatedStorage > AscentInputs > Gameplay`, with its
-`Keyboard` child kept. Copy an existing one. The kit looks the action up rather
-than creating it, and an emote in Config with no action says so by name in the
-Output.
-
-Only the keys a player has actually changed are saved; the rest fall back to
-Config.
-
-The emote picker and the camera alignment arrows are two separate frames under
-`MainMenu`, `EmoteFrame` and `AlignmentFrame`, each with its own toggle in
-Settings — **Emote Buttons** and **Alignment Buttons**.
-
-Alignment Buttons only appears on a touch device. The arrows turn the camera to
-the next 45-degree heading, which a mouse can already do by dragging, so the row
-is hidden where it has nothing to offer.
-
-The Dance key works whether or not the emote picker is on screen: the toggle
-shows the buttons, it does not switch emotes off.
+To let players rebind it, add a row to `SettingsMenu > ControlsFrame` named after the emote with a capital first letter (`Dance2`), with a `SettingsName` label and a `KeybindButton`, like the other keybind rows.
 
 ## Spectating
 
-`SpectateFrame.PlayerFrame.PlayerFPS` shows the selected other player's reported
-FPS, never the local player's. The topbar and spectator reports share one render
-counter. Reports continue once per second when rendering pauses; a missing report
-is shown as `FPS: --` after five seconds. These are client-reported display values,
-not trusted gameplay statistics.
-
-`SpectateFrame.PlayerFrame.SpectatorCount` shows how many players are spectating
-the one on the panel, whoever is reading included, and hides when nobody is.
-Spectating yourself shows how many are watching you. Each client tells the server
-whom it is watching, and the server keeps the count as a `SpectatorCount`
-attribute on the watched player. The label is optional; its wording is
-`spectator` and `spectators` in `Config > Messages > spectate`.
-
-The supplied EToH music manager follows the spectated player's music zone and
-reported track, with playback-position correction. Local volume and mute stay
-unchanged. The server only accepts Sound references from the existing music
-folders and rate-limits reports. Stopping spectating restores local zone selection.
-
-## Adding A Setting
-
-Follow [Adding A Saved Setting](./custom-settings.md). A setting of your own is
-one declaration in `Config > CustomSettings`: the row is copied from the menu's
-templates, and the saving and the server's check come with it, so it needs no
-network message, datastore or remote event. The page's example adds a **Hide
-Health Bar** toggle and the script that acts on it.
-
-## See Also
-
-- [Configuration Reference: Settings](./configuration.md#settings)
-- [UI & HUD](./ui-and-hud.md)
+The spectate panel's `PlayerFPS` shows the watched player's frame rate, or `FPS: --` if it hasn't arrived. `SpectatorCount` shows how many are watching that player, and hides when nobody is; it's optional. The music follows the watched player's music zone.

@@ -101,9 +101,3 @@ Anything edited inside `Server`, `Client` or `Shared` (other than `Config`) is
 overwritten by an update. Move it into a Script of your own using
 [Hooking Into the Kit](./hooks.md) first, and it survives every update after.
 :::
-
-## See Also
-
-- [Changelog](../changelog.md)
-- [Hooking Into the Kit](./hooks.md)
-- [Configuration Reference](./configuration.md)

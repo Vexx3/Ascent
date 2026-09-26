@@ -57,8 +57,3 @@ A `BasePart` under `Workspace > Portals` holding a `StringValue` named
 - The player is sent to `winroomMarker` after the final tower.
 
 `Config > Project > restartResetsTowerRush` decides whether Restart returns to the first tower or reloads the current tower.
-
-## See Also
-
-- [Configuration Reference: Towers](./configuration.md#towers)
-- [Tower Setup](./tower-setup.md)

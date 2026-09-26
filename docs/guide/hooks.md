@@ -176,10 +176,3 @@ Cmdr treats any ModuleScript with `Server` anywhere in its name as the half that
 runs a command. A command called `ServerTime` is taken for one and never
 registers; name the file something else and keep `Name = "server-time"` inside.
 :::
-
-## See Also
-
-- [Updating Ascent](./updating.md)
-- [API Reference](./api.md)
-- [Player Data](./player-data.md)
-- [Commands](./commands.md)

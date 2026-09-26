@@ -69,9 +69,3 @@ Build them in Studio, not from a script.
 `LobbyTP` is the one thing here that errors rather than warns: if `Markers` has
 no `SpawnLocation` BasePart, startup stops, because a lobby teleporter with
 nowhere to go would silently strand players.
-
-## See Also
-
-- [Tower Setup](./tower-setup.md)
-- [Tower Rushes](./tower-rushes.md)
-- [Winpads & Endings](./winpads-endings.md)

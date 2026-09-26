@@ -1,40 +1,24 @@
 # API Reference
 
-Everything here is already wired up inside the place. You only need this page if
-you are writing your own scripts on top of the kit.
+For writing your own scripts on top of the kit. Most changes belong in `Config` instead.
 
-::: tip Config first
-Most changes belong in `ReplicatedStorage > Shared > Config`, not in code. Reach
-for this page when a config value genuinely cannot express what you want.
+::: tip Build on the stable part
+[Hooking Into the Kit](./hooks.md) (`Server > Events`, `Client > Events`, `Server > CustomData`, the `CustomCommands` folder) keeps working across 1.x updates. Everything else on this page is the kit's own code: useful to call, but a release may change it, and the [changelog](../changelog.md) lists any change under **Breaking**.
 :::
-
-## Stable and not
-
-[Hooking Into the Kit](./hooks.md) is the stable part: `Server > Events`,
-`Client > Events`, `Server > CustomData` and the `CustomCommands` folder keep
-their names and what they pass for every 1.x release, and a Script built on them
-survives [updating](./updating.md). Start there.
-
-Everything else on this page is the kit's own code. It is documented because
-it is useful to call, but a release may change it, and each change is listed
-under **Breaking** in the [changelog](../changelog.md).
 
 ## Where the code lives
 
-The file path *is* the Studio path — nothing is renamed on the way in, so an
-error in the Output window names the file to open.
+The file path is the Studio path, so an error in the Output names the file to open.
 
-| Tree | Runs on | Studio location | Holds |
-| :-- | :-- | :-- | :-- |
-| `Server` | Server | `ServerScriptService > Server` | `Events`, `CustomData`, `Towers/TowerRegistry`, `Accounts/Progress`, the Cosmetics services, `Shop/PermanentTools`, `Announcements/AnnouncementsService`, `Announcements/Webhook`, `Shutdown/ShutdownService`, `Commands/Catalog` |
-| `Shared` | Both | `ReplicatedStorage > Shared` | `Config/*`, `KitVersion`, `Accounts/AccountData`, `Towers/Difficulty`, `Towers/TowerTypes`, `PlayerAttributes`, `Commands/Authorization`, `ConfigTypes` |
-| `Client` | Client | `StarterPlayer > StarterPlayerScripts > Client` | `Events`, `Towers/RunController`, `Towers/Hud`, `Menu/MenuController`, Shop, Cosmetics, Settings, Teleport, `ClientObjects`, the Commands controller |
+| Tree | Runs on | Studio location |
+| :-- | :-- | :-- |
+| `Server` | Server | `ServerScriptService > Server` |
+| `Shared` | Both | `ReplicatedStorage > Shared` |
+| `Client` | Client | `StarterPlayer > StarterPlayerScripts > Client` |
 
 ## Saved data
 
-`ReplicatedStorage > Shared > Accounts > AccountData` returns the kit's
-[Scribe](https://scribe.ericplane.dev/) bundle. It is the only datastore wrapper
-in the kit — **do not add another beside it.**
+`Shared > Accounts > AccountData` is the kit's [Scribe](https://scribe.ericplane.dev/) bundle. **Don't add another datastore wrapper beside it.**
 
 ```luau
 local AccountData = require(ReplicatedStorage.Shared.Accounts.AccountData)
@@ -43,257 +27,133 @@ local Data = AccountData.Server
 
 | Call | Purpose |
 | :-- | :-- |
-| `Data.GetState(player)` | `"Ready"` when the profile has loaded. Check before touching anything else. |
-| `Data.WaitForData(player)` | Yields until the profile is ready. |
-| `AccountData.waitForDataAsync(player)` | The kit's own wait, and the one to use on join: if Scribe's wait runs out while the profile is still loading, it waits once more rather than giving up on a load that is merely slow. |
-| `Data.Get(player)` | The accessor tree. `Data.Get(player).tickets.Get()` reads; `.Set(n)` writes. |
-| `Data.Transaction(player, fn)` | Several writes that must land together, or not at all. |
-| `Data.Purchase(...)` | A charge with an idempotency key, so a doubled request bills once. |
-| `Data.OwnsAsync(player, passName)` | Game-pass ownership. Yields: checked live until the pass is owned, cached after. |
-| `Data.Flush(player)` | Saves now and yields until confirmed. `false` means *not confirmed yet*, not failed -- the save may still land, so never grant something again because of it. |
+| `Data.GetState(player)` | `"Ready"` once the save has loaded. |
+| `AccountData.waitForDataAsync(player)` | Waits for the save, including a slow load. Use it on join. |
+| `Data.Get(player)` | The save. `Data.Get(player).tickets.Get()` reads; `.Set(n)` writes. |
+| `Data.Transaction(player, fn)` | Several writes that land together or not at all. |
+| `Data.Purchase(...)` | A charge that bills once even if requested twice. |
+| `Data.OwnsAsync(player, passName)` | Game pass ownership. |
+| `Data.Flush(player)` | Saves now. `false` means not confirmed *yet*, not failed. |
 
-On the client, observe the **field** you read rather than the root:
+On the client, observe the field you read:
 
 ```luau
-local Data = AccountData.Client
-Data.tickets.Observe(function(amount)
-    label.Text = tostring(amount)
+AccountData.Client.tickets.Observe(function(amount)
+	label.Text = tostring(amount)
 end)
 ```
 
-::: warning Robux prices
-Use `Data.GetProductInfo`, `Data.GetPrice` and `Data.ObserveProductInfo` to show
-a price. They answer what *this* player is charged after regional pricing;
-`MarketplaceService:GetProductInfoAsync` answers the base catalogue price, which
-is not always the same number.
-:::
-
-See [Player Data](./player-data.md) for the full saved shape.
+Show Robux prices with `Data.GetPrice` / `Data.GetProductInfo`, which include regional pricing. See [Player Data](./player-data.md) for the saved fields.
 
 ## Towers
 
-`ServerScriptService > Server > Towers > TowerRegistry`.
+`Server > Towers > TowerRegistry`:
 
 | Function | Signature |
 | :-- | :-- |
-| `get` | `(acronym: string) -> TowerInfo?` |
+| `get` | `(acronym) -> TowerInfo?` |
 | `forEach` | `(callback: (string, TowerInfo) -> ()) -> ()` |
-| `loadForPlayerAsync` | `(player: Player, acronym: string, request: LoadRequest?) -> boolean` |
-| `resetClientObjectsAsync` | `(player: Player) -> boolean` |
+| `loadForPlayerAsync` | `(player, acronym, request: LoadRequest?) -> boolean` |
+| `resetClientObjectsAsync` | `(player) -> boolean`, rebuilds client objects without restarting the run |
 
-`LoadRequest` is optional. Leaving a field out gives the default below, so a
-plain `loadForPlayerAsync(player, "ETV5")` is a fresh attempt with a new character:
+`LoadRequest` fields, all optional:
 
 | Field | Default | Meaning |
 | :-- | :-- | :-- |
 | `resetTimer` | `true` | Start the timer at zero and clear checkpoints. |
-| `reuseCharacter` | `false` | Move the character already standing there instead of respawning it. |
-| `keepClientObjects` | `false` | Leave the tower standing if it is the one already loaded. |
-| `newAttempt` | `true` | Count an attempt and drop godmode. |
+| `reuseCharacter` | `false` | Move the current character instead of respawning. |
+| `keepClientObjects` | `false` | Keep the tower if it's already loaded. |
+| `newAttempt` | `true` | Count an attempt. |
 
-```luau
-local TowerRegistry = require(ServerScriptService.Server.Towers.TowerRegistry)
-
-TowerRegistry.loadForPlayerAsync(player, "ETV5", {
-    resetTimer = true,
-    reuseCharacter = true,
-})
-```
-
-`resetClientObjectsAsync` rebuilds a tower's client objects and returns the player to
-the spawn **without** counting an attempt or resetting the timer — it repairs a
-run in progress rather than restarting it.
-
-::: danger Still server-authoritative
-`loadForPlayerAsync` does not ask whether the player is allowed in. Check your own
-requirements before you call it.
+::: danger
+`loadForPlayerAsync` doesn't check unlock requirements. Check them yourself first.
 :::
 
 ## Progression and rewards
 
-| Module | Function |
+| Module | Functions |
 | :-- | :-- |
 | `Server > Accounts > Progress` | `incrementTowersAsync`, `incrementAllJumpsAsync`, `incrementTowerAttemptAsync`, `incrementRushAttemptAsync`, `addTowerTimeSpentAsync`, `recordTowerWinAsync`, `recordRushWinAsync` |
 | `Server > Shop > Tickets` | `awardTickets(player, tower) -> number` |
-| `Server > Towers > Badges` | `award(player, badgeId)` fire-and-forget, `awardAsync(player, badgeId) -> boolean` yields |
+| `Server > Towers > Badges` | `award(player, badgeId)`, `awardAsync(player, badgeId) -> boolean` |
 | `Server > Shop > PermanentTools` | `grant(player, template, grantId, source) -> boolean`, `findToolTemplate(name) -> Tool?` |
 
-`grantId` is written into the player's save, so it must stay stable forever —
-renaming one hands every existing owner their item a second time.
-
-A badge award and a webhook post are both web calls, so both are tried three
-times — immediately, then after two seconds, then after four — before being
-given up on. `award` does that on its own thread; `awardAsync` makes you wait
-for the answer. Only a *failed request* is retried: a plain `false` is Roblox
-saying the badge was not awardable, usually because the player already has it,
-and asking again cannot change that.
+`grantId` is saved, so never change it. Badge awards and webhook posts retry a failed request twice.
 
 ## Custom settings
 
-`ReplicatedStorage > Shared > Settings > CustomSettings` reads whatever a player
-chose for the settings you declared in `Config > CustomSettings`. It works the
-same on both sides — the server reads Scribe accessors and the client reads a
-plain table, and these see through both.
+`Shared > Settings > CustomSettings` reads a player's choice for a setting declared in `Config > CustomSettings`, on either side:
 
 | Function | Returns |
 | :-- | :-- |
 | `toggle(settings, key)` | `boolean` |
 | `number(settings, key)` | `number` |
 | `choice(settings, key)` | `string` |
-| `key(settings, key)` | `string`, a `KeyCode` name |
+| `key(settings, key)` | a `KeyCode` name |
 
-Each falls back to the declared default, so there is never a "not set yet" case.
-A key that is not declared, or is declared as another kind, warns once by name
-and returns the empty value. [Adding A Saved Setting](./custom-settings.md) has
-the worked examples for both sides.
+Each returns the declared default if the player hasn't chosen. See [Adding A Saved Setting](./custom-settings.md).
 
 ## Cosmetics
 
-`ServerScriptService > Server > Cosmetics > CosmeticsService`.
+`Server > Cosmetics > CosmeticsService`:
 
 | Function | Signature |
 | :-- | :-- |
 | `unlockPlayerCosmetic` | `(player, category, cosmeticId) -> boolean` |
 | `revokePlayerCosmetic` | `(player, category, cosmeticId) -> boolean` |
-| `setPlayerCosmetic` | `(player, category, cosmeticId: string?) -> CosmeticsResult` |
+| `setPlayerCosmetic` | `(player, category, cosmeticId?) -> CosmeticsResult` (`nil` unequips) |
 | `applyEquipped` | `(player) -> ()` |
 
-`category` is `"Trails"` or `"Auras"`. Passing `nil` as the id to
-`setPlayerCosmetic` unequips. Read-only lookups live beside it in
-`CosmeticUnlocks`.
+`category` is `"Trails"` or `"Auras"`.
 
 ## Announcements and webhooks
 
-| Module | Function |
+| Module | Functions |
 | :-- | :-- |
-| `Server > Announcements > AnnouncementsService` | `winAnnouncement(run, endingName, difficultyName, time?, towerCount?)`, which never waits; `globalNotificationAsync(message, duration?)`; `antiCheatKick(player, reason) -> boolean`, true only the first time for a player |
+| `Server > Announcements > AnnouncementsService` | `winAnnouncement(run, endingName, difficultyName, time?, towerCount?)`, `globalNotificationAsync(message, duration?)`, `antiCheatKick(player, reason) -> boolean` |
 | `Server > Announcements > Webhook` | `postAsync(secretName, payload) -> boolean` |
 
-`Webhook.postAsync` posts JSON to the Discord webhook stored in the named
-secret. Secrets are set under **Creator Dashboard › Experience › Secrets**; the
-kit reads `NORMAL_WEBHOOK`, `ALL_JUMPS_WEBHOOK` and `ANTICHEAT_WEBHOOK`, plus
-whatever a difficulty band names in `Config > Towers`.
-
 ```luau
-local Webhook = require(ServerScriptService.Server.Announcements.Webhook)
-
 Webhook.postAsync("NORMAL_WEBHOOK", { content = "Hello from my fangame" })
 ```
 
-A missing secret is one warning and nothing else, so a place with no webhooks
-set up loses the posts and nothing more. Every post goes out with
-`allowed_mentions` emptied, so nothing in it pings anyone.
+The URL comes from the named secret (**Creator Dashboard → Experience → Secrets**). Posts never ping anyone.
 
 ## Shutdown
 
-`ServerScriptService > Server > Shutdown > ShutdownService` gives every kind of close the same
-countdown — a Roblox restart, an admin closing the server, and a personal server
-whose owner left.
+`Server > Shutdown > ShutdownService` shows players a countdown before a server closes:
 
 | Function | Signature |
 | :-- | :-- |
 | `announce` | `(closeAt: number, reason: string?) -> ()` |
-| `cancel` | `(closeAt: number) -> ()`, calls off that close if it is still the one counting down |
+| `cancel` | `(closeAt: number) -> ()` |
 | `pending` | `() -> boolean` |
 
-`closeAt` is an `os.time` stamp. Players are told immediately and again at 5m,
-2m, 1m, 30s and 15s, and anyone who joins after is told on arrival. A later
-close never replaces a nearer one; a sooner one does.
-
-```luau
-local ShutdownService = require(ServerScriptService.Server.Shutdown.ShutdownService)
-
-ShutdownService.announce(os.time() + 300, "Updating to a new version")
-```
-
-It only announces. What actually closes the server is yours to do.
+`closeAt` is an `os.time()`. It only announces; closing the server is up to you.
 
 ## Session state
 
-`Server > Accounts > SessionStore` holds each player's live run — current tower,
-timer, mode, checkpoint, rush position. `PlayerLifecycle.getSession(player)`
-returns it, or `nil` when they have none.
-
-Read it freely. **Do not write to it directly**: the fields are kept in step by
-the modules that own them, and a stray write shows up as a run that cannot be
-finished.
-
-`Shared > PlayerAttributes` is the read-only mirror the client sees —
-`CurrentTower`, `TowerTimer`, `RunMode` and a few more. The server's session is
-the truth; attributes are a copy for the UI.
+`PlayerLifecycle.getSession(player)` returns a player's current run: tower, timer, mode, checkpoint, rush. Read it, but **don't write to it**. `Shared > PlayerAttributes` is the copy clients see.
 
 ## Packages
 
-Shared packages are under `ReplicatedStorage > Packages`; server-only ones under
-`ServerScriptService > ServerPackages`.
-
-| Package | What the kit uses it for |
+| Package | Used for |
 | :-- | :-- |
-| [Scribe 2.4](https://scribe.ericplane.dev/) | Saved data, transactions, replication, pass ownership, Robux prices |
-| [Trove](https://sleitnick.github.io/RbxUtil/api/Trove) | Cleanup for connections, tasks and instances with a real owner |
-| [Signal](https://sleitnick.github.io/RbxUtil/api/Signal) | The kit's own events, where a BindableEvent would lose its types |
-| [TopbarPlus](https://1foreverhd.github.io/TopbarPlus/) | The backpack icon, the FPS readout and the mobile console button |
-| [Cmdr](https://eryn.io/Cmdr/docs/intro/) | The admin console. Server-only |
-| [Purse](https://github.com/ryanlua/purse) | The backpack. Vendored at `Client > Backpack` |
+| [Scribe](https://scribe.ericplane.dev/) | Saves, pass ownership, prices |
+| [Trove](https://sleitnick.github.io/RbxUtil/api/Trove) | Cleaning up connections and instances |
+| [Signal](https://sleitnick.github.io/RbxUtil/api/Signal) | The kit's events |
+| [TopbarPlus](https://1foreverhd.github.io/TopbarPlus/) | Topbar buttons |
+| [Cmdr](https://eryn.io/Cmdr/docs/intro/) | The admin console |
+| [Purse](https://github.com/ryanlua/purse) | The backpack |
 
-They ship inside the place, so there is nothing to install.
-
-::: details For people with access to the kit's source
-The packages are installed with [Wally](https://wally.run/). If you run
-`wally install` on its own, follow it with `npm run setup:package-types` —
-Wally's link files re-export no types, so without it the editor stops
-autocompleting anything from a package. `npm run setup` does both.
-:::
+They ship inside the place.
 
 ## Networking
 
-Every remote is generated by [Blink](https://github.com/1Axen/blink) from one
-schema, which ships in the place as
-`ServerScriptService > Server > Network > NetworkSchema`. Add a message by
-editing that schema and regenerating — **never by creating a RemoteEvent.**
+Every remote is generated by [Blink](https://github.com/1Axen/blink) from one schema, shipped as `ServerScriptService > Server > Network > NetworkSchema`. **Never create a RemoteEvent**; add a message to the schema and regenerate.
 
-```luau
--- server
-local BlinkServer = require(ServerScriptService.Server.Network.BlinkServer)
--- client
-local BlinkClient = require(ReplicatedStorage.Shared.Network.BlinkClient)
-```
+To regenerate in Studio, use Blink's Studio plugin: paste in `NetworkSchema`, edit, and **Generate**. Put the results at `ReplicatedStorage > Shared > Network > BlinkClient` and `ServerScriptService > Server > Network > BlinkServer`, where the kit looks for them.
 
-### Regenerating them without the command line
-
-Blink ships a **Studio plugin** for this: it gives you an editor for the
-schema, with intellisense and error checking, and a **Generate** button that
-writes the modules into a location you pick in the Explorer.
-
-Two things to get right, because the kit does not find these by searching:
-
-- **Generate somewhere both sides can reach**, which the plugin asks you to
-  confirm.
-- **Put the result where the kit already looks.** The client module has to end
-  up at `ReplicatedStorage > Shared > Network > BlinkClient` and the server one
-  at `ServerScriptService > Server > Network > BlinkServer`. Those two paths are
-  named by 20 and 24 files respectively, so moving the generated modules to
-  match is a great deal less work than re-pointing everything at them.
-
-`NetworkSchema` is a ModuleScript holding the schema as text. Nothing requires
-it and nothing reads it at run time — it is there because the two modules beside
-it are generated buffer code, and without it there is no way to see what they
-were built from. Copy it into the plugin's editor to start from the schema the
-place already runs.
-
-::: details For people with access to the kit's source
-The schema is `game.blink` at the repository root, and `npm run generate:network`
-runs the Blink CLI on it and rewrites `NetworkSchema` from the file.
+::: warning Always regenerate both
+A client and server generated from different schemas silently don't talk to each other.
 :::
-
-::: warning The two must be generated together
-A client and a server module from different versions of the schema do not talk
-to each other, and the failure is a remote that silently does nothing rather
-than an error. Regenerate both, every time.
-:::
-
-## See Also
-
-- [Extending the Kit](./extending-gameplay.md) — adding a feature the kit way
-- [Player Data](./player-data.md) — the saved shape and how to add to it
-- [Commands](./commands.md) — the admin console

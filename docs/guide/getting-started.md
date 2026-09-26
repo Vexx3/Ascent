@@ -120,18 +120,19 @@ Press **Play** and check the whole loop:
 - you spawn, enter the tower, and the timer starts;
 - touching the winpad after passing every checkpoint wins the tower and awards tickets;
 - skipping a checkpoint, or reaching the top faster than the tower's minimum time, does not — the server kicks you for it;
-- dying in Normal mode ends the run, and in Practice or All Jumps puts you back at the position you last saved, or at the tower's spawn; with **Restart on Death** on, any death starts the tower again instead;
+- dying in Normal mode ends the run, and in Practice or All Jumps puts you back at your own checkpoint;
 - Practice and All Jumps modes work; and
 - rejoining keeps your completion.
 
-If something is missing, the Output window tells you which tower and what it
-needs. Those warnings come from `Config > Project` and can be turned off once
-your game is finished.
+If something is missing, the Output window says which tower and what it needs.
 
-### 6. Publish
+### 6. Set up the hub
 
-Publish every place you listed in `Config > Worlds`. Teleports and Personal
-Servers only work in a published game, never in a Studio playtest.
+The hub is the place players join first, with the ring select screen. Make it from `Ascent Hub.rbxlx` and follow [Setting Up The Hub](./ring-select.md#setting-up-the-hub).
+
+### 7. Publish
+
+Publish the hub and every place you listed in `Config > Worlds`. Teleports and personal servers only work in a published game, never in a Studio playtest.
 
 ## Before You Publish
 
@@ -169,7 +170,7 @@ setup** — an empty Output is the goal.
 | See every setting the kit has | [Configuration Reference](./configuration.md) |
 | Know where things live in Studio | [Studio Structure](./studio-structure.md) |
 | Chain towers into one run | [Tower Rushes](./tower-rushes.md) |
-| Sell things for tickets | [Tickets](./tickets.md) and [Ticket Shop](./ticket-shop.md) |
+| Pay tickets and sell things for them | [Tickets & Shop](./ticket-shop.md) |
 | Sell game passes | [Game Passes](./game-passes.md) |
 | Add a setting of your own | [Adding A Saved Setting](./custom-settings.md) |
 | React to wins, save values of your own, add commands | [Hooking Into the Kit](./hooks.md) |
