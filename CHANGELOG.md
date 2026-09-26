@@ -343,6 +343,12 @@ prompt. A friend in a locked Area is listed, and joining says what is missing.
 Each list has a `Warning` for why it is empty or what just went wrong.
 [Friends And Servers](https://kiels.dev/Ascent/guide/ring-select#friends-and-servers)
 
+**Hovering a tower's bar in the hub outlines its frame.** A bar in Ring
+Select's `DetailedProgress` outlines, in white, the Model or part named after
+that tower's acronym in the Area's folder under `Workspace > Rings`. A ring
+without frames shows nothing.
+[Progress](https://kiels.dev/Ascent/guide/ring-select#progress)
+
 **A loading screen for every teleport.** From the moment the server starts one,
 the hub puts its loading screen back up with the tips going round, and a tower
 place shows its own. A still copy of it is what the player sees between the

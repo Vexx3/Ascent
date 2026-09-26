@@ -70,10 +70,13 @@ Workspace
     Ring1                   <- the Area id from Config > Worlds
       Camera                <- cameraPartName, any BasePart
       Lighting              <- optional, see below
-      ...towers, frames, scenery — the kit never touches these
+      ToNI                  <- optional: a tower's frame, named after its acronym
+      ...scenery — the kit never touches it
     Ring1Sub
       Camera
 ```
+
+`Rings` is `cameraFolder` in `Config > RingSelect`, named after EToH's rings. Call the folder something else — `Areas`, say — and set `cameraFolder` to match.
 
 Folders are matched by Area `id`, so building a new ring is a folder named after the id you already wrote in `Config > Worlds`. A subrealm can have its own shot. One with no folder of its own leaves the camera where it was — its Area's shot, when the player stepped down from the Area above it — and the Output window says so once.
 
@@ -170,7 +173,7 @@ Each button **is** the Area, so its own `Image` is the place picture: `image` fr
 `AreaProgress` and `DetailedProgress` are two readings of the same numbers, and one shows at a time:
 
 - **`AreaProgress`** is a single bar. `Fill` stretches to the fraction beaten, and `CurrentProgress` reads `7/12`. Hover it and it adds the percentage — `7/12 (58.3%)`.
-- **`DetailedProgress`** is one `DifficultyBar` per tower in the Area, easiest first, coloured by difficulty with a darkened stroke. Each bar's `Status` strip is green or red depending on whether that tower is beaten. Hover a bar and its `HoverTower` label names the tower, in the same colour.
+- **`DetailedProgress`** is one `DifficultyBar` per tower in the Area, easiest first, coloured by difficulty with a darkened stroke. Each bar's `Status` strip is green or red depending on whether that tower is beaten. Hover a bar and its `HoverTower` label names the tower, in the same colour, and the tower's frame in the ring behind the screen is outlined in white: the Model or part named after its acronym anywhere in that Area's folder under `Rings`. A tower with no frame is simply not outlined.
 
 Which one shows is each player's own choice, the **Detailed Progress Meter** in the screen's Settings, and it is saved. Whichever way you left the two frames in Studio does not matter — the screen sets both.
 
