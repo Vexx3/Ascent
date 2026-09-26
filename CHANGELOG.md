@@ -47,7 +47,9 @@ and then:
    works as before; without the lines, those two values are the defaults.
 9. **In the hub, copy `RingSelect > TopRightBar > FriendButton`, `ServerButton`
    and `Lists` from the new hub place** for its friend and server lists. A hub
-   without them works as before, with neither.
+   without them works as before, with neither. Copy `RingSelect > Requirements`
+   across too: `AreaReqLabel` now sits in a `RequirementsList` inside it, and
+   the hub does not start without one.
 10. **Install the new Tower Setup plugin.** Its Setup tab now says whether it
     matches the kit the place runs.
 11. **Publish every place at the same time, then shut down the old servers.**
@@ -457,6 +459,16 @@ that otherwise covered them all.
 [Seeing checkpoints while you build](https://kiels.dev/Ascent/guide/tower-setup-plugin#seeing-checkpoints-while-you-build)
 
 ### Changed
+
+**An Area's requirements read as goals, with the player's progress on each.**
+`Beat 12 Towers (3/12)`, `Beat 2 Extreme+ Towers (1/2)`, `Beat ToDNE (0/1)`,
+`Reach 500 Elo (120/500)`. The Teleport menu and a refusal still show the first
+one not met; the hub lists every rule at once, one line each, with the met
+ones in green and each difficulty in its own colour. A difficulty still counts
+every tower of it or harder. `{TowerWord}` in `Config > Messages.locks` is now
+capitalised and plural where the count is more than one, following
+`towerWord` and `towerWordPlural` in `Config > Project`.
+[Locked Areas](https://kiels.dev/Ascent/guide/ring-select#locked-areas)
 
 **Reset on Death is Restart on Death, and it covers every death.** It used to
 restart the tower only for Roblox's Reset button; a killbrick still ended a

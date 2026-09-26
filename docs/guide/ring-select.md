@@ -146,7 +146,8 @@ RingSelect                       ScreenGui
           Cancel                 GuiButton
         Warning                  TextLabel
   Requirements                   Frame
-    AreaReqLabel                 TextLabel
+    RequirementsList             GuiObject   <- a UIListLayout inside
+      AreaReqLabel               TextLabel   <- the line template
   TotalBeaten                    TextLabel
   SettingsButton                 GuiButton   <- opens and closes Settings
   Settings                       Frame
@@ -207,9 +208,19 @@ If you want to replace Roblox's own loading screen too, that is a separate scrip
 
 ### Locked Areas
 
-`Requirements` appears only when the picked Area is locked, and `AreaReqLabel` says why — the same rules and the same wording as the Teleport menu in your tower places, from the Area's `requirements` in `Config > Worlds`. Play refuses and repeats the reason.
+`Requirements` appears only when the picked Area is locked, and lists every rule in its `requirements` in `Config > Worlds`, one line each, cloned from `AreaReqLabel` into `RequirementsList`:
 
-This screen has no notification holder, so anything the server says — a teleport cooldown, a refusal, data still loading — is shown in `AreaReqLabel` for a few seconds and then the standing reason comes back. While one of the [lists](#friends-and-servers) is open, it goes in that list's `Warning` instead.
+```
+Beat ToDNE (1/1)
+Beat 12 Towers (3/12)
+Beat 2 Extreme+ Towers (1/2)
+```
+
+Each line says how far along the player is. A rule already met is drawn in `beatenColor` from `Config > RingSelect` — green, as on the progress bars — and a difficulty's name is drawn in that difficulty's colour, so the line is set to `RichText` whatever the template says. A difficulty rule counts every tower of that difficulty **or harder**. The wording is `locks` in `Config > Messages`, the same lines the Teleport menu in your tower places shows one at a time. Play refuses a locked Area and leaves the list up.
+
+The lines are sized by the template. If it is `TextScaled`, a short line comes out bigger than a long one; a `UITextSizeConstraint` in `AreaReqLabel` evens them out.
+
+This screen has no notification holder, so anything the server says — a teleport cooldown, a refusal, data still loading — takes the lines' place for a few seconds, and then the lines come back. While one of the [lists](#friends-and-servers) is open, it goes in that list's `Warning` instead.
 
 Nothing here is a permission. The client refuses a locked Area so the player is told why; the server checks again before it moves anyone.
 
@@ -231,7 +242,7 @@ The list is read when it opens, and again on `RefreshButton`, which shows only w
 - **`EnterServerCode`** swaps the list for `JoinServerFrame`, where a player types or pastes a share code into `CodeBox` and presses `Join` or Enter. `Cancel` swaps back.
 - **`JoinLast`** takes the player back to the personal server they owned and left. It shows only while that server is still open — for `ownerLeaveGracePeriod` after the owner leaves, ten minutes by default — and going back calls off the countdown that would close it.
 
-`Warning` under the code box shows only when there is something to say about the code: that it is not a code at all, before anything is sent, or the server's answer — expired, invalid, or an Area still locked. While `JoinServerFrame` is closed, those answers go to `AreaReqLabel` instead.
+`Warning` under the code box shows only when there is something to say about the code: that it is not a code at all, before anything is sent, or the server's answer — expired, invalid, or an Area still locked. While `JoinServerFrame` is closed, those answers go to `Requirements` instead.
 
 The server checks an Area's requirements before it sends anyone anywhere, a code included, so a code does not get round a lock.
 

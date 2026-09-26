@@ -123,7 +123,7 @@ Ownership is fetched once when a player joins and kept on them from there, becau
 
 Requirements count towers configured under the matching World by default. Add `scope = "All"` when progression should count completions from every configured World, as EToH now does for some cross-World unlocks.
 
-The client shows `Locked` and explains the missing requirement when clicked. The server checks the same rule again before any teleport, so changing the UI cannot bypass progression.
+The client shows `Locked` and explains the missing requirement when clicked. Each rule reads as a goal with the player's progress on it — `Beat 12 Towers (3/12)` — and the hub's [Ring Select](./ring-select.md#locked-areas) lists every rule at once. The server checks the same rule again before any teleport, so changing the UI cannot bypass progression.
 
 ::: warning `scope` is the one that catches people out
 A World whose Areas hold no towers of their own — a Zones world, say, while all your towers are still in Rings — can never satisfy a `towerCompletions` or `difficulties` rule without `scope = "All"`. The count is zero no matter what the player beats, and the Area stays locked forever with a refusal that looks correct.

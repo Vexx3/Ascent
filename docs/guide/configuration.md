@@ -667,7 +667,7 @@ chat tag. Reword them to suit your game, or translate them.
 | `durations` | "a week", "3 days", "10 minutes": how long something lasts, in notifications. |
 | `towers` | Things that go wrong on the way into a run, a Studio test run, and the Exit button. |
 | `antiCheat` | Why the anti-cheat removed somebody, as their kick screen says it. |
-| `locks` | Why an Area is locked, on its card and when a player tries to go in. |
+| `locks` | An Area's requirements, one line per rule, such as `Beat 12 Towers (3/12)`: on its card and in a refusal, and all at once in the hub. |
 | `teleportMenu` | The Teleport menu's buttons. |
 | `shop` | The ticket shop: buttons, the item panel, and what a purchase says. |
 | `cosmetics` | Equipping a trail or an aura, and how a locked one is unlocked. |
