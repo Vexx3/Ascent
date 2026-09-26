@@ -15,7 +15,6 @@ GravityCoil = {
 	price = 75,
 	category = "Items",
 	rarity = "Rare",
-	icon = "rbxassetid://16619617",
 	template = "Gravity Coil",
 }
 ```
@@ -27,7 +26,7 @@ GravityCoil = {
 | `price` | `number` | — | Positive whole-number ticket cost. |
 | `category` | `string` | — | `Items`, `Trails`, or `Auras`. |
 | `rarity` | `string` | — | `Uncommon`, `Rare`, `Epic`, `Legendary`, or `Mythic`. |
-| `icon` | `string` | — | Roblox image string. Use `rbxassetid://0` when the template supplies its own art. |
+| `icon` | `string` | none | Roblox image string. An `Items` entry shows its Tool's own icon, the `TextureId` it has in the backpack, so it needs one only when the Tool has none. Trails and Auras need one. |
 | `template` | `string` | none | Optional Tool name. If omitted, the item's display `name` is used. |
 | `featuredOnly` | `boolean` | `false` | Optional. Keeps the item out of All and shows it only in the featured Items list, so it only suits an `Items` entry. The rotation never picks it, so it is never discounted. |
 

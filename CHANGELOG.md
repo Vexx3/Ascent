@@ -343,6 +343,15 @@ prompt. A friend in a locked Area is listed, and joining says what is missing.
 Each list has a `Warning` for why it is empty or what just went wrong.
 [Friends And Servers](https://kiels.dev/Ascent/guide/ring-select#friends-and-servers)
 
+**The FPS counter shows the cap.** With FPS Display on, the topbar counter has
+a second line, `CAP: 60` or `CAP: OFF`, following the FPS Cap setting and its
+keys as they change it.
+[FPS Cap](https://kiels.dev/Ascent/guide/settings#fps-cap)
+
+**Guests hear when a personal server's owner comes back.** They were told the
+server would close when the owner left; now they are told when the owner's
+return calls that off, with `personalServers.ownerReturned`.
+
 **Hovering a tower's bar in the hub outlines its frame.** A bar in Ring
 Select's `DetailedProgress` outlines, in white, the Model or part named after
 that tower's acronym in the Area's folder under `Workspace > Rings`. A ring
@@ -465,6 +474,17 @@ that otherwise covered them all.
 [Seeing checkpoints while you build](https://kiels.dev/Ascent/guide/tower-setup-plugin#seeing-checkpoints-while-you-build)
 
 ### Changed
+
+**A shop Item shows its Tool's own icon.** An `Items` entry in
+`Config > Economy.shop` now draws the `TextureId` of the Tool it hands out, so
+the picture is set once, on the Tool. `icon` is optional for them and only used
+for a Tool without one; Trails and Auras still need it. The shipped coils no
+longer carry an `icon`.
+[Ticket Shop](https://kiels.dev/Ascent/guide/ticket-shop#add-an-item)
+
+**Progress percentages always have one decimal place**, rounded down so a list
+one short never reads 100: `(0.0%)`, `(90.9%)`, `(100.0%)`, in the hub and in
+Completions.
 
 **An Area's requirements read as goals, with the player's progress on each.**
 `Beat 12 Towers (3/12)`, `Beat 2 Extreme+ Towers (1/2)`, `Beat ToDNE (0/1)`,

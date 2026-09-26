@@ -455,7 +455,7 @@ Shop item fields:
 | `price` | `number` | yes | Cost in tickets. |
 | `category` | `"Items" \| "Trails" \| "Auras"` | yes | Which tab it appears in. |
 | `rarity` | `string` | yes | Picks its color from `rarityColors`. |
-| `icon` | `string` | yes | Roblox image ID. |
+| `icon` | `string` | no | Roblox image ID. An `Items` entry shows its Tool's `TextureId` instead, and needs this only when the Tool has none. |
 | `featuredOnly` | `boolean` | no | Lists the item only in the Featured page's Items list, never in All. It is always buyable and never discounted. |
 | `template` | `string` | no | Tool in `ServerStorage > TicketShopItems > Tools` to grant. Left out, the Tool is found by `name`. |
 

@@ -172,7 +172,7 @@ Each button **is** the Area, so its own `Image` is the place picture: `image` fr
 
 `AreaProgress` and `DetailedProgress` are two readings of the same numbers, and one shows at a time:
 
-- **`AreaProgress`** is a single bar. `Fill` stretches to the fraction beaten, and `CurrentProgress` reads `7/12`. Hover it and it adds the percentage — `7/12 (58.3%)`.
+- **`AreaProgress`** is a single bar. `Fill` stretches to the fraction beaten, and `CurrentProgress` reads `7/12`. Hover it and it adds the percentage to one place, rounded down so a ring one short never reads 100 — `7/12 (58.3%)`, `0/15 (0.0%)`. The Completions menu writes its percentages the same way.
 - **`DetailedProgress`** is one `DifficultyBar` per tower in the Area, easiest first, coloured by difficulty with a darkened stroke. Each bar's `Status` strip is green or red depending on whether that tower is beaten. Hover a bar and its `HoverTower` label names the tower, in the same colour, and the tower's frame in the ring behind the screen is outlined in white: the Model or part named after its acronym anywhere in that Area's folder under `Rings`. A tower with no frame is simply not outlined.
 
 Which one shows is each player's own choice, the **Detailed Progress Meter** in the screen's Settings, and it is saved. Whichever way you left the two frames in Studio does not matter — the screen sets both.

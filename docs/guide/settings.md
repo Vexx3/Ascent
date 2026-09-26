@@ -51,6 +51,15 @@ warning naming it, rather than becoming an option that caps nothing.
 
 A player saved on a rate you later remove falls back to the Config default.
 
+With **Settings > Visual > FPS Display** on, the counter in the topbar has the cap under the frame rate:
+
+```
+FPS: 58
+CAP: 60
+```
+
+It reads `CAP: OFF` while there is none. Both lines are `settingsMenu.fps` and `settingsMenu.fpsCap` in `Config > Messages`.
+
 ::: warning Capping costs CPU
 Roblox gives experience code no framerate cap. The only way to hold a frame
 back is to hold the render thread, and that has to spin rather than wait --
