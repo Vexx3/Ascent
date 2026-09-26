@@ -175,7 +175,7 @@ Beat 2 Extreme+ Towers (1/2)
 
 Met rules are drawn in `beatenColor`, and a difficulty in its own colour. A difficulty rule counts that difficulty **or harder**. The wording is `locks` in `Config > Messages`.
 
-If `AreaReqLabel` is `TextScaled`, short lines come out bigger than long ones. A `UITextSizeConstraint` inside it evens them out.
+`AreaReqLabel` carries a `UITextSizeConstraint` with `MaxTextSize = 15`, so short lines don't come out bigger than long ones. Raise it for bigger lines; a line too long for that size still shrinks to fit.
 
 Messages from the server, such as a refusal or a cooldown, replace the lines for a few seconds. While a [list](#friends-and-servers) is open, they go to that list's `Warning` instead.
 

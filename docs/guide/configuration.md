@@ -193,7 +193,7 @@ Difficulty colours are in `Towers`, rarity colours in `Economy`.
 
 ## Messages
 
-Every line of text players read, apart from win messages and chat tags (those are in `Chat`). Reword or translate them freely. Text in `{Braces}` is filled in for you; each message's comment says which it takes.
+Every line of text players read, apart from win messages and chat tags (those are in `Chat`). Reword or translate them freely. Text in `{Braces}` is filled in for you; each message's comment says which it takes. Notifications draw rich text, so write `&amp;` for a plain `&`.
 
 | Group | Holds |
 | :-- | :-- |
