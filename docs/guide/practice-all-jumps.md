@@ -89,6 +89,30 @@ When All Jumps mode is enabled:
 
 Players can change these keybinds in the settings menu.
 
+Checkpoints are a stack: each one placed goes on top, Remove takes the top one
+off, and the Teleport key and a death both go to the top one.
+
+## The Checkpoint Panel
+
+In All Jumps and Practice, `ButtonsHolder > AJMenuButton` appears beside the
+menu button and opens and closes `MainMenu > AJSettings`. In Normal mode the
+button hides and the panel closes.
+
+| Part | What it does |
+| :-- | :-- |
+| `CheckpointPlaced` | How many checkpoints the player has placed, kept up to date as they place and remove them. |
+| `CPLoadCam > ToggleButton` | Whether going to a checkpoint also turns the camera back to where it faced when the checkpoint was placed. This covers the Teleport key, a death, and the teleport below. |
+| `CPTransparency > InputBox`, `Button` | How see-through the markers are, from 0 (solid) to 1 (invisible). Applies to every marker, including ones placed later. |
+| `TPCheckpoint > InputBox`, `Button` | Teleports to a checkpoint by its number, counted from the first one placed. |
+
+Pressing Enter in either box does the same as its button. A number out of range
+is refused with a message from `Config > Messages > checkpoints`.
+
+The camera and transparency choices are saved with the player, like any other
+setting, and start from `checkpointCamera` and `checkpointTransparency` in
+`Config > Settings`. The panel is optional. A place without it works as before,
+and a panel missing one of its parts names that part in the Output.
+
 ## See Also
 
 - [Boost & Practice Tools](./boost-items.md)

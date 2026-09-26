@@ -39,13 +39,19 @@ and then:
    `SettingsMenu > GameplayFrame > ResetonDeath` row to `RestartonDeath` with its
    label. The Output names the Config line until it is renamed; the row still
    works under its old name. See **Changed** for what the setting does now.
-8. **Install the new Tower Setup plugin.** Its Setup tab now says whether it
+8. **Copy `ButtonsHolder > AJMenuButton` and `MainMenu > AJSettings` from the new
+   place** for the checkpoint panel, and add `checkpointCamera = true` and
+   `checkpointTransparency = 0.5` to `Config > Settings`. The transparency
+   used to be `allJumpsMarker.transparency` in `Config > Visuals`, which is no
+   longer read: move your value across. Without the button and panel the game
+   works as before; without the lines, those two values are the defaults.
+9. **Install the new Tower Setup plugin.** Its Setup tab now says whether it
    matches the kit the place runs.
-9. **Publish every place at the same time, then shut down the old servers.**
-   This release runs Scribe 2.5.0, whose save has a new shape, and a server
-   still on the old version refuses a player whose save a new one has written.
-   Then check the Output of one live server: anything Config gets wrong is now
-   reported there when it starts.
+10. **Publish every place at the same time, then shut down the old servers.**
+    This release runs Scribe 2.5.0, whose save has a new shape, and a server
+    still on the old version refuses a player whose save a new one has written.
+    Then check the Output of one live server: anything Config gets wrong is now
+    reported there when it starts.
 
 Nothing a player has saved is lost. The save gains an empty `custom` table for
 your own values, which Scribe fills in on load, and each player's Reset on
@@ -167,6 +173,12 @@ was announcing.
 that rebuilds the tower now waits at least half a second whatever
 `restartCooldown` says, and walking back into your own tower's portal counts as
 a restart rather than a reload with no limit.
+
+**Removing an All Jumps checkpoint no longer throws away the rest on a death.**
+The client keeps every checkpoint placed, but the server kept only the latest,
+and Remove cleared it. A player who placed three and removed one still saw two,
+and the next death sent them to the tower's spawn. The server now keeps the
+same stack, so a death goes to the checkpoint on top.
 
 **A gradient chat tag no longer turns the player's name white.** A UIGradient
 colours the whole chat prefix, so the name was moved into the message to keep
@@ -301,6 +313,14 @@ seconds. Switching the setting off puts everything back as authored. The timer,
 health, keys, boosts and touch controls never fade. Tag an element of your own
 `HideUI` in Studio and it fades with them.
 [UI & HUD](https://kiels.dev/Ascent/guide/ui-and-hud#hide-ui)
+
+**A checkpoint panel for All Jumps and Practice.** `AJMenuButton` beside the
+menu button opens `AJSettings`, which shows how many checkpoints are placed,
+teleports to any of them by number, sets how see-through the markers are, and
+turns camera loading on or off: whether going to a checkpoint also turns the
+camera back to where it faced when it was placed. Both choices are saved with
+the player. The button shows only in All Jumps and Practice.
+[The Checkpoint Panel](https://kiels.dev/Ascent/guide/practice-all-jumps#the-checkpoint-panel)
 
 **The spectate panel says how many are watching.**
 `SpectateFrame > PlayerFrame > SpectatorCount` shows how many players are

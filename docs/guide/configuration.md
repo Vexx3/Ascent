@@ -540,6 +540,8 @@ affects people who have never played.
 | `alignmentDot` | `boolean` | `false` |
 | `audioVisualizer` | `"Off" \| "Low" \| "Medium" \| "High" \| "OMG Why" \| "AAAAA"` | `"Off"` |
 | `musicVolume` | `number` (0–2) | `0.5` |
+| `checkpointCamera` | `boolean` | `true` |
+| `checkpointTransparency` | `number` (0–1) | `0.5` |
 | `keybinds` | `table` | see below |
 | `custom` | `table` | empty — a new player has chosen nothing yet |
 
@@ -639,7 +641,7 @@ Blue numbers.
 | `towerRush` | The tower list shown during a rush. |
 | `menu` | Selected tab, equipped cosmetic, settings toggles, shop text. |
 | `shopBuyButton` | The Buy button, affordable and unaffordable. |
-| `allJumpsMarker` | The floating block an All Jumps checkpoint leaves behind: its color, transparency, and material. Its size is in [`Project`](#project). |
+| `allJumpsMarker` | The floating block an All Jumps checkpoint leaves behind: its color and material. Its size is in [`Project`](#project), and each player picks how see-through it is, starting from `checkpointTransparency` in [Settings](#settings). |
 | `menuSounds` | The kit's interface sounds, an asset ID and a volume each: `click` and `hover` on a menu button, `notification` on each toast, and `victory` for the player who just beat a tower. |
 | `timing` | How long the kit's animations take: loading screen fade, menu open and close, settings toggle, and how long a notification stays up before fading. |
 | `audioVisualizerStrength` | How hard each Audio Visualiser option shakes the camera. Smaller shakes harder. |
