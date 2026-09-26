@@ -23,10 +23,14 @@ and then:
 3. **In `Config > Chat`, delete the loop at the top and the `byGamePass =
    gamePassTags` line.** A VIP pass's tag comes from its `chatTag` in
    `Config > GamePasses` as before; the kit works it out itself now.
-4. **Check `Config > Admin.userIds` and `Config > Chat.tags.byUser`.** Earlier
-   releases shipped the kit author's own account in both. Take it out if it is
-   still there. Whoever owns the experience -- you, or the owner of the group it
-   belongs to -- has the console without being listed.
+4. **Replace `Config > Admin` with this release's, and check
+   `Config > Chat.tags.byUser`.** Admin now gives staff roles (see **Added**):
+   put the IDs from your old `userIds` into a role's `userIds`. Earlier
+   releases shipped the kit author's own account in both lists; take it out of
+   `tags.byUser` if it is still there. Whoever owns the experience -- you, or
+   the owner of the group it belongs to -- has every command without being
+   listed. Until you change it, an old `userIds` still gives every command, and
+   the Output says so.
 5. **In `Config > Settings.keybinds`, set `allJumpsPlace = "E"` and
    `allJumpsTeleport = "Q"`**, unless you already gave them keys of your own.
    The old defaults shared keys with Corner Flip and Quick Restart (see
@@ -306,6 +310,26 @@ whenever a Config script changes.
 
 ### Added
 
+**Staff roles for the admin console.** `Config > Admin` lists roles, lowest
+first -- Moderator, Admin and Owner as shipped, renamed or added to as you like
+-- and a player gets one by user ID or by rank in your group. Each group of
+commands names the lowest role that can run it, and one command can differ
+from its group: as shipped, moderators kick, mute, freeze and run the tower
+commands, admins also give rewards and read data, and only the owner exports or
+erases a save. A command nobody has placed needs the highest role. Kick, mute
+and freeze refuse anyone of your own role or above, and `staff` lists who is
+online with which role.
+[Roles and permissions](https://kiels.dev/Ascent/guide/commands#roles-and-permissions)
+
+**Console commands for the things staff are asked to do.**
+`gamepass-grant` gives a pass as if it were bought -- its tool, trail, tag and
+tickets arrive at once -- and `gamepass-revoke` takes back one given that way.
+`tower-grant` and `tower-revoke` give or take a completion with its points
+and Elo, in either mode, for any tower in `Config > Towers`. `shop-item-revoke`
+takes a shop item and its tool back. `mute`, `unmute`, `freeze` and
+`unfreeze` last until the player leaves the server, and a mute can be timed.
+[Admin Commands](https://kiels.dev/Ascent/guide/commands)
+
 **Hooks for your own Scripts.** `ServerScriptService > Server > Events`
 announces a tower won, a rush won, a tower loaded or left, a shop purchase, a
 game pass applied, tickets awarded and a player's data ready, and
@@ -474,6 +498,13 @@ that otherwise covered them all.
 [Seeing checkpoints while you build](https://kiels.dev/Ascent/guide/tower-setup-plugin#seeing-checkpoints-while-you-build)
 
 ### Changed
+
+**A shorter command list.** `tickets` is gone (`data-summary` shows the
+balance), and so are `cosmetic-equip`, `checkpoint-return` and `server-time`.
+Of Cmdr's own, `announce` is `notify`, `version` and `uptime` are
+`kit-info` (which now shows how long the server has been up), and seventeen
+scripting commands such as `run`, `math` and `json-array-encode` are left out
+of the suggestions.
 
 **A shop Item shows its Tool's own icon.** An `Items` entry in
 `Config > Economy.shop` now draws the `TextureId` of the Tool it hands out, so

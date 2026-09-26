@@ -14,7 +14,7 @@ All settings are ModuleScripts in `ReplicatedStorage > Shared > Config`. Each on
 | [`Settings`](#settings) | New players' settings and keys | this page, [Settings](./settings.md) |
 | `CustomSettings` | Settings you add | [Adding A Saved Setting](./custom-settings.md) |
 | [`Chat`](#chat) | Chat tags, win messages, webhooks | [Chat](./chat.md) |
-| [`Admin`](#admin) | Who can use admin commands | [Admin Commands](./commands.md) |
+| [`Admin`](#admin) | Staff roles, and which commands each can use | [Admin Commands](./commands.md) |
 | [`Visuals`](#visuals) | The kit's UI colours, sounds, timings | this page |
 | [`Messages`](#messages) | Every other line of text players read | this page |
 
@@ -171,7 +171,7 @@ What each does, and the allowed values, are on [Settings](./settings.md).
 
 ## Admin
 
-Who can use the admin console. See [Admin Commands](./commands.md). The owner of the experience always can.
+Your staff roles (by user ID or group rank), the lowest role each group of commands needs, and per-command exceptions. The owner of the experience always has the top role. See [Roles and permissions](./commands.md#roles-and-permissions).
 
 ## Visuals
 
