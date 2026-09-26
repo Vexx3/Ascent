@@ -31,7 +31,7 @@ The row appears in the menu (`hideHealthBar` reads **Hide Health Bar**), saves w
 | `order` | all | Its `LayoutOrder` in the tab. |
 | `frame` | all | A row you built yourself; see below. |
 
-The server checks every value against the declaration: numbers are clamped, choices must be in `options`, keys must be real `KeyCode`s, and undeclared settings are never saved. You can have up to 64 of each kind.
+The server checks every value against the declaration: numbers are clamped, choices must be in `options`, keys must be real `KeyCode`s, and undeclared settings are never saved. A save holds up to 64 toggles, 64 numbers, and 64 choice and key settings **together**, since those two share one store.
 
 ::: warning The key is saved with the player
 Renaming `hideHealthBar` after release loses what everyone chose. Everything else can change freely. Adding or removing a setting later needs no migration.
