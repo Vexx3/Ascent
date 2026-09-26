@@ -1,174 +1,65 @@
 # Chat
 
-Everything chat-related is in `ReplicatedStorage > Shared > Config > Chat`:
-coloured name tags in `tags`, and the win messages players read in `client`.
-
-Rewards and saved data stay server-owned — nothing on this page changes what a
-player earns, only what they see.
+`Config > Chat` holds chat tags (`tags`) and the win messages players read (`messages`).
 
 ## Tags
 
-Coloured prefixes shown before a player's name, such as `[Owner]` or `[VIP]`.
-One colour or a gradient.
-
-### Define them
-
-The key is the internal name; `text` is what players see.
+A coloured prefix before a player's name, like `[Owner]`. Define each in `tags.styles`; the key is the name you hand it out by, `text` is what players see:
 
 ```luau
 styles = {
-	Owner = {
-		text = "[Owner]",
-		color = Color3.fromRGB(255, 215, 0),
-	},
-	VIP = {
-		text = "[VIP]",
-		color = Color3.fromRGB(255, 255, 0),
-	},
-}
+	Owner = { text = "[Owner]", color = Color3.fromRGB(255, 215, 0) },
+	VIP = { text = "[VIP]", color = Color3.fromRGB(255, 255, 0) },
+},
 ```
 
 ### Gradients
 
-Swap `color` for `colors` and the tag fades between them instead:
+Use `colors` instead of `color` and the tag fades across its letters:
 
 ```luau
-styles = {
-	Legend = {
-		text = "[Legend]",
-		colors = {
-			Color3.fromRGB(255, 0, 128),
-			Color3.fromRGB(255, 200, 0),
-		},
-	},
-}
-```
-
-Any number of stops, spread evenly, with the first at the start and the last
-at the end. Three stops put the middle colour exactly halfway.
-
-This is Roblox's own `UIGradient`, applied to the chat window's prefix through
-[`OnChatWindowAdded`](https://create.roblox.com/docs/reference/engine/classes/TextChatService).
-Rich text has no gradient markup, so that built-in is the only way to fade chat
-text -- and being a true gradient, it is smooth rather than stepped.
-
-Gradient tags are drawn by the chat window, so they appear there and not in
-bubble chat, which draws no prefix at all.
-
-A UIGradient covers a whole label, and the chat prefix normally holds the tag
-and the player's name together. So the kit does what Roblox's own example
-does: it makes the prefix the tag on its own and moves the name to the front
-of the message. The fade lands on the tag and nothing else.
-
-That leaves the name sitting in the message body, where it takes the message's
-colour rather than the one the chat gives a name. Set `nameColor` to give it
-one of your own:
-
-```luau
-tags = {
-	styles = { --[[ ... ]] },
-	nameColor = Color3.fromRGB(245, 205, 48),
-}
-```
-
-It applies only to players wearing a gradient tag; everyone else's name is
-untouched. Flat tags do not move the name at all.
-
-`colors` wins when a tag has both, and a single entry in `colors` is just a
-flat tag -- one colour has nothing to fade to. A tag with neither is reported
-in the Output at startup and shows uncoloured.
-
-::: tip Markup inside a gradient tag
-Ordinary rich text in the tag's own `text`, like `<b>`, works fine. A **colour**
-does not: the gradient multiplies with it rather than replacing it, so you get
-neither. The startup check says so by name if you leave one in.
-:::
-
-### Hand them out
-
-Three ways, checked in this order. **The first match wins** — a player who
-qualifies for several gets one tag, not a stack.
-
-A player is checked against each source in turn, and **the first match wins**:
-
-1. **User ID** — `tags.byUser`, keyed by Roblox user ID.
-2. **Game pass** — `tags.byGamePass`, filled in from each pass's `chatTag`.
-3. **Group rank** — `tags.byGroup`, a group ID and the ranks that earn a tag.
-
-Somebody who qualifies for several gets one tag, not a stack.
-
-**By user ID**
-
-```luau
-byUser = {
-	[123456789] = "Owner",
-}
-```
-
-**By game pass** — the pass names the tag in `Config > GamePasses`:
-
-```luau
-VIP = {
-	id = 1954950943,
-	kind = "VIP",
-	ticketMultiplier = 1.25,
-	trail = "VIPTrail",
-	chatTag = "VIP",
-	tickets = 200,
+Legend = {
+	text = "[Legend]",
+	colors = { Color3.fromRGB(255, 0, 128), Color3.fromRGB(255, 200, 0) },
 },
 ```
 
-The name must exist in `tags.styles`, and the server says so in the Output at
-startup if it does not — for `byUser` and `byGroup` too. Ownership is checked
-server-side and replicated, so the tag appears the moment a pass is bought,
-without rejoining.
+Add as many colours as you like; they spread evenly from the first letter to the last. Only the tag is coloured; the name keeps its usual colour. Keep a gradient tag's text plain (no `<b>` or other rich text). Tags show in the chat window, not in bubbles.
 
-A player who owns **two** tagged passes gets one of them, and which one is not
-defined. Give tags to passes that cannot sensibly be held together, or accept
-that the one shown is arbitrary.
+### Hand them out
 
-**By group rank**
+A player gets the **first** of these that applies:
 
-```luau
-byGroup = {
-	{
-		groupId = 123456,
-		roles = {
-			[255] = "Owner",
-			[200] = "Moderator",
-		},
-	},
-}
-```
+1. **By user ID**, in `tags.byUser`:
+
+   ```luau
+   byUser = { [123456789] = "Owner" },
+   ```
+
+2. **By game pass**: a VIP pass's `chatTag` in `Config > GamePasses`. It appears as soon as the pass is bought.
+3. **By group rank**, in `tags.byGroup`:
+
+   ```luau
+   byGroup = {
+   	{ groupId = 123456, roles = { [255] = "Owner", [200] = "Moderator" } },
+   },
+   ```
+
+A name that doesn't exist in `tags.styles` is reported in the Output.
 
 ## Win messages
 
-In the `client` section.
+In `messages`:
 
 | Setting | Purpose |
 | :-- | :-- |
-| `winMessage` | Local message for a Normal-mode win. |
-| `allJumpsWinMessage` | Local message for an All Jumps win. |
-| `boostsUsedMessage` | Extra line when boosts were used. Empty string turns it off. |
+| `winMessage` | A Normal win. |
+| `allJumpsWinMessage` | An All Jumps win. |
+| `boostsUsedMessage` | An extra line when boosts were used. `""` turns it off. |
+| `channel` | The chat channel they appear in. Default `RBXSystem`. |
+| `fontFace`, `fontSize` | Their font. |
+| `fancyFontFace`, `fancyFontSize` | The font for difficulties with `fancyFont = true`. |
 
-| Placeholder | Fills in with |
-| :-- | :-- |
-| `{PlayerName}` | The player's displayed name. |
-| `{EndingName}` | Tower or ending name. |
-| `{Time}` | Formatted completion time. |
-| `{BoostList}` | Comma-separated boost names. `boostsUsedMessage` only. |
+Placeholders: `{PlayerName}`, `{EndingName}`, `{Time}`, and `{BoostList}` in `boostsUsedMessage`.
 
-## Appearance
-
-| Setting | Purpose |
-| :-- | :-- |
-| `channel` | Roblox text channel for system messages. Default `RBXSystem`. |
-| `fontFace` / `fontSize` | Normal difficulty messages. |
-| `fancyFontFace` / `fancyFontSize` | Difficulties with `fancyFont = true`. |
-
-`fancyFont` is set per difficulty in `Config > Towers`.
-
-## See Also
-
-- [Announcements & Webhooks](./announcements-webhooks.md) — server-wide and cross-server messages
-- [Configuration Reference: Chat](./configuration.md#chat)
+Each message starts with `[SERVER]:`, or `[GLOBAL]:` for a win announced to every server. Those prefixes are in `Config > Messages` under `wins`. Which difficulties are announced to every server is set in `Config > Towers`; see [Announcements & Webhooks](./announcements-webhooks.md).

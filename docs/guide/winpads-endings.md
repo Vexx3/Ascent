@@ -1,103 +1,54 @@
 # Winpads & Endings
 
-A `WinPad` is the part players touch to complete a tower. The server validates
-the run, awards badges and stats, sends announcements, and teleports the player
-to the winroom.
+A `WinPad` is the part players touch to finish a tower.
 
 ## What happens on a touch
 
-Every step below runs on the server. Nothing is awarded until all three checks
-pass, and a run that fails any of them is refused rather than partly credited.
+The touch is ignored in Practice mode, and after a boost in a tower or rush that bans boosts. Otherwise the server checks, in order:
 
-Touching a winpad is checked on the server, in order:
+1. The winpad belongs to the tower the player is in.
+2. The run took at least the tower's minimum time.
+3. Every checkpoint was passed, in order.
 
-1. **This winpad belongs to the tower you are in.**
-2. **Every checkpoint was reached, in order.**
-3. **The run lasted at least the tower's minimum time.**
+If all three pass, the win is announced, rewards are given, and the player goes to the winroom. In a rush, the winpad moves them on to the next tower instead; see [Tower Rushes](./tower-rushes.md).
 
-Pass all three and the completion is granted — badge, stats, tickets and
-tools — then the win is announced and you are sent to the winroom.
-
-::: warning A failed check is treated as cheating
-Fail any one of them and the player is **kicked** with nothing awarded, and
-the attempt is reported to `ANTICHEAT_WEBHOOK`. These are not soft refusals.
+::: warning Failing a check is treated as cheating
+The player is **kicked** with nothing awarded, and a line from `antiCheatKickMessages` in `Config > Chat` is announced. With `webhooks.antiCheat` on, it's also posted to `ANTICHEAT_WEBHOOK`.
 :::
+
+A run that used a debug tool (like the Studio test tools) skips the checks, earns nothing, and the player is told it didn't count.
 
 ## Standard Ending
 
-For a normal tower ending:
+Add a `BasePart` named exactly `WinPad` (not `Winpad`) at the end of the tower. A Normal win on it records the win and best time, and gives the badge, points, completion tools and tickets.
 
-1. Add a `BasePart` at the end of the tower.
-2. Name it `WinPad`, exactly. The name is case sensitive, so `Winpad` never registers.
-3. Make sure the tower is registered in `ReplicatedStorage > Shared > Config > Towers`.
-
-When the player touches the `WinPad` in Normal mode, the kit can:
-
-- Award the tower badge from the tower entry in `ReplicatedStorage > Shared > Config > Towers`.
-- Record the tower win and best time.
-- Award tower points.
-- Give completion tools.
-- Award tickets if the run was not boosted and the tower is off cooldown.
-- Teleport the player to the winroom.
-
-Practice mode cannot complete a tower. All Jumps mode records an All Jumps win and can award `AJBadgeID`, but it does not give tickets or completion tools.
+An All Jumps win records an All Jumps win and can give `AJBadgeID`, but no tickets, tools or normal badges.
 
 ## Custom Ending
 
-Use custom winpad attributes for secret endings, alternate exits, or special badges.
+For secret endings and alternate exits, add more winpads with attributes. A tower's **main ending** is the winpad whose `EndingID` is its acronym, or empty. **Only the main ending counts as beating the tower.** A side ending announces the win under its own name, gives its own badge (and the tower's, unless `PreventTowerBadge` is set) and sends the player to its winroom, but doesn't record the tower as beaten.
 
-Example:
+A secret ending:
 
-1. Create another `BasePart` named `WinPad`.
-2. Add `EndingID = "SecretVault"`.
-3. Add `EndingName = "The Secret Vault"`.
-4. Add `BadgeID = 1234567890`.
-5. Add `PreventTowerBadge = true` if this ending should not award the main tower badge.
+1. Add another `BasePart` named `WinPad`.
+2. Set `EndingID = "SecretVault"` and `EndingName = "The Secret Vault"`.
+3. Set `BadgeID` for its own badge, and `PreventTowerBadge = true` if it shouldn't also give the tower's.
 
-The Tower Setup window edits every one of these on its Selected tab, one card per
-winpad, and its **Add another ending** button makes the second winpad for you
-with a free ending ID already set.
+The [Tower Setup window](./tower-setup-plugin.md#endings)'s **Add another ending** does this for you.
 
 ## Winpad Attributes
 
 | Attribute | Type | Default | Purpose |
 | :-- | :-- | :-- | :-- |
-| `EndingID` | `string` | Tower acronym | Unique internal ID for this ending. |
-| `EndingName` | `string` | Tower display name | Name used in announcements and webhooks. |
-| `Difficulty` | `string` | Tower difficulty | Overrides announcement difficulty for this ending. |
-| `BadgeID` | `number` | `0` | Badge awarded for this ending. |
-| `PreventTowerBadge` | `boolean` | `false` | Prevents the normal tower badge from being awarded. |
-| `WinroomMarker` | `string` | Empty | Teleports to a named marker after winning. |
-| `Winroom` | `string` | Empty | Legacy alias for `WinroomMarker`. |
+| `EndingID` | `string` | the acronym | Which ending this is. Anything but the acronym makes it a side ending. |
+| `EndingName` | `string` | the tower's name | The name announced. Side endings only. |
+| `Difficulty` | `string` | the tower's | A difficulty **name**, like `"Extreme"`, for the announcement. Side endings only. |
+| `BadgeID` | `number` | `0` | A badge for this ending. |
+| `PreventTowerBadge` | `boolean` | `false` | Don't also give the tower's badge. |
+| `WinroomMarker` | `string` | `WinroomSpawn` | The marker to send the player to. |
 
-::: warning `Difficulty` means two different things
-On the **tower folder** it is a number — `9.26`. On a **winpad** it is a
-difficulty *name* — `"Extreme"` — because all it does is change the word in the
-announcement for this one ending. A number here is ignored.
-:::
-
-Every attribute on this page can also be a **Value object child** of the matching
-class, which is how towers from the legacy framework carry them, and the child
-wins where a winpad has both.
+Old towers' Value objects with these names work too.
 
 ## Winpad Visuals
 
-Every winpad gets the kit's particles when its tower loads, and flashes through
-random colours and materials while somebody is inside that tower. Three settings
-in `Config > Project` control it:
-
-| Setting | Default | Purpose |
-| :-- | :-- | :-- |
-| `winpadInterval` | `0.25` | Seconds between changes. |
-| `winpadsChangeColor` | `true` | Flash the colour. |
-| `winpadsChangeMaterial` | `true` | Flash the material. |
-
-The flashing only runs for towers that have somebody in them — an empty tower's
-winpad is a property change nobody can see. Turning both off stops the loop
-doing any work at all.
-
-## See Also
-
-- [Configuration Reference: Towers](./configuration.md#towers)
-- [Tower Setup](./tower-setup.md)
-- [Markers & Portals](./markers-portals.md)
+Winpads get the kit's particles and flash colours and materials while someone is in the tower. `winpadInterval`, `winpadsChangeColor` and `winpadsChangeMaterial` in `Config > Project` control it.

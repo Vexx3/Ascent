@@ -7,7 +7,7 @@ Two folders in the Workspace. **Markers** are places a player can be sent to;
 Workspace
 ├─ Markers
 │  ├─ SpawnLocation       -- where the lobby puts people
-│  ├─ WinroomSpawn
+│  ├─ WinroomSpawn        -- where a win sends people by default
 │  └─ LobbyTP             -- touching it sends you to SpawnLocation
 └─ Portals
    ├─ ToH Portal
@@ -38,23 +38,28 @@ A part with more than one uses the first in that order and ignores the rest.
 
 A tower portal does nothing while the player is already inside a *different*
 tower — they have to leave first. Touching the portal for the tower they are
-already in reloads it.
+already in reloads it. During a tower rush, neither kind of tower portal does
+anything.
 
 ## Markers
 
-A marker is a `BasePart` under `Workspace > Markers`. Two names are special:
+A marker is a `BasePart` under `Workspace > Markers`. Three names are special:
 
 | Marker | Purpose |
 | :-- | :-- |
 | `SpawnLocation` | Where lobby and exit logic puts a player. |
+| `WinroomSpawn` | Where a win sends the player when the winpad names no `WinroomMarker` of its own, and where a rush ends when it names no `winroomMarker`. Without it the win still counts and the player is left on the winpad. |
 | `LobbyTP` | Touching **the marker itself** sends the player to `SpawnLocation` and puts them on the Start team. |
 
 Everything else there is a destination you name from somewhere else: a
-`LobbyTeleporter`'s value, a rush's `winroomMarker`, or the
-[`tower-marker`](./commands.md) command (`tpmarker` for short).
+`LobbyTeleporter`'s value, a winpad's `WinroomMarker`, a rush's
+`winroomMarker`, or the [`tower-marker`](./commands.md) command (`tpmarker` for
+short).
 
 A `LobbyTeleporter` finds its target **anywhere under `Markers`**, nested
-folders included, so you can group them however you like.
+folders included, so you can group them however you like. So do winrooms,
+`SpawnLocation` and `tower-marker`. `LobbyTP` is the exception: only one
+directly inside `Markers` is set up.
 
 ::: warning Both folders are read once, at server start
 A portal or marker added while the game is running is never registered.
@@ -64,9 +69,3 @@ Build them in Studio, not from a script.
 `LobbyTP` is the one thing here that errors rather than warns: if `Markers` has
 no `SpawnLocation` BasePart, startup stops, because a lobby teleporter with
 nowhere to go would silently strand players.
-
-## See Also
-
-- [Tower Setup](./tower-setup.md)
-- [Tower Rushes](./tower-rushes.md)
-- [Winpads & Endings](./winpads-endings.md)

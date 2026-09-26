@@ -1,165 +1,92 @@
 # Administrator Commands
 
-The kit uses [Cmdr](https://eryn.io/Cmdr/docs/intro/) for its administrator console. It is separate from Roblox chat and is available only to authorized players.
+The admin console is [Cmdr](https://eryn.io/Cmdr/docs/intro/), open only to authorized players. Press `F4`, start typing, and follow the suggestions. `help <command>` shows a command's arguments.
 
-Press `F4` by default, start typing, and use Cmdr's suggestions for players,
-towers, rushes, modes, markers, cosmetics and shop items. Run `help` or
-`help <command>` inside the console whenever you need the exact arguments.
-
-::: tip On a phone or a controller
-There are no keys to press, so authorized players get a **Console** button on
-the topbar instead. It appears only for players without a keyboard, and it
-disappears again if they plug one in.
-:::
+On a phone or controller, admins get a **Console** button in the topbar instead.
 
 ## Access
 
-Open `ReplicatedStorage > Shared > Config > Admin` in Studio:
+`ReplicatedStorage > Shared > Config > Admin`:
 
-```luau
-return {
-	enabled = true,
-	allowStudio = true,
-	activationKeys = { Enum.KeyCode.F4 },
-	userIds = {
-		123456789,
-	},
-}
-```
+| Field | Default | Purpose |
+| :-- | :-- | :-- |
+| `enabled` | `true` | Turns the console on or off. |
+| `allowStudio` | `true` | Every Studio tester can use it. |
+| `activationKeys` | `{ F4 }` | The keys that open it. |
+| `userIds` | `{}` | Your admins' user IDs, such as `{ 123456789 }`. |
+| `maxTicketChange` | `1000000` | The most `tickets-add` changes at once. |
+| `maxTicketBalance` | `1000000000` | The highest balance `tickets-set` allows. |
+| `saveTimeout` | `15` | Seconds a command waits for a save to confirm. |
 
-- `enabled` turns the console on or off.
-- `allowStudio` lets every Studio test player use it.
-- `activationKeys` changes the key that opens Cmdr.
-- `userIds` lists administrators by Roblox user ID.
-
-The owner of a user-owned experience is automatically authorized. Every server command is checked again on the server; hiding the console on an unauthorized client is not treated as security.
+The experience's owner, or the owning group's owner, is always an admin. Every command is checked on the server.
 
 ## Built-in Cmdr commands
 
-The kit registers Cmdr's maintained default command set, so it does not reimplement common moderation and utility commands.
-
-| Group | Included commands |
+| Group | Commands |
 | :-- | :-- |
 | Administration | `announce`, `ban`, `goto-place`, `kill`, `respawn`, `teleport`, `unban` |
 | Debugging | `blink`, `get-player-place-instance`, `position`, `thru`, `uptime`, `version` |
-| Console utilities | `alias`, `bind`, `clear`, `convertTimestamp`, `echo`, `edit`, `exit`, `help`, `history`, `hover`, `json-array-decode`, `json-array-encode`, `len`, `math`, `pick`, `rand`, `replace`, `resolve`, `run`, `run-lines`, `runif`, `unbind`, `var`, `var=` |
+| Console utilities | `alias`, `bind`, `clear`, `echo`, `help`, `history`, `math`, `rand`, `run`, `var`, and more |
 
-Cmdr also supplies useful aliases and generated commands such as `bring`, `to`, `rejoin`, `follow-player`, and `refresh`. See the official [default command reference](https://eryn.io/Cmdr/docs/reference/commands/) for their complete syntax.
-
-Two defaults are left out. `fetch` reads arbitrary URLs from the console, which
-does not belong in a beginner template; `kick` is replaced by the kit's own,
-below, which refuses to kick another administrator.
+Plus aliases like `bring`, `to` and `rejoin`; see Cmdr's [command reference](https://eryn.io/Cmdr/docs/reference/commands/). `fetch` is left out, and `kick` is the kit's own, which won't kick another admin.
 
 ## Kit commands
 
-Angle brackets are required arguments. Square brackets are optional arguments with defaults.
+`<angle brackets>` are required, `[square brackets]` optional.
 
 ### Towers and checkpoints
 
-| Command | Arguments | Purpose |
+| Command | Arguments | Does |
 | :-- | :-- | :-- |
-| `tower-load` | `<players> <tower>` | Loads a configured tower and starts a fresh timer. Alias: `loadtower`. |
-| `tower-exit` | `<players>` | Safely clears run state and returns players to the hub spawn. Aliases: `exittower`, `unloadtower`. |
-| `tower-restart` | `<players>` | Immediately restarts active tower runs. Alias: `restarttower`. |
-| `tower-mode` | `<players> <Normal\|Practice\|AllJumps>` | Changes mode and reloads the active run when needed. Alias: `setmode`. |
-| `tower-status` | `<players>` | Shows tower, mode, timer, checkpoint, rush, and loading state. Alias: `towerstate`. |
-| `tower-marker` | `<players> <marker>` | Teleports players to a part under `Workspace > Markers`. Alias: `tpmarker`. |
-| `tower-rush` | `<players> <rush>` | Starts a configured tower rush. Aliases: `loadrush`, `startrush`. |
-| `checkpoint-clear` | `<players>` | Clears temporary Practice and All-jumping checkpoints. Alias: `clearcheckpoint`. |
-| `checkpoint-return` | `<players>` | Returns players to their checkpoint or tower spawn. Alias: `returncheckpoint`. |
-| `fake-win` | `<player> <ending> [difficulty] [time] [globalStyle]` | Previews the win UI without granting anything. Alias: `fakewin`. |
+| `tower-load` | `<players> <tower>` | Loads a tower with a fresh timer. |
+| `tower-exit` | `<players>` | Ends the run and returns them to `SpawnLocation`. |
+| `tower-restart` | `<players>` | Restarts their run. |
+| `tower-mode` | `<players> <Normal\|Practice\|AllJumps>` | Changes their mode. |
+| `tower-status` | `<players>` | Shows tower, mode, timer, checkpoint and rush. |
+| `tower-marker` | `<players> <marker>` | Teleports them to a marker. |
+| `tower-rush` | `<players> <rush>` | Starts a tower rush. |
+| `checkpoint-clear` | `<players>` | Clears Practice and All Jumps checkpoints. |
+| `checkpoint-return` | `<players>` | Sends them to their checkpoint. |
+| `fake-win` | `<player> <ending> [difficulty] [time] [globalStyle]` | Previews the win screen, granting nothing. |
 
-### Tickets, cosmetics, and items
+### Tickets, cosmetics and items
 
-| Command | Arguments | Purpose |
+| Command | Arguments | Does |
 | :-- | :-- | :-- |
-| `tickets` | `<player>` | Shows a player's ticket balance. Alias: `tickets-get`. |
-| `tickets-add` | `<player> <amount>` | Adds tickets, or removes them with a negative amount. Never goes below zero. Alias: `addtickets`. |
-| `tickets-set` | `<player> <balance>` | Sets a balance from 0 to 1,000,000,000. Alias: `settickets`. |
-| `cosmetic-grant` | `<player> <category> <cosmetic>` | Permanently unlocks a configured cosmetic. Alias: `grantcosmetic`. |
-| `cosmetic-revoke` | `<player> <category> <cosmetic>` | Removes a permanent cosmetic grant. Alias: `revokecosmetic`. |
-| `cosmetic-equip` | `<player> <category> [cosmetic]` | Equips a cosmetic the player has unlocked. Omit the cosmetic to unequip that category. Alias: `equipcosmetic`. |
-| `shop-item-grant` | `<player> <item>` | Grants a configured ticket-shop item without charging tickets. Alias: `grantshopitem`. |
+| `tickets` | `<player>` | Shows their balance. |
+| `tickets-add` | `<player> <amount>` | Adds tickets, or removes them with a negative amount. |
+| `tickets-set` | `<player> <balance>` | Sets their balance. |
+| `cosmetic-grant` | `<player> <category> <cosmetic>` | Unlocks a cosmetic. |
+| `cosmetic-revoke` | `<player> <category> <cosmetic>` | Takes one away. |
+| `cosmetic-equip` | `<player> <category> [cosmetic]` | Equips one they own, or unequips. |
+| `shop-item-grant` | `<player> <item>` | Gives a shop item for free. |
 
-Balance and ownership changes use Scribe transactions and request an immediate save. They only target profiles loaded in the current server.
+These only affect players in this server.
 
-### Data, players, and servers
+### Data, players and servers
 
-| Command | Arguments | Purpose |
+| Command | Arguments | Does |
 | :-- | :-- | :-- |
-| `data-summary` | `<player>` | Shows safe completion, inventory, ticket, and save-state totals. Alias: `playerdata`. |
-| `data-save` | `<players>` | Requests an immediate Scribe flush. Use `*` for everyone. Alias: `savedata`. |
-| `recount-badges` | `<player>` | Resets tower completions and refills them from the badges the player owns. For recovering lost data. Alias: `recount`. |
-| `leaderboard` | `[board] [count]` | Prints the top of `Towers`, `AllJumps` or `Elo`, and where everyone in this server sits. Aliases: `board`, `top`, `elo-board`. |
-| `data-health` | `[problems]` | Scribe's own view of the data service: status, save timings, DataStore budget, recent errors. Aliases: `datahealth`, `datastats`. |
-| `data-export` | `<userId>` | Prints everything saved for a user ID as JSON, for answering a data request. Works offline. Alias: `dataexport`. |
-| `data-erase` | `<userId> <confirm>` | Permanently deletes a user's saved data and leaderboard entries. Cannot be undone. Alias: `dataerase`. |
-| `gamepass-refresh` | `<player> <gamePass>` | Re-checks an enabled configured pass through Scribe's ownership API. Alias: `checkgamepass`. |
-| `heal` | `<players>` | Restores living characters to full health. |
-| `give-badge` | `<players> <badgeId>` | Awards an enabled badge belonging to the experience. Alias: `givebadge`. |
-| `notify` | `<players> <message> [duration] [global]` | Sends a filtered kit notification locally or across servers. Alias: `notice`. |
-| `kick` | `<players> [reason]` | Removes players from this server. Refuses to kick another administrator, so whoever holds the console cannot clear the room. |
-| `server-time` | `<players>` | How long each player has been in this server. Alias: `playtime`. |
-| `kit-info` | none | Shows the kit version, place, job, and player count. Alias: `ascent-info`. |
-| `shutdown` | `<true> [seconds] [reason]` | Closes this server after a countdown everyone can see. Defaults to 60 seconds; pass `0` to close at once. |
-
-The kit does not include profile wipes, arbitrary raw-profile editing, offline data mutation, arbitrary code execution, or unrestricted HTTP fetching. Those commands are too easy to misuse and are not needed to operate a fangame.
+| `data-summary` | `<player>` | Their completions, items, tickets and save state. |
+| `data-save` | `<players>` | Saves now. `*` for everyone. |
+| `recount-badges` | `<player>` | Rebuilds completions from their badges. For lost saves. |
+| `leaderboard` | `[board] [count]` | The top of `Towers`, `AllJumps` or `Elo`. |
+| `data-health` | `[problems]` | The data service's status and recent errors. |
+| `data-export` | `<userId>` | Prints everything saved for a user, for a data request. |
+| `data-erase` | `<userId> <confirm>` | Deletes a user's save permanently. Needs `confirm` as `true`, and refuses while they're in the server. |
+| `gamepass-refresh` | `<player> <gamePass>` | Re-checks a pass. |
+| `heal` | `<players>` | Full health. |
+| `give-badge` | `<players> <badgeId>` | Awards one of your badges. |
+| `notify` | `<players> <message> [duration] [global]` | Sends a notification, here or to every server. |
+| `kick` | `<players> [reason]` | Kicks them. Won't kick another admin. |
+| `server-time` | `<players>` | How long they've been in the server. |
+| `kit-info` | none | Kit version, place and player count. |
+| `shutdown` | `<true> [seconds] [reason]` | Closes the server after a countdown (60 seconds by default, `0` for now). |
 
 ## Adding a command
 
-In Studio, open `ServerScriptService > Server > Commands > Catalog`. Commands are
-grouped into `Cosmetics`, `Data`, `Economy`, `Kit`, `Players`, and `Towers`
-folders. A command is two ModuleScripts with the same base name, side by side in
-one of those folders:
+Put your own commands in a `ServerScriptService > CustomCommands` folder, outside the kit, so updates leave them alone. See [Hooking Into the Kit](./hooks.md#admin-commands-of-your-own).
 
-- `UserId` describes the command and its arguments. Cmdr safely copies this definition to clients for autocomplete.
-- `UserIdServer` performs the server-only work. Cmdr keeps any module with `Server` in its name off the client.
-
-::: danger Never put "Server" in the definition's name
-Cmdr decides which of the pair is the implementation by looking for `Server`
-**anywhere** in the file name, not at the end of it. A definition called
-`ServerTime` is read as an implementation, its own `ServerTimeServer` as another
-one, and **neither registers** — both are skipped with a warning and the command
-silently does not exist.
-
-Name the files something else and let the definition's `Name` field say what you
-meant. The kit's `server-time` command lives in `Playtime` and `PlaytimeServer`
-for exactly this reason.
+::: danger Keep "Server" out of the definition's file name
+A command is two modules: the definition (`Hello`) and the one that runs it, which ends in `Server` (`HelloServer`). Any module with `Server` **anywhere** in its name is taken for the running half, so a definition called `ServerTime` never registers. Name the definition something else and set `Name = "server-time"` inside it.
 :::
-
-`UserId`:
-
-```luau
-return {
-	Name = "user-id",
-	Aliases = { "userid" },
-	Description = "Shows a player's Roblox user ID.",
-	Group = "Ascent Admin",
-	Args = {
-		{
-			Type = "player",
-			Name = "Player",
-			Description = "Player to inspect.",
-		},
-	},
-}
-```
-
-`UserIdServer`:
-
-```luau
-return function(_context, player: Player): string
-	return `{player.Name}'s user ID is {player.UserId}.`
-end
-```
-
-Cmdr's `RegisterCommandsIn` walks every folder under `Catalog` and pairs the
-two modules by name, so a new folder needs no code change. Put secret logic and
-state changes only in the `Server` module. For custom arguments, see
-`ServerScriptService > Server > Commands > ArgumentTypes` and Cmdr's
-[custom type guide](https://eryn.io/Cmdr/docs/reference/types/).
-
-## See Also
-
-- [Configuration Reference: Admin](./configuration.md#admin)
-- [Extending the Kit](./extending-gameplay.md)

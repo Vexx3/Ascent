@@ -1,223 +1,143 @@
 # Troubleshooting
 
-Common problems, what causes them, and where to fix them. Open the **Output**
-window in Studio first — the kit prints a warning naming the tower or setting
-involved in most of these.
-
-The server also checks itself once on startup and warns about everything
-`Config` names that the place does not have — a shop item whose Tool is
-missing, a cosmetic with no model, a completion tool folder matching no tower.
-If the Output window is quiet on those, they are set up.
+Check the **Output** window first. The kit names the tower, item or setting behind nearly every problem, and when a server starts it lists anything in `Config` that the place is missing.
 
 ## Saved Data
 
 ### Progress does not save in Studio
 
-Turn on **Game Settings → Security → Enable Studio Access to API Services**.
-Without it Roblox blocks data stores entirely.
-
-Then check `Config > Project`:
-
-- `dataStoreStudioMode = "Mock"` fakes saving and forgets everything when you
-  stop the test. That is the safe default, but it is not a real save.
-- `"Live"` really writes to `dataStoreKeyStudio`.
-- `"NoSave"` never saves.
+Turn on **Game Settings → Security → Enable Studio Access to API Services**. Then check `dataStoreStudioMode` in `Config > Project`: `Mock` (the default) forgets everything when you stop, `Live` really saves, `NoSave` never saves.
 
 ### Progress does not save in the published game
 
-`dataStoreKey` in `Config > Project` must be set, and the place must be
-published. Data stores do not work in an unpublished place.
+The place must be published, and `dataStoreKey` in `Config > Project` set.
 
 ### Everyone lost their progress
 
-A save key changed. `dataStoreKey` points at a whole storage bucket, so a new
-key means a new, empty one. Change it back and the old saves are still there.
+A save key changed, which points at a new, empty save. Change it back and the old saves are still there.
 
 ### The loading screen never goes away
 
-The client waits for saved data before hiding it. If data never arrives, the
-Output window shows why. The usual causes are Studio API access being off, or a
-`Config > Project` save key that is empty.
+The Output says why. Usually Studio API access is off, or `MainMenu` is missing `ButtonsHolder`, `Main`, `Main > ButtonsContainer` or `Main > MenusContainer`. The [Tower Setup window](./tower-setup-plugin.md#setup)'s Setup tab lists missing menu parts.
 
 ## Towers
 
-### "\<Tower\> has no checkpoints!"
+### "\<Tower\> has no checkpoints"
 
-The tower has no folder in `ServerStorage > TowerCheckpoints`, or that folder
-has no parts in it. The [Tower Setup window](./tower-setup-plugin.md) creates
-one for you.
-
-This is worth fixing rather than silencing. Checkpoints are what proves a player
-climbed the tower instead of flying to the top, so a tower without them accepts
-any win at all. See
-[Checkpoints Are The Anti-Cheat](./tower-setup.md#checkpoints-are-the-anti-cheat).
-
-You can silence the warning with `checkpointsMissingWarning` in
-`Config > Project` once you are done building.
+It has no folder in `ServerStorage > TowerCheckpoints`, or the folder is empty. Fix it rather than silencing it: without checkpoints anyone can win the tower. See [Checkpoints Are The Anti-Cheat](./tower-setup.md#checkpoints-are-the-anti-cheat).
 
 ### A player says their win was not counted
 
-The server refuses a win for one of three reasons, all of them anti-cheat:
+The server kicks a player for one of three reasons:
 
-- **"Completed the tower out of order"** — they reached the winpad without
-  passing every checkpoint in sequence. Usually a checkpoint that is too small
-  or too high to walk through, so a normal player can miss it. Make them wide
-  and thin, spanning the whole path.
-- **"Completed the tower too early"** — the run was faster than the tower's
-  `MinimumTime`. If honest players hit this, the value is set too high.
-- **"Touched the winpad of a tower you're not in"** — the winpad is in a
-  different tower's folder from the one the player is playing. A winpad
-  belongs to the tower it is parented under; move it, rather than looking
-  for an attribute to correct.
+- **"Completed the tower out of order"**: they missed a checkpoint. Usually a checkpoint too small to walk through; make it wide and thin across the whole path.
+- **"Completed the tower too early"**: faster than `MinimumTime`. If honest players hit it, lower it.
+- **"Touched the winpad of a tower you're not in"**: the winpad is in another tower's folder.
 
-Practice and All Jumps runs skip these checks and never count as completions.
+Some wins don't count without a kick:
+
+- **Practice mode** never completes a tower.
+- **A boost item** in a tower or rush that bans them.
+- **A side ending** (a winpad with its own `EndingID`) announces the win but doesn't count as beating the tower. See [Winpads & Endings](./winpads-endings.md).
 
 ### A tower does not appear in the Completions menu
 
-The tower needs to belong to an area. Either set an `Area` attribute on the
-tower folder, which the [Tower Setup window](./tower-setup-plugin.md) does from
-a dropdown, or register its acronym in `Config > Towers` under a World and Area.
-The model name in `Workspace > Towers` must match that acronym exactly,
-including capitals.
+It needs an entry in `Config > Towers` with an `area`, and its model name must match the acronym exactly. [Tower Setup](./tower-setup-plugin.md#adding-a-tower-to-the-catalogue) adds the entry.
 
 ### A tower shows the wrong difficulty
 
-Check the tower folder for a `Difficulty` **child** — a `StringValue` or
-`NumberValue` — left over from an older kit. A child wins over both the
-attribute and `Config > Towers`, and a `StringValue` holding a name like
-`"Extreme"` resolves to that rating with no decimal, so `9.26` becomes a
-Baseline `9.00`. Delete it or replace it with the number. Tower Setup flags it
-on the tower's card.
+Look for a `Difficulty` StringValue or NumberValue inside the tower folder, left from an older kit. It overrides Config. Delete it.
 
 ### A portal to a tower does nothing
 
-Look for **`Skipping <Tower>`** in the Output. A tower with no spawn, or whose
-checkpoints are not numbered `1`, `2`, `3` with no gaps and nothing else in the
-folder, is left out at startup and the rest of the game carries on. The line
-says which one is wrong.
+Look for **`Skipping <Tower>`** in the Output: the tower has no spawn, or its checkpoints aren't numbered `1`, `2`, `3` without gaps. A portal also does nothing while the player is in another tower or a rush.
 
-### A tower loads but the timer never starts
+### The timer does not show
 
-The tower model needs a spawn. The plugin can create one, or add a `SpawnLocation`
-or a part named `Spawn` yourself.
+Check the player's **Hide Timer** setting, then that `TowerGUI` has a `Timer` label.
 
 ### Beating the tower does nothing
 
-The winpad must be a `BasePart` named exactly `WinPad`. The name is case
-sensitive, so `Winpad` or `winpad` looks right in Explorer and never
-registers. The Tower Setup window finds this one and renames it in a click.
-
-If the winpad is named correctly, the run is being refused. See
-[A player says their win was not counted](#a-player-says-their-win-was-not-counted).
+The winpad must be a `BasePart` named exactly `WinPad`. `Winpad` doesn't work. Tower Setup renames it for you.
 
 ### Wins are rejected as too fast while testing
 
-Lower the tower's `MinimumTime`, or set it to `0` until you are done. Put it
-back before you release: it is what stops a run that is too fast to be real.
+Set the tower's `MinimumTime` to `0` while testing, and put it back before release.
 
 ## Tickets And The Shop
 
 ### Beating a tower awards no tickets
 
-Tickets are only awarded when all of these are true:
-
-- the run was in Normal mode, not Practice or All Jumps;
-- no boost item was used;
-- the difficulty has a reward above `0` in `Config > Economy`; and
-- the tower is off cooldown, unless `allowRebeats` is set for it.
+A win pays only in Normal mode, on the main winpad, with no boost used, when the difficulty has a reward, and when the tower is off cooldown. See [Tickets & Shop](./ticket-shop.md#when-a-win-pays).
 
 ### A shop item does not grant its tool
 
-`template` on the item must name a Tool inside
-`ServerStorage > TicketShopItems > Tools`. The startup report names the item and
-the tool it could not find, so you do not have to buy it to notice.
+Its `template` (or `name`) must match a Tool in `ServerStorage > TicketShopItems > Tools`.
 
-### A shop item cannot be bought and says the cosmetic is missing
+### A shop item says the cosmetic is missing
 
-A `Trails` or `Auras` item is matched to its cosmetic by its **key**, not by its
-`name`. `Fallen` in `shop > items` sells `cosmetics > Auras > Fallen`, and the
-two spellings have to agree exactly. The startup report names both.
+A Trail or Aura item is matched to its cosmetic by **key**: shop item `Fallen` sells `cosmetics.Auras.Fallen`.
 
-### A cosmetic unlocks but nothing appears on the player
+### A cosmetic unlocks but nothing appears
 
-Every cosmetic needs a model named after it in
-`ServerStorage > Cosmetics > Trails` or `> Auras`, or after its `template` when
-it has one. The startup report names the cosmetic and the model it wanted.
+It needs a model with its name in `ServerStorage > Cosmetics > Trails` or `> Auras`.
 
 ### Beating a tower awards no completion tool
 
-The folder under `ServerStorage > CompletionTools` must be named exactly like
-the tower's acronym, and hold at least one `Tool`. A tower with no folder is
-normal and says nothing — most towers award nothing — but a folder matching no
-tower is reported at startup, because that is always a typo.
+The folder in `ServerStorage > CompletionTools` must be named exactly like the acronym and hold a `Tool`.
 
 ### An item never appears in the shop
 
-`featuredOnly = true` means it only shows while it is featured. Featured items
-rotate on `featured.refreshMinutes` and are picked from
-`featured.categories`.
+`featuredOnly` items only show on the Featured page. An item with a misspelled `category` or `rarity`, or whose cosmetic kind is turned off, is left out, and the Output names it.
 
 ## Game Passes
 
 ### Owning the pass does nothing
 
-Check that `id` in `Config > GamePasses` is the **pass** ID, not the place or
-model ID, and that `disabled` is not set.
-
-Ownership is checked when a player joins and when they buy in-game. Rejoin
-after granting yourself a pass, or run `gamepass-refresh` in the admin console.
+Check that `id` is the **pass** ID and `disabled` isn't set. Rejoin after buying, or run `gamepass-refresh`.
 
 ## Teleports And Personal Servers
 
 ### Teleporting does nothing in Studio
 
-Roblox does not run teleports or reserved servers in a Studio playtest. Publish
-every place and test in the Roblox app.
+Teleports and personal servers don't work in Studio. Test in the published game.
 
 ### An Area is missing from the Teleport menu
 
-An Area is hidden when its `placeId` is `0` or `disabled` is set. A whole World
-is hidden when none of its Areas have a usable Place ID.
+Its `placeId` is `0` or it's `disabled`.
 
 ### An Area is locked when it should not be
 
-`requirements` in `Config > Worlds` counts towers from `Config > Towers`. The
-World and Area IDs must match between the two files, or the kit cannot tell
-which towers belong to that World. `scope = "All"` counts every tower instead.
+Each tower's `area` in `Config > Towers` must be an Area `id`, or it counts for no World. A World with no towers of its own needs `scope = "All"`.
+
+### A player was sent back to the hub on arrival
+
+They reached a locked Area without the menu, usually by following a friend. The Output says who and why.
+
+### "The shop just rotated and that price changed"
+
+The featured row changed as they bought. Buying again at the new price works.
 
 ### Personal server codes do not work
 
-Codes live in a MemoryStore shared by every place in your experience. All the
-places must be in the same experience, and all of them must be published with
-the kit.
+Every place must be in the same experience and published.
 
 ## Settings
 
 ### A setting I added does not appear
 
-A setting you declared in `Config > CustomSettings` builds its row from the
-templates under `SettingsMenu > CustomTemplates`. The Output names the setting
-and what was missing. [Adding A Saved Setting](./custom-settings.md#if-it-does-not-work)
-has the full table of symptoms.
+See [Adding A Saved Setting](./custom-settings.md#if-it-does-not-work). The Output names what's missing.
 
 ## Admin Console
 
 ### F4 does nothing
 
-Check `Config > Admin`: `enabled` must be `true`, and your Roblox user ID must
-be in `userIds`. The experience owner is always allowed. In Studio,
-`allowStudio` grants access to every tester.
+In `Config > Admin`, `enabled` must be `true` and your user ID in `userIds`. The experience's owner is always allowed.
+
+### "Ascent Config: ... need a look"
+
+The server found mistakes in Config. Each line names what to fix. None stop the game.
 
 ### A command exists but does nothing
 
-Commands are two ModuleScripts side by side in
-`ServerScriptService > Server > Commands > Catalog`: the definition, and a
-`<Name>Server` that does the work. If the server module is missing, the console
-autocompletes the command but nothing happens, and the Output window says so.
-
-## Still Stuck
-
-Check the Output window while reproducing the problem. Nearly every failure in
-the kit prints a line naming the tower, item, or setting involved. If you are
-extending the kit, [Extending the Kit](./extending-gameplay.md) covers the
-supported places to hook in.
+Its `<Name>Server` module is missing from `ServerScriptService > Server > Commands > Catalog`. The Output says so.

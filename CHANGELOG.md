@@ -1,6 +1,112 @@
 # Changelog
 
-## Unreleased
+## 1.0.0
+
+The first stable release. From here on, the names in
+[Hooking Into the Kit](https://kiels.dev/Ascent/guide/hooks) -- the server's
+`Events`, `CustomData` and the `CustomCommands` folder -- stay as they are
+within 1.x, and every release says under **Updating** what, if anything, has to
+be done by hand.
+
+### Updating
+
+Coming from 1.0.0-rc.3, follow [Updating Ascent](https://kiels.dev/Ascent/guide/updating)
+and then:
+
+1. **Add `configVersion = 1` to `Config > Project`.** The server now compares
+   it with the Config shape the kit expects and says so in the Output when they
+   differ, which is how every later release will tell you Config needs editing.
+2. **Bring `Config > Messages` up to date.** It gained groups for the shop,
+   cosmetics, Completions, lock reasons, spectating, the settings menu and more,
+   and the kit reads them. Replace it with this release's and copy back any
+   wording of your own. The Output names any group still missing.
+3. **In `Config > Chat`, delete the loop at the top and the `byGamePass =
+   gamePassTags` line.** A VIP pass's tag comes from its `chatTag` in
+   `Config > GamePasses` as before; the kit works it out itself now.
+4. **Check `Config > Admin.userIds` and `Config > Chat.tags.byUser`.** Earlier
+   releases shipped the kit author's own account in both. Take it out if it is
+   still there. Whoever owns the experience -- you, or the owner of the group it
+   belongs to -- has the console without being listed.
+5. **In `Config > Settings.keybinds`, set `allJumpsPlace = "E"` and
+   `allJumpsTeleport = "Q"`**, unless you already gave them keys of your own.
+   The old defaults shared keys with Corner Flip and Quick Restart (see
+   **Fixed**), and the Output says so on every start until they differ.
+6. **Copy `SettingsMenu > VisualFrame > HideUI` from the new place into your
+   menu** for the new Hide UI setting, and add `hideUI = false` to
+   `Config > Settings` if you want to choose its default. Without the row the
+   setting is not offered; without the line it starts off.
+7. **Rename `resetOnDeath` to `restartOnDeath` in `Config > Settings`**, and the
+   `SettingsMenu > GameplayFrame > ResetonDeath` row to `RestartonDeath` with its
+   label. The Output names the Config line until it is renamed; the row still
+   works under its old name. See **Changed** for what the setting does now.
+8. **Copy `ButtonsHolder > AJMenuButton` and `MainMenu > AJSettings` from the new
+   place** for the checkpoint panel, and add `checkpointCamera = true` and
+   `checkpointTransparency = 0.5` to `Config > Settings`. The transparency
+   used to be `allJumpsMarker.transparency` in `Config > Visuals`, which is no
+   longer read: move your value across. Without the button and panel the game
+   works as before; without the lines, those two values are the defaults.
+9. **In the hub, copy `RingSelect > TopRightBar > FriendButton`, `ServerButton`
+   and `Lists` from the new hub place** for its friend and server lists. A hub
+   without them works as before, with neither. Copy `RingSelect > Requirements`
+   across too: `AreaReqLabel` now sits in a `RequirementsList` inside it, and
+   the hub does not start without one.
+10. **Install the new Tower Setup plugin.** Its Setup tab now says whether it
+    matches the kit the place runs.
+11. **Publish every place at the same time, then shut down the old servers.**
+    This release runs Scribe 2.5.0, whose save has a new shape, and a server
+    still on the old version refuses a player whose save a new one has written.
+    Then check the Output of one live server: anything Config gets wrong is now
+    reported there when it starts.
+
+Nothing a player has saved is lost. The save gains an empty `custom` table for
+your own values, which Scribe fills in on load, and each player's Reset on
+Death choice carries across to Restart on Death the first time they join.
+
+### Security
+
+**A locked Area is enforced on arrival, not only in the menu.** The menu and
+the server checked an Area's requirements before sending anyone, but a teleport
+between the places of one experience does not have to come from the kit: a
+modified client can start one, and following a friend from the Roblox friends
+list lands a player in whatever server the friend is in. A tower place now
+checks each player who arrives once their data has loaded, and sends anyone who
+has not unlocked it back to the hub with the reason. Badges only count against
+a player when Roblox answered, Studio is never checked, and the administrators
+in `Config > Admin` are let through so a locked Area can still be tested.
+
+**The shipped Config no longer names anybody.** `Config > Admin` gave console
+access, and `Config > Chat` an Owner tag, to the kit author's account in every
+game built from the kit; the game passes and developer products were the
+author's too. Both lists ship empty, the passes ship with `id = 0` -- which is
+off -- and a game owned by a group now gives the console to the group's owner
+without listing them.
+
+**Every message a client sends is bounded, rate-limited and answered.**
+
+- Strings and lists in `game.blink` carry a length, and Blink refuses a message
+  over it before any handler runs.
+- The settings, UI layout, backpack, cosmetics and shop requests each have a
+  rate limit. They allow a good run of genuine clicks and drop a flood.
+- Every client message now has a listener from the moment the server starts.
+  Blink keeps a message nothing listens for and only warns after 256, so one
+  sent to a feature that was switched off -- or to the hub, which listens to
+  almost nothing -- piled up for as long as the server ran.
+- Looking another player up in Completions reads their save from the
+  datastore, from the same budget every profile load and save spends. A lookup
+  is now kept for a minute, each player gets ten before waiting, and none is
+  made while the budget is low.
+
+**A gift note is shown as text.** The note is filtered, but a filter leaves
+RichText tags alone, so a note could draw giant text or a fake system line on
+the recipient's screen.
+
+**Runs that used a Studio test tool earn nothing.** A tool from
+`ServerStorage > StarterPackStudio` skips the minimum time and the checkpoint
+check, and the run still paid out its completion, badges and tickets. It still
+reaches the winroom, so an ending can be tested with one, and the player is told
+it did not count.
+
+**Webhook posts ping nobody**, whatever a player's name spells.
 
 ### Breaking
 
@@ -13,11 +119,92 @@ one needs the new name:
 | :-- | :-- | :-- |
 | `Server > Towers > TowerRegistry` | `loadForPlayer`, `resetClientObjects` | `loadForPlayerAsync`, `resetClientObjectsAsync` |
 | `Server > Accounts > Progress` | `incrementTowers`, `incrementAllJumps`, `incrementTowerAttempt`, `incrementRushAttempt`, `addTowerTimeSpent` | the same, each ending in `Async` |
-| `Server > Announcements > AnnouncementsService` | `globalNotification` | `globalNotificationAsync` |
+| `Server > Announcements > AnnouncementsService` | `globalNotification`, `winAnnouncementAsync` | `globalNotificationAsync`, `winAnnouncement` (it no longer waits) |
+| `Shared > Commands > Authorization` | `isAuthorized` | `isAuthorizedAsync` (a group-owned game asks Roblox for the rank) |
 
 Nothing saved changes; only the names a script calls.
 
+**`Config > Chat.tags.byGamePass` is gone.** It was code sitting in the one
+folder that should hold none; see **Updating**.
+
+**Webhooks ship switched off**, since they post nothing until the secrets
+exist and warned on every win until then. Set `webhooks.enabled = true` in
+`Config > Chat` once they are set up.
+
 ### Fixed
+
+**A win announced across servers could be lost.** A difficulty that announces
+globally made the win wait for Roblox's cross-server messaging before it was
+saved, so a player who left in that moment lost the completion, its points and
+tickets -- and for a rush, the whole rush -- while keeping the Elo. The hardest
+towers were the ones this hit. The announcement no longer holds anything up.
+
+**Looking up a player in Completions could show somebody else.** The user ID
+travelled as a 32-bit number, which newer accounts are past, so a lookup read
+a different, older account and showed it under the name typed.
+
+**Tower client objects went to every player in the server.** Anything parented
+to a Player replicates to every client, so each tower load and each Normal-mode
+restart sent the whole tower's client objects -- thousands of instances in a big
+tower -- to everyone, and each player's everpresent objects sat on every client
+for the session. They now go through the player's own PlayerGui, which only
+they receive, and the client waits for the whole folder before copying it
+rather than copying the moment its first part arrives.
+
+**A personal server's closing countdown could not be called off.** An owner who
+left and came back inside the grace period still had their guests told the
+server was closing, and a second departure then closed it with no warning.
+
+**A slow moment of Roblox's group service took group cosmetics off players.**
+A failed group lookup read as "not a member", and the server unequipped the
+cosmetic and saved that. A lookup is now remembered for five minutes and a
+failure changes nothing.
+
+**Rejoin in a personal server opened a public one.** A reserved server cannot
+be joined by its instance ID; its access code is used instead.
+
+**A teleport that failed once under way could leave a player where they were
+being sent from.** Guests of a closing personal server, and a player sent back
+from an Area they had not unlocked, were removed if the teleport failed at
+once but not if it failed later. Both are now. Guests also go to the hub one at
+a time, since the hub holds one player a server.
+
+**The shop could charge more than it showed.** A purchase that arrived just
+after the featured row rotated was charged full price for an item shown at a
+discount. The server now refuses a price higher than the one shown, and says
+why.
+
+**A global win showed twice on the server it came from** when two landed close
+together, and a player whose data was slow to load past two minutes stayed on
+the loading screen for good. A webhook refused outright is no longer asked
+twice more, and an empty `antiCheatKickMessages` no longer stops the kick it
+was announcing.
+
+**Restarting as fast as a key repeats rebuilt the tower each time.** A restart
+that rebuilds the tower now waits at least half a second whatever
+`restartCooldown` says, and walking back into your own tower's portal counts as
+a restart rather than a reload with no limit.
+
+**Removing an All Jumps checkpoint no longer throws away the rest on a death.**
+The client keeps every checkpoint placed, but the server kept only the latest,
+and Remove cleared it. A player who placed three and removed one still saw two,
+and the next death sent them to the tower's spawn. The server now keeps the
+same stack, so a death goes to the checkpoint on top.
+
+**A gradient chat tag no longer turns the player's name white.** A UIGradient
+colours the whole chat prefix, so the name was moved into the message to keep
+the fade off it, and took the message's colour there. A gradient tag is now
+coloured one character at a time, in front of the name like a flat tag, and
+the name keeps the colour the chat gives it. `tags.nameColor` in
+`Config > Chat` existed only for that; delete it if you set it.
+[Gradients](https://kiels.dev/Ascent/guide/chat#gradients)
+
+**A saved name spelled like one of Scribe's own no longer breaks.** Scribe
+answers `Count`, `Max`, `Default`, `Toggle` and two dozen other names with a
+method of its own, so `CustomData.get(player, "Count")` errored, and so would a
+custom setting, an emote or a tower acronym called one of them. Saved names are
+now looked up with Scribe 2.5's `Child`, which reaches the entry whatever it is
+called.
 
 **A `%` in a message no longer breaks it.** Win, kick, shutdown, anti-cheat
 and shop-rotation messages filled their placeholders with `gsub`, which reads
@@ -39,6 +226,22 @@ model errored on startup. Both look everywhere now.
 
 **Restarting a tower rush reports a load that failed.** It said the restart
 worked whether or not the rush's first tower loaded.
+
+**On a phone, the D-pad setting could hold up the rest.** Switching the touch
+control asks Roblox's control module to choose again, and on a device whose
+touch controls were not up yet that call waited for them -- and so did every
+setting applied after it, which on a phone was most of the menu. The switch now
+runs beside the other settings instead of in front of them.
+
+**All Jumps' on-screen buttons did nothing on a phone** when the menu arrived
+after All Jumps started, which on a live server is often. They were looked for
+once; they are waited for now.
+
+**All Jumps' default keys each did two things.** Teleport was `R`, which is
+also Quick Restart, and Place was `F`, which is also Corner Flip, so a press
+did both. They are `Q` and `E` now. A player who has already played keeps the
+keys saved with them and can change them in Settings; your own Config needs the
+edit in **Updating**.
 
 **A tower acronym with a symbol in it no longer breaks Config.** Acronyms
 like `ToH:AC` are not names Luau accepts as a table key, and the Tower Setup
@@ -103,6 +306,94 @@ whenever a Config script changes.
 
 ### Added
 
+**Hooks for your own Scripts.** `ServerScriptService > Server > Events`
+announces a tower won, a rush won, a tower loaded or left, a shop purchase, a
+game pass applied, tickets awarded and a player's data ready, and
+`Events.waitForStartAsync()` waits for the kit to finish starting. The client
+has its own for what the player sees. `Server > CustomData` saves numbers,
+strings and flags of your own with each player, and a
+`ServerScriptService > CustomCommands` folder adds admin commands. All three
+live outside the kit's folders, so updating the kit leaves them alone.
+[Hooking Into the Kit](https://kiels.dev/Ascent/guide/hooks)
+
+**Hide UI, a focus mode for climbing.** A Visual setting that fades the Menu
+and Spectate buttons, the music button and the place version out of the way,
+and back in while the pointer is over one, so the screen is left to the tower.
+A faded button still works: a tap on a phone presses it and shows it for a few
+seconds. Switching the setting off puts everything back as authored. The timer,
+health, keys, boosts and touch controls never fade. Tag an element of your own
+`HideUI` in Studio and it fades with them.
+[UI & HUD](https://kiels.dev/Ascent/guide/ui-and-hud#hide-ui)
+
+**A checkpoint panel for All Jumps and Practice.** `AJMenuButton` beside the
+menu button opens `AJSettings`, which shows how many checkpoints are placed,
+teleports to any of them by number, sets how see-through the markers are, and
+turns camera loading on or off: whether going to a checkpoint also turns the
+camera back to where it faced when it was placed. Both choices are saved with
+the player. The button shows only in All Jumps and Practice.
+[The Checkpoint Panel](https://kiels.dev/Ascent/guide/practice-all-jumps#the-checkpoint-panel)
+
+**Friends and personal servers in the hub.** Two buttons at Ring Select's top
+right open a list of friends playing the game, each with their headshot and a
+button naming the Area they are in, and a server list that makes a personal
+server for the Area on screen, joins one by its code, or goes back to the one
+the player owned and left, for as long as it stays open. Without the Personal
+Servers pass the create button says so, draws darker, and opens the purchase
+prompt. A friend in a locked Area is listed, and joining says what is missing.
+Each list has a `Warning` for why it is empty or what just went wrong.
+[Friends And Servers](https://kiels.dev/Ascent/guide/ring-select#friends-and-servers)
+
+**The FPS counter shows the cap.** With FPS Display on, the topbar counter has
+a second line, `CAP: 60` or `CAP: OFF`, following the FPS Cap setting and its
+keys as they change it.
+[FPS Cap](https://kiels.dev/Ascent/guide/settings#fps-cap)
+
+**Guests hear when a personal server's owner comes back.** They were told the
+server would close when the owner left; now they are told when the owner's
+return calls that off, with `personalServers.ownerReturned`.
+
+**Hovering a tower's bar in the hub outlines its frame.** A bar in Ring
+Select's `DetailedProgress` outlines, in white, the Model or part named after
+that tower's acronym in the Area's folder under `Workspace > Rings`. A ring
+without frames shows nothing.
+[Progress](https://kiels.dev/Ascent/guide/ring-select#progress)
+
+**A loading screen for every teleport.** From the moment the server starts one,
+the hub puts its loading screen back up with the tips going round, and a tower
+place shows its own. A still copy of it is what the player sees between the
+two places, rather than Roblox's screen. A teleport that fails takes it down
+again and says why.
+[Loading Screen](https://kiels.dev/Ascent/guide/ring-select#loading-screen)
+
+**The spectate panel says how many are watching.**
+`SpectateFrame > PlayerFrame > SpectatorCount` shows how many players are
+spectating the one on the panel, you included, and hides when nobody is.
+Spectate yourself and it says how many are watching you. The label is optional,
+so copy it across from the new place to have it; a panel without it works as
+before.
+
+**Config is checked when the server starts.** A tower naming an Area that does
+not exist, an unlock rule naming a tower or difficulty Config does not have, a
+renamed difficulty that now pays no tickets, overlapping difficulty bands, a
+game pass with no ID, the same key for live and Studio saves, and place IDs
+that are not places in your experience are each reported, naming the line to
+open. Place IDs come a moment later in a block of their own, since checking
+them asks Roblox.
+
+**The rest of what players read moved into `Config > Messages`,** so it can
+be reworded or translated in one place. The shop, cosmetics, Completions,
+spectating, the settings menu, lock reasons and the teleport menu had their
+text written into the code.
+
+**One version, checked.** `Shared > KitVersion` is the kit's version, the build
+refuses to run when it and the package disagree, the hub reports it as well as
+the tower places, and `kit-info` answers with it and the Config version.
+
+**Output messages say where and how.** The warnings for a tower with no
+checkpoints or minimum time, a missing spawn, an R15 character, a part in
+`Portals` that is not a portal, a missing damage remote and a win message with
+no channel each name the thing to open and the setting that silences them.
+
 **The hub can be Ring Select: the map of your game.** A lobby whose whole job
 is to show your Worlds and Areas, how far through each one the player is and
 what is still locked, and to send them in. It draws entirely from
@@ -156,7 +447,7 @@ final Area. Subrealms are shown as well, since nothing in the shipped file used
 to demonstrate one.
 
 They are meant to be deleted or rewritten: only Ring 1 is real, and the rest
-point at the hub until their places exist. The suite now checks the shipped ones
+point at Ring 1 until their places exist. The suite now checks the shipped ones
 both ways -- every Area has to open for a player who has beaten everything, and
 at least one has to lock a new player -- because a rule naming a difficulty or a
 tower that does not exist only warns, which reads as the Area simply being open.
@@ -183,6 +474,39 @@ that otherwise covered them all.
 [Seeing checkpoints while you build](https://kiels.dev/Ascent/guide/tower-setup-plugin#seeing-checkpoints-while-you-build)
 
 ### Changed
+
+**A shop Item shows its Tool's own icon.** An `Items` entry in
+`Config > Economy.shop` now draws the `TextureId` of the Tool it hands out, so
+the picture is set once, on the Tool. `icon` is optional for them and only used
+for a Tool without one; Trails and Auras still need it. The shipped coils no
+longer carry an `icon`.
+[Ticket Shop](https://kiels.dev/Ascent/guide/ticket-shop#add-an-item)
+
+**Progress percentages always have one decimal place**, rounded down so a list
+one short never reads 100: `(0.0%)`, `(90.9%)`, `(100.0%)`, in the hub and in
+Completions.
+
+**An Area's requirements read as goals, with the player's progress on each.**
+`Beat 12 Towers (3/12)`, `Beat 2 Extreme+ Towers (1/2)`, `Beat ToDNE (0/1)`,
+`Reach 500 Elo (120/500)`. The Teleport menu and a refusal still show the first
+one not met; the hub lists every rule at once, one line each, with the met
+ones in green and each difficulty in its own colour. A difficulty still counts
+every tower of it or harder. `{TowerWord}` in `Config > Messages.locks` is now
+capitalised and plural where the count is more than one, following
+`towerWord` and `towerWordPlural` in `Config > Project`.
+[Locked Areas](https://kiels.dev/Ascent/guide/ring-select#locked-areas)
+
+**Reset on Death is Restart on Death, and it covers every death.** It used to
+restart the tower only for Roblox's Reset button; a killbrick still ended a
+Normal run or sent All Jumps and Practice to their checkpoint. On, any death or
+reset in a tower now starts it again from the bottom, in every mode, straight
+away rather than after the respawn. Off, nothing changes. The saved setting,
+the Config field and the menu row are renamed to match; each player's choice
+carries across. [Dying And Resetting](https://kiels.dev/Ascent/guide/settings#dying-and-resetting)
+
+**Scribe 2.5.0.** Server and client must be published together, and every
+place at once; see **Updating**. A gift refused because the buyer already has
+too many on the way now says so, instead of "couldn't send that gift".
 
 **The guide and the issue tracker have a public home.**
 [github.com/Vexx3/Ascent](https://github.com/Vexx3/Ascent) holds the guide
@@ -324,7 +648,7 @@ name corrected afterwards would otherwise leave those profiles broken -- and
 an untranslated completion is worse than cosmetic: beating that tower again
 records its acronym, which the set does not have, so the completion counts
 twice and the tower score rises for a tower already paid for.
-[What comes across](https://kiels.dev/Ascent/guide/player-data#what-comes-across)
+[What comes across](https://kiels.dev/Ascent/guide/migrating#what-comes-across)
 
 **Looking up another player in Completions no longer hangs on "Loading".**
 The reply described each time as a table while saves hold a number, so any
