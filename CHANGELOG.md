@@ -496,6 +496,18 @@ capitalised and plural where the count is more than one, following
 `towerWord` and `towerWordPlural` in `Config > Project`.
 [Locked Areas](https://kiels.dev/Ascent/guide/ring-select#locked-areas)
 
+**Notifications draw rich text, and a refusal colours its difficulty.** A
+locked Area's rule shows its difficulty in colour in a notification, as the
+hub's list does. `<b>` now works in `Config > Messages`, and a plain `&` in one
+of your messages has to be written `&amp;`. A name or note a player typed is
+escaped, so it cannot be read as markup.
+[Notifications](https://kiels.dev/Ascent/guide/ui-and-hud#notifications)
+
+**`TowerGUI > LoadingScreen` can be a Frame.** A CanvasGroup still works and
+fades as one image; a Frame fades each part inside it, and keeps text sharp,
+which a CanvasGroup's single image softens. Either covers the screen at once
+when a player joins.
+
 **Reset on Death is Restart on Death, and it covers every death.** It used to
 restart the tower only for Roblox's Reset button; a killbrick still ended a
 Normal run or sent All Jumps and Practice to their checkpoint. On, any death or

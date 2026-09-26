@@ -6,6 +6,12 @@ The screens are in `StarterGui` and are yours to lay out. See [The Menus](./stud
 
 `TowerGUI` shows the tower's acronym, the timer, the restart hold, boost use, rush progress, the Practice and All Jumps labels, and the loading screen (while data loads and during a teleport). The **Hide Timer** setting hides the timer.
 
+`LoadingScreen` can be a Frame or a CanvasGroup. Either fades in and out; a CanvasGroup fades as one image, a Frame fades each part inside it. It covers the screen at once when a player joins.
+
+## Notifications
+
+The toasts in `MainMenu > NotificationHolder` draw rich text. A locked Area's requirement shows its difficulty in colour, as the hub does. In your own `Config > Messages`, `<b>` works, and a plain `&` has to be written `&amp;`.
+
 ## Hide UI
 
 **Hide UI**, in the Visual settings, fades what a climb doesn't need, and brings it back while the pointer is over it:

@@ -71,7 +71,7 @@ requirements = {
 
 Players see each rule with their progress, such as `Beat 12 Towers (3/12)`. The Teleport menu shows the first one not met; the hub lists them all (see [Ring Select](./ring-select.md#locked-areas)). The wording is `locks` in `Config > Messages`.
 
-The server checks again before every teleport. A tower place also checks each player who arrives and sends anyone locked out back to the hub, except in Studio and for admins, so you can still build a locked Area.
+A refusal shows the rule as a notification, with its difficulty in colour. The server checks again before every teleport. A tower place also checks each player who arrives and sends anyone locked out back to the hub, except in Studio and for admins, so you can still build a locked Area.
 
 ::: warning `scope` catches people out
 A World with no towers of its own can never meet a `towerCompletions` or `difficulties` rule without `scope = "All"`. The count stays at zero and the Area never opens.
