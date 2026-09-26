@@ -1,111 +1,88 @@
 # Moving An Old Kit Across
 
-If your game runs on an older Towers of Hell kit, most of a tower already means
-the same thing here. This page says what carries over untouched, what needs one
-change, and what has no equivalent yet.
+If your game runs on an older Towers of Hell kit, most of it carries over as it is, and so do your players' completions.
 
 ## What carries over untouched
 
-The kit reads Value objects as well as attributes, so an old tower keeps working
-as it is.
+The kit reads the old Value objects as well as attributes, so an old tower keeps working.
 
 | In your old tower | Read here as |
 | :-- | :-- |
 | `SpawnLocation` part | The tower's spawn |
-| `WinPad` part, anywhere inside | The winpad, including one nested in `Obby` |
+| `WinPad` part, anywhere inside | The winpad |
 | `MinimumTime` NumberValue | `MinimumTime` |
 | `BadgeID` IntValue | `BadgeID` |
-| `ProperName` StringValue | The tower's display name |
-| `Difficulty` StringValue, holding a name like `Easy` | Looked up in the difficulty chart and turned into its rating |
+| `ProperName` StringValue | The tower's name |
+| `Difficulty` StringValue, like `Easy` | That difficulty's rating |
 | `ClientSidedObjects` folder | The same |
-| Winpad attributes: `EndingID`, `EndingName`, `Difficulty`, `BadgeID`, `WinroomMarker`, `PreventTowerBadge` | The same, so multi-ending towers come across whole |
-| `ServerStorage > TowerCheckpoints > <acronym>` with parts named `1`, `2`, `3` | The same |
-| `ServerStorage > WinpadParticles` | The same |
-| `Workspace > Portals`, each with a `TowerPortal` StringValue naming its tower | The same |
-| `Workspace > Markers` | The same |
+| Winpad attributes (`EndingID`, `EndingName`, `Difficulty`, `BadgeID`, `WinroomMarker`, `PreventTowerBadge`) | The same |
+| `ServerStorage > TowerCheckpoints > <acronym>` | The same |
+| `ServerStorage > WinpadParticles`, `Workspace > Portals`, `Workspace > Markers` | The same |
 
-So copying `Workspace > Towers > YourTower` and its checkpoint folder into a
-fresh kit gets you a tower that loads, times, validates and awards.
+Copy `Workspace > Towers > YourTower` and its checkpoint folder into the new kit and it loads, times and awards.
 
 ::: warning A named `Difficulty` loses the decimal
-`Difficulty = "Extreme"` resolves to rating `9` and nothing after the point, so
-the tower reads as a Baseline Extreme — and because a Value object child wins
-over `Config > Towers`, it **overrides** whatever you write there. Once you have
-set a number there, delete the old child.
+`Difficulty = "Extreme"` reads as `9.00` and overrides `Config > Towers`. Once the tower has a number in Config, delete the old value.
 :::
 
 ## What you have to set
 
-**An entry in `Config > Towers`, naming its Area.** Older kits have no worlds or
-areas, so nothing says which part of the chart a tower belongs to. The chart,
-the totals and Area unlock requirements are all read from `Config > Towers`, so
-without an entry the tower loads and plays but never appears in the Completions
-menu.
+**An entry in `Config > Towers`, naming its Area.** Old kits have no Areas, and without the entry a tower never appears on the Completions chart. Select the tower, pick its Area on the Selected tab of [Tower Setup](./tower-setup-plugin.md), and press **Add to catalogue**.
 
-Select the tower, pick its Area on the Selected tab of
-[Tower Setup](./tower-setup-plugin.md), and press **Add to catalogue** — the
-window writes the line for you. The areas come from `Config > Worlds`.
-
-## What to check afterwards
-
-Open Tower Setup and read the Towers tab. It lists every tower with anything
-missing, and most of what it finds it can fix in one click. Then read the Setup
-tab, which checks the place as a whole. The three worth looking for after a
-move are:
-
-- **Not in the catalogue** (Towers tab) — the tower has no `Config > Towers`
-  entry yet, so no other place knows it exists.
-- **Nothing describes this tower** (Towers tab) — neither attributes nor a
-  config entry, so it shows up unnamed at the default difficulty.
-- **Checkpoints with no tower** (Setup tab) — a checkpoint folder whose acronym
-  no longer matches any tower, usually from renaming one on the way across.
+Then read Tower Setup's Towers and Setup tabs. After a move, look for **Not in the catalogue**, **Nothing describes this tower**, and **Checkpoints with no tower** (usually a tower renamed on the way).
 
 ## What has no equivalent
 
-These parts of an older kit are not read, and their jobs are done differently
-here:
-
 | Old | Here |
 | :-- | :-- |
-| `ServerScriptService > GameData > Difficulties` | `Config > Towers`, under `difficulties` |
-| `ServerScriptService > RealmData > RealmInfo` | `Config > Worlds` |
-| `ServerScriptService > RealmData > TowerRushes` | `Config > Towers`, under `rushes` |
-| `ServerScriptService > GameData > TowerBadges` | `BadgeID` on the tower, or `badgeId` in its config entry |
-| `ServerScriptService > PlayerData` (ProfileService) | Scribe, set up for you in `Shared > Accounts` |
-| `ServerScriptService > GameData > KickMessages` | `Config > Chat`, under `antiCheatKickMessages` |
+| `GameData > Difficulties` | `Config > Towers`, `difficulties` |
+| `RealmData > RealmInfo` | `Config > Worlds` |
+| `RealmData > TowerRushes` | `Config > Towers`, `rushes` |
+| `GameData > TowerBadges` | `BadgeID` on the tower, or `badgeId` in Config |
+| `PlayerData` (ProfileService) | Scribe, in `Shared > Accounts` |
+| `GameData > KickMessages` | `Config > Chat`, `antiCheatKickMessages` |
 
 ## Your players keep their progress
 
-Saved data does transfer, and nothing is copied to do it. Older kits saved under
-`Player_<userId>` with ProfileService, and this kit reads those profiles where
-they already are, rewriting each into the current shape the first time that
-player joins.
+The kit reads old saves where they are, and updates each one the first time that player joins. Nothing is copied.
 
-Set `dataStoreKey` in `Config > Project` to the store your live game uses. That
-is `PROFILE_STORE_KEY` from the old kit's `GameData > Config`.
+Set `dataStoreKey` in `Config > Project` to your live game's store, the old kit's `PROFILE_STORE_KEY`. For the v4.22 kit:
 
-Tower count and completions come across. That is the part a player spent their
-time on and cannot get back, and it is deliberately all that does.
+```luau
+dataStoreKey = "[MTKv4.22 Mod]",
+```
 
-[Player Data](./player-data.md#bringing-an-older-kits-players-across) has the
-detail and, more importantly, the dry run to do first: point
-`dataStoreKeyStudio` at the live store with `dataStoreStudioMode = "NoSave"`,
-which reads real profiles and writes nothing.
+### Do a dry run first
 
-Everything else starts fresh. Old settings are not carried because they do not
-mean quite the same thing here and one means the opposite, and the old inventory
-is not carried because its names come from a shop this kit does not have.
-Neither are All Jumps completions, tickets, the ticket shop, cosmetics,
-per-tower stats or tower rushes, because the old kit never stored them.
+Before publishing, load your real save without writing to it:
 
-Worth putting in your update notes, so a returning player knows their towers
-survived and the rest is new.
+```luau
+dataStoreKeyStudio = "[MTKv4.22 Mod]",
+dataStoreStudioMode = "NoSave",
+```
+
+Play in Studio and check your towers and completions look right. Put both back before you publish.
+
+::: danger
+Never test with `dataStoreStudioMode = "Live"` pointed at your live store. That writes to it.
+:::
+
+### What comes across
+
+| Old field | Becomes |
+| :-- | :-- |
+| `Towers` | `towers`, the completion count |
+| `CompletedTowers` | `completedTowers` |
+
+Old completions are saved by tower **name**; the kit matches each one against `name` in `Config > Towers` (ignoring case) and turns it into the acronym. A name it can't match is kept, but counts for no tower on the chart.
+
+::: warning Match your names before release
+If a tower's `name` in Config differs from what the old kit called it, its completions won't match. Fixing the name later repairs them on the next load, but a player who beats that tower in between gets its points twice. Do the dry run and check a few players first.
+:::
+
+Everything else starts fresh: settings, inventory, All Jumps, tickets, cosmetics, stats and rushes. Tell returning players in your update notes that their towers survived and the rest is new.
 
 ## Moving your configuration
-
-The old kit kept one `GameData > Config` of SCREAMING_SNAKE keys. This kit
-splits them by subject under `ReplicatedStorage > Shared > Config`, and the
-names line up almost one to one.
 
 | Old key | Now |
 | :-- | :-- |
@@ -125,12 +102,4 @@ names line up almost one to one.
 | `REGULAR_WEBHOOK_URL`, `SC_WEBHOOK_URL`, `ALL_JUMP_MODE_URL`, `KICK_WEBHOOK_URL` | `Chat.webhooks` |
 | `WEBHOOK_MESSAGE` | `Chat.webhooks.normalMessage` |
 
-`QUIET` and `CHECKPOINTS_WORKSPACE_WARNING` have no equivalent. This kit warns
-about the things worth warning about and stays quiet otherwise.
-
-## See Also
-
-- [Building A Tower](./tower-setup.md)
-- [Tower Setup Window](./tower-setup-plugin.md)
-- [Configuration Reference](./configuration.md)
-- [Player Data](./player-data.md)
+`QUIET` and `CHECKPOINTS_WORKSPACE_WARNING` aren't needed.

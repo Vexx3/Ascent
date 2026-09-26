@@ -39,13 +39,24 @@ and then:
    `SettingsMenu > GameplayFrame > ResetonDeath` row to `RestartonDeath` with its
    label. The Output names the Config line until it is renamed; the row still
    works under its old name. See **Changed** for what the setting does now.
-8. **Install the new Tower Setup plugin.** Its Setup tab now says whether it
-   matches the kit the place runs.
-9. **Publish every place at the same time, then shut down the old servers.**
-   This release runs Scribe 2.5.0, whose save has a new shape, and a server
-   still on the old version refuses a player whose save a new one has written.
-   Then check the Output of one live server: anything Config gets wrong is now
-   reported there when it starts.
+8. **Copy `ButtonsHolder > AJMenuButton` and `MainMenu > AJSettings` from the new
+   place** for the checkpoint panel, and add `checkpointCamera = true` and
+   `checkpointTransparency = 0.5` to `Config > Settings`. The transparency
+   used to be `allJumpsMarker.transparency` in `Config > Visuals`, which is no
+   longer read: move your value across. Without the button and panel the game
+   works as before; without the lines, those two values are the defaults.
+9. **In the hub, copy `RingSelect > TopRightBar > FriendButton`, `ServerButton`
+   and `Lists` from the new hub place** for its friend and server lists. A hub
+   without them works as before, with neither. Copy `RingSelect > Requirements`
+   across too: `AreaReqLabel` now sits in a `RequirementsList` inside it, and
+   the hub does not start without one.
+10. **Install the new Tower Setup plugin.** Its Setup tab now says whether it
+    matches the kit the place runs.
+11. **Publish every place at the same time, then shut down the old servers.**
+    This release runs Scribe 2.5.0, whose save has a new shape, and a server
+    still on the old version refuses a player whose save a new one has written.
+    Then check the Output of one live server: anything Config gets wrong is now
+    reported there when it starts.
 
 Nothing a player has saved is lost. The save gains an empty `custom` table for
 your own values, which Scribe fills in on load, and each player's Reset on
@@ -152,6 +163,12 @@ failure changes nothing.
 **Rejoin in a personal server opened a public one.** A reserved server cannot
 be joined by its instance ID; its access code is used instead.
 
+**A teleport that failed once under way could leave a player where they were
+being sent from.** Guests of a closing personal server, and a player sent back
+from an Area they had not unlocked, were removed if the teleport failed at
+once but not if it failed later. Both are now. Guests also go to the hub one at
+a time, since the hub holds one player a server.
+
 **The shop could charge more than it showed.** A purchase that arrived just
 after the featured row rotated was charged full price for an item shown at a
 discount. The server now refuses a price higher than the one shown, and says
@@ -167,6 +184,12 @@ was announcing.
 that rebuilds the tower now waits at least half a second whatever
 `restartCooldown` says, and walking back into your own tower's portal counts as
 a restart rather than a reload with no limit.
+
+**Removing an All Jumps checkpoint no longer throws away the rest on a death.**
+The client keeps every checkpoint placed, but the server kept only the latest,
+and Remove cleared it. A player who placed three and removed one still saw two,
+and the next death sent them to the tower's spawn. The server now keeps the
+same stack, so a death goes to the checkpoint on top.
 
 **A gradient chat tag no longer turns the player's name white.** A UIGradient
 colours the whole chat prefix, so the name was moved into the message to keep
@@ -302,6 +325,46 @@ health, keys, boosts and touch controls never fade. Tag an element of your own
 `HideUI` in Studio and it fades with them.
 [UI & HUD](https://kiels.dev/Ascent/guide/ui-and-hud#hide-ui)
 
+**A checkpoint panel for All Jumps and Practice.** `AJMenuButton` beside the
+menu button opens `AJSettings`, which shows how many checkpoints are placed,
+teleports to any of them by number, sets how see-through the markers are, and
+turns camera loading on or off: whether going to a checkpoint also turns the
+camera back to where it faced when it was placed. Both choices are saved with
+the player. The button shows only in All Jumps and Practice.
+[The Checkpoint Panel](https://kiels.dev/Ascent/guide/practice-all-jumps#the-checkpoint-panel)
+
+**Friends and personal servers in the hub.** Two buttons at Ring Select's top
+right open a list of friends playing the game, each with their headshot and a
+button naming the Area they are in, and a server list that makes a personal
+server for the Area on screen, joins one by its code, or goes back to the one
+the player owned and left, for as long as it stays open. Without the Personal
+Servers pass the create button says so, draws darker, and opens the purchase
+prompt. A friend in a locked Area is listed, and joining says what is missing.
+Each list has a `Warning` for why it is empty or what just went wrong.
+[Friends And Servers](https://kiels.dev/Ascent/guide/ring-select#friends-and-servers)
+
+**The FPS counter shows the cap.** With FPS Display on, the topbar counter has
+a second line, `CAP: 60` or `CAP: OFF`, following the FPS Cap setting and its
+keys as they change it.
+[FPS Cap](https://kiels.dev/Ascent/guide/settings#fps-cap)
+
+**Guests hear when a personal server's owner comes back.** They were told the
+server would close when the owner left; now they are told when the owner's
+return calls that off, with `personalServers.ownerReturned`.
+
+**Hovering a tower's bar in the hub outlines its frame.** A bar in Ring
+Select's `DetailedProgress` outlines, in white, the Model or part named after
+that tower's acronym in the Area's folder under `Workspace > Rings`. A ring
+without frames shows nothing.
+[Progress](https://kiels.dev/Ascent/guide/ring-select#progress)
+
+**A loading screen for every teleport.** From the moment the server starts one,
+the hub puts its loading screen back up with the tips going round, and a tower
+place shows its own. A still copy of it is what the player sees between the
+two places, rather than Roblox's screen. A teleport that fails takes it down
+again and says why.
+[Loading Screen](https://kiels.dev/Ascent/guide/ring-select#loading-screen)
+
 **The spectate panel says how many are watching.**
 `SpectateFrame > PlayerFrame > SpectatorCount` shows how many players are
 spectating the one on the panel, you included, and hides when nobody is.
@@ -411,6 +474,27 @@ that otherwise covered them all.
 [Seeing checkpoints while you build](https://kiels.dev/Ascent/guide/tower-setup-plugin#seeing-checkpoints-while-you-build)
 
 ### Changed
+
+**A shop Item shows its Tool's own icon.** An `Items` entry in
+`Config > Economy.shop` now draws the `TextureId` of the Tool it hands out, so
+the picture is set once, on the Tool. `icon` is optional for them and only used
+for a Tool without one; Trails and Auras still need it. The shipped coils no
+longer carry an `icon`.
+[Ticket Shop](https://kiels.dev/Ascent/guide/ticket-shop#add-an-item)
+
+**Progress percentages always have one decimal place**, rounded down so a list
+one short never reads 100: `(0.0%)`, `(90.9%)`, `(100.0%)`, in the hub and in
+Completions.
+
+**An Area's requirements read as goals, with the player's progress on each.**
+`Beat 12 Towers (3/12)`, `Beat 2 Extreme+ Towers (1/2)`, `Beat ToDNE (0/1)`,
+`Reach 500 Elo (120/500)`. The Teleport menu and a refusal still show the first
+one not met; the hub lists every rule at once, one line each, with the met
+ones in green and each difficulty in its own colour. A difficulty still counts
+every tower of it or harder. `{TowerWord}` in `Config > Messages.locks` is now
+capitalised and plural where the count is more than one, following
+`towerWord` and `towerWordPlural` in `Config > Project`.
+[Locked Areas](https://kiels.dev/Ascent/guide/ring-select#locked-areas)
 
 **Reset on Death is Restart on Death, and it covers every death.** It used to
 restart the tower only for Roblox's Reset button; a killbrick still ended a
@@ -564,7 +648,7 @@ name corrected afterwards would otherwise leave those profiles broken -- and
 an untranslated completion is worse than cosmetic: beating that tower again
 records its acronym, which the set does not have, so the completion counts
 twice and the tower score rises for a tower already paid for.
-[What comes across](https://kiels.dev/Ascent/guide/player-data#what-comes-across)
+[What comes across](https://kiels.dev/Ascent/guide/migrating#what-comes-across)
 
 **Looking up another player in Completions no longer hangs on "Loading".**
 The reply described each time as a table while saves hold a number, so any
