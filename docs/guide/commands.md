@@ -87,6 +87,6 @@ These only affect players in this server.
 
 Put your own commands in a `ServerScriptService > CustomCommands` folder, outside the kit, so updates leave them alone. See [Hooking Into the Kit](./hooks.md#admin-commands-of-your-own).
 
-::: danger Never put "Server" in a command's file name
-A module with `Server` **anywhere** in its name is treated as the half that runs a command, so a definition called `ServerTime` never registers. Name the file something else and set `Name = "server-time"` inside it.
+::: danger Keep "Server" out of the definition's file name
+A command is two modules: the definition (`Hello`) and the one that runs it, which ends in `Server` (`HelloServer`). Any module with `Server` **anywhere** in its name is taken for the running half, so a definition called `ServerTime` never registers. Name the definition something else and set `Name = "server-time"` inside it.
 :::

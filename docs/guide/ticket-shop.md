@@ -51,10 +51,12 @@ A win pays when it is in Normal mode, on the tower's main winpad, with no boost 
 rewards[difficulty]
   x  tower type's ticketMultiplier      Citadel x2, Steeple x0.5
   x  the tower's own multiplier
+  =  rounded down
   x  the player's game pass multiplier
+  =  rounded down again
 ```
 
-Each step rounds down. **The tower type is easy to forget**: an Insane Citadel pays 500, not 250.
+**The tower type is easy to forget**: an Insane Citadel pays 500, not 250.
 
 Every ticket earned and spent shows up in the Creator Dashboard's economy analytics, tagged with the Area it happened in. Admin grants aren't counted.
 
