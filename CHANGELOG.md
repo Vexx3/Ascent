@@ -161,6 +161,12 @@ failure changes nothing.
 **Rejoin in a personal server opened a public one.** A reserved server cannot
 be joined by its instance ID; its access code is used instead.
 
+**A teleport that failed once under way could leave a player where they were
+being sent from.** Guests of a closing personal server, and a player sent back
+from an Area they had not unlocked, were removed if the teleport failed at
+once but not if it failed later. Both are now. Guests also go to the hub one at
+a time, since the hub holds one player a server.
+
 **The shop could charge more than it showed.** A purchase that arrived just
 after the featured row rotated was charged full price for an item shown at a
 discount. The server now refuses a price higher than the one shown, and says
@@ -332,7 +338,15 @@ server for the Area on screen, joins one by its code, or goes back to the one
 the player owned and left, for as long as it stays open. Without the Personal
 Servers pass the create button says so, draws darker, and opens the purchase
 prompt. A friend in a locked Area is listed, and joining says what is missing.
+Each list has a `Warning` for why it is empty or what just went wrong.
 [Friends And Servers](https://kiels.dev/Ascent/guide/ring-select#friends-and-servers)
+
+**A loading screen for every teleport.** From the moment the server starts one,
+the hub puts its loading screen back up with the tips going round, and a tower
+place shows its own. A still copy of it is what the player sees between the
+two places, rather than Roblox's screen. A teleport that fails takes it down
+again and says why.
+[Loading Screen](https://kiels.dev/Ascent/guide/ring-select#loading-screen)
 
 **The spectate panel says how many are watching.**
 `SpectateFrame > PlayerFrame > SpectatorCount` shows how many players are

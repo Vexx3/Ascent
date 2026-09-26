@@ -21,7 +21,7 @@ The HUD shows:
 - Boost-used indicator.
 - Tower rush progress.
 - Practice mode and All Jumps mode labels.
-- Loading screen.
+- Loading screen, while saved data loads and while a teleport is under way.
 
 When `hideTimer` is enabled, `TimerPanel` and its `UIStroke` become transparent and the `Timer` label is hidden. Other tower status elements remain available.
 

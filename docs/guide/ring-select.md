@@ -134,7 +134,7 @@ RingSelect                       ScreenGui
           PlayerImage            ImageLabel
           PlayerDisplayName      TextLabel
           JoinButton             GuiButton
-        InfoLabel                TextLabel   <- optional
+        Warning                  TextLabel
       RefreshButton              GuiButton
       ServerList                 Frame
         CreateServer             TextButton
@@ -189,11 +189,15 @@ The choice is saved like any other setting — it goes to `Server > Settings`, w
 
 `LoadingScreen` covers everything from the moment the screen is drawn until the player's saved data has arrived and the place around it has loaded, then fades out through black. It stays up for `loadingScreen.minimumTime` at least, so a fast load is not a flash, and nothing on the screen underneath responds until it is gone.
 
+It comes back for every teleport out of the hub — Play, a friend, a personal server, a code — from the moment the server starts it, reading `ringSelect.teleporting` with the tips going round. Roblox is handed a still copy of it to show between the two places, so the player sees your screen the whole way rather than Roblox's. A teleport that fails takes it down again, after the same `minimumTime`, and only then says why.
+
 `LoadingLabel` reads `ringSelect.loading` from `Config > Messages` with animated dots after it. Leave the dots off your own wording. The line holds its size while they animate — the missing dots are there but invisible — which matters because a `TextScaled` label would otherwise shrink and grow with each step.
 
 `TipLabel` shows one of `ringSelect.tips`, a new one every `tipInterval` seconds and never the same one twice in a row. With no tips it hides itself.
 
-It is optional: a place without a `LoadingScreen` shows the ring screen straight away.
+It is optional: a place without a `LoadingScreen` shows the ring screen straight away, and covers nothing on a teleport.
+
+A tower place does the same with its own loading screen, the one in `TowerGUI`, which reads `teleports.teleporting` while a player is on their way anywhere — the Teleport menu, Rejoin, Return to Hub, or a personal server closing.
 
 ::: tip StarterGui, not ReplicatedFirst
 Keep the loading screen inside `RingSelect`. `ReplicatedFirst` is for covering the moments *before* any of your scripts run, while the place itself downloads — and Roblox's own loading screen already covers those. What this screen waits for is the player's data, which only starts loading once the scripts are running, and it reads its tips from `Config`, which a `ReplicatedFirst` script cannot rely on having arrived yet.
@@ -205,7 +209,7 @@ If you want to replace Roblox's own loading screen too, that is a separate scrip
 
 `Requirements` appears only when the picked Area is locked, and `AreaReqLabel` says why — the same rules and the same wording as the Teleport menu in your tower places, from the Area's `requirements` in `Config > Worlds`. Play refuses and repeats the reason.
 
-This screen has no notification holder, so anything the server says — a teleport cooldown, a refusal, data still loading — is shown in `AreaReqLabel` for a few seconds and then the standing reason comes back.
+This screen has no notification holder, so anything the server says — a teleport cooldown, a refusal, data still loading — is shown in `AreaReqLabel` for a few seconds and then the standing reason comes back. While one of the [lists](#friends-and-servers) is open, it goes in that list's `Warning` instead.
 
 Nothing here is a permission. The client refuses a locked Area so the player is told why; the server checks again before it moves anyone.
 
@@ -217,7 +221,9 @@ Nothing here is a permission. The client refuses a locked Area so the player is 
 
 A friend in an Area the player has not unlocked is listed anyway, since the list is who is playing. Joining them says what is missing instead, in the same words as a locked Area.
 
-The list is read when it opens, and again on `RefreshButton`, which shows only with the friend list. Reading it is a web request, so a second press within five seconds keeps the rows it has. When nobody is playing, `friends.nonePlaying` from `Config > Messages` goes in `InfoLabel` if the list has one, and otherwise shows in `AreaReqLabel` for a few seconds like any other message.
+The list is read when it opens, and again on `RefreshButton`, which shows only with the friend list. Reading it is a web request, so a second press within five seconds keeps the rows it has.
+
+`Warning` in the list shows only when there is something to say: that nobody is playing (`friends.nonePlaying` from `Config > Messages`), that the list could not be read, or what went wrong with a join — a locked Area, or the server's answer. It is hidden while the list has friends and nothing has gone wrong, and reopening the list clears an old answer. It takes its place among the rows by its `LayoutOrder`; the rows are numbered from 1, so `0` puts it on top.
 
 **The server list** is about [personal servers](./worlds-personal-servers.md#personal-servers), for the Area on screen:
 
