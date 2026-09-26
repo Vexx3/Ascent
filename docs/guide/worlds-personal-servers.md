@@ -387,6 +387,7 @@ The included `PersonalServers` game pass is enabled in `Config > GamePasses`.
 - The reserved access code never goes to a client. The settings endpoint sends the 16-character lowercase hexadecimal share code only to the owner; guests receive only whether sharing is enabled.
 - When the owner leaves, the code expires and remaining players return to the hub after `ownerLeaveGracePeriod` (10 minutes by default). If the owner comes back within it, the countdown is called off.
 - **Rejoin** in the settings menu puts a player back into the same personal server, through its access code rather than a public server.
+- In the hub, Ring Select's [server list](./ring-select.md#friends-and-servers) makes one for the Area on screen, joins one by its code, and takes an owner back to the one they left while it is still open.
 
 A personal server belongs to **one Area**, because a reserved server is reserved
 in one place.

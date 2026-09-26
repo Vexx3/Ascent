@@ -126,6 +126,25 @@ RingSelect                       ScreenGui
       DifficultyBar              Frame       <- the bar template
         Status                   Frame
         HoverTower               TextLabel
+    FriendButton                 GuiButton   <- optional, with the two below
+    ServerButton                 GuiButton
+    Lists                        GuiObject
+      FriendList                 ScrollingFrame
+        FriendFrame              GuiObject   <- the row template
+          PlayerImage            ImageLabel
+          PlayerDisplayName      TextLabel
+          JoinButton             GuiButton
+        InfoLabel                TextLabel   <- optional
+      RefreshButton              GuiButton
+      ServerList                 Frame
+        CreateServer             TextButton
+        EnterServerCode          GuiButton
+        JoinLast                 GuiButton
+      JoinServerFrame            Frame
+        CodeBox                  TextBox
+          Join                   GuiButton
+          Cancel                 GuiButton
+        Warning                  TextLabel
   Requirements                   Frame
     AreaReqLabel                 TextLabel
   TotalBeaten                    TextLabel
@@ -189,6 +208,26 @@ If you want to replace Roblox's own loading screen too, that is a separate scrip
 This screen has no notification holder, so anything the server says — a teleport cooldown, a refusal, data still loading — is shown in `AreaReqLabel` for a few seconds and then the standing reason comes back.
 
 Nothing here is a permission. The client refuses a locked Area so the player is told why; the server checks again before it moves anyone.
+
+### Friends And Servers
+
+`FriendButton` and `ServerButton` open `Lists` on one of its two lists. Pressing the same button again closes it, and pressing the other switches over. The whole group is optional: a hub without the two buttons and `Lists` has neither list, and once `Lists` is there the Output names any part of it that is missing.
+
+**The friend list** is every friend playing one of your Areas right now. `FriendFrame` is the row template, hidden and cloned once per friend: `PlayerImage` is their headshot, `PlayerDisplayName` their display name, and `JoinButton` is named after the Area they are in — `Ring 1: Limbo`. Clicking it sends the player into that friend's server, the same way the Teleport menu's Join Friend tab does in a tower place.
+
+A friend in an Area the player has not unlocked is listed anyway, since the list is who is playing. Joining them says what is missing instead, in the same words as a locked Area.
+
+The list is read when it opens, and again on `RefreshButton`, which shows only with the friend list. Reading it is a web request, so a second press within five seconds keeps the rows it has. When nobody is playing, `friends.nonePlaying` from `Config > Messages` goes in `InfoLabel` if the list has one, and otherwise shows in `AreaReqLabel` for a few seconds like any other message.
+
+**The server list** is about [personal servers](./worlds-personal-servers.md#personal-servers), for the Area on screen:
+
+- **`CreateServer`** makes a personal server in that Area and sends the player to it. Without the Personal Servers pass its text gains `ringSelect.requiresPass` — `(Requires Gamepass)` — and it draws darker, and clicking it opens the pass's purchase prompt instead. Buying the pass brings it back to normal without a rejoin. It is hidden when `PersonalServers` in `Config > GamePasses` has `id = 0`.
+- **`EnterServerCode`** swaps the list for `JoinServerFrame`, where a player types or pastes a share code into `CodeBox` and presses `Join` or Enter. `Cancel` swaps back.
+- **`JoinLast`** takes the player back to the personal server they owned and left. It shows only while that server is still open — for `ownerLeaveGracePeriod` after the owner leaves, ten minutes by default — and going back calls off the countdown that would close it.
+
+`Warning` under the code box shows only when there is something to say about the code: that it is not a code at all, before anything is sent, or the server's answer — expired, invalid, or an Area still locked. While `JoinServerFrame` is closed, those answers go to `AreaReqLabel` instead.
+
+The server checks an Area's requirements before it sends anyone anywhere, a code included, so a code does not get round a lock.
 
 ## Troubleshooting
 

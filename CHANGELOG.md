@@ -45,9 +45,12 @@ and then:
    used to be `allJumpsMarker.transparency` in `Config > Visuals`, which is no
    longer read: move your value across. Without the button and panel the game
    works as before; without the lines, those two values are the defaults.
-9. **Install the new Tower Setup plugin.** Its Setup tab now says whether it
-   matches the kit the place runs.
-10. **Publish every place at the same time, then shut down the old servers.**
+9. **In the hub, copy `RingSelect > TopRightBar > FriendButton`, `ServerButton`
+   and `Lists` from the new hub place** for its friend and server lists. A hub
+   without them works as before, with neither.
+10. **Install the new Tower Setup plugin.** Its Setup tab now says whether it
+    matches the kit the place runs.
+11. **Publish every place at the same time, then shut down the old servers.**
     This release runs Scribe 2.5.0, whose save has a new shape, and a server
     still on the old version refuses a player whose save a new one has written.
     Then check the Output of one live server: anything Config gets wrong is now
@@ -321,6 +324,15 @@ turns camera loading on or off: whether going to a checkpoint also turns the
 camera back to where it faced when it was placed. Both choices are saved with
 the player. The button shows only in All Jumps and Practice.
 [The Checkpoint Panel](https://kiels.dev/Ascent/guide/practice-all-jumps#the-checkpoint-panel)
+
+**Friends and personal servers in the hub.** Two buttons at Ring Select's top
+right open a list of friends playing the game, each with their headshot and a
+button naming the Area they are in, and a server list that makes a personal
+server for the Area on screen, joins one by its code, or goes back to the one
+the player owned and left, for as long as it stays open. Without the Personal
+Servers pass the create button says so, draws darker, and opens the purchase
+prompt. A friend in a locked Area is listed, and joining says what is missing.
+[Friends And Servers](https://kiels.dev/Ascent/guide/ring-select#friends-and-servers)
 
 **The spectate panel says how many are watching.**
 `SpectateFrame > PlayerFrame > SpectatorCount` shows how many players are

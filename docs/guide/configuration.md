@@ -657,7 +657,7 @@ chat tag. Reword them to suit your game, or translate them.
 | Group | What it holds |
 | :-- | :-- |
 | `loading` | The loading screen. `playerData` is the first thing anyone reads. |
-| `ringSelect` | The hub's ring select screen: its loading screen, tips and buttons. |
+| `ringSelect` | The hub's ring select screen: its loading screen, tips and buttons, and the create button's `(Requires Gamepass)`. |
 | `dataKicks` | Why a player was removed because their saved data could not be used. |
 | `wins` | The `[GLOBAL]` and `[SERVER]` prefixes on a win announcement. |
 | `rewards` | What a player is told when a tower or a game pass pays out. |
