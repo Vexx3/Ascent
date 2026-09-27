@@ -186,7 +186,7 @@ Colours, sounds and timings for the kit's own UI.
 | `shopBuyButton` | The Buy button, affordable and not. |
 | `allJumpsMarker` | The All Jumps checkpoint block's colour and material. |
 | `menuSounds` | Click, hover, notification and victory sounds. |
-| `timing` | Animation lengths, and how long notifications stay up. |
+| `timing` | Animation lengths, how long notifications stay up, and how fast the loading dots move (`loadingDots`). |
 | `audioVisualizerStrength` | How hard each Audio Visualiser option shakes the camera. |
 
 Difficulty colours are in `Towers`, rarity colours in `Economy`.
@@ -197,12 +197,12 @@ Every line of text players read, apart from win messages and chat tags (those ar
 
 | Group | Holds |
 | :-- | :-- |
-| `loading` | The loading screen. |
+| `loading` | Every loading screen's line: loading data, and teleporting to where. |
 | `ringSelect` | The hub screen. |
 | `dataKicks` | Kicks for unusable saves. |
 | `wins` | The `[GLOBAL]` and `[SERVER]` prefixes. |
 | `rewards` | Ticket payouts. |
-| `teleports` | Teleport refusals and the loading screen's "Teleporting...". |
+| `teleports` | Teleport refusals. |
 | `friends` | Joining friends. |
 | `personalServers` | Personal servers. |
 | `durations` | "a week", "10 minutes". |

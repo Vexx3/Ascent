@@ -8,6 +8,8 @@ The screens are in `StarterGui` and are yours to lay out. See [The Menus](./stud
 
 `LoadingScreen` can be a Frame or a CanvasGroup. Either fades in and out; a CanvasGroup fades as one image, a Frame fades each part inside it. It covers the screen at once when a player joins.
 
+Its `LoadingLabel` says what is loading, with dots that count up: "Loading data" as a player joins, and "Teleporting to Ring 2" during a teleport, naming the Area (or the hub) whenever the server knows it. The words are the `loading` group of `Config > Messages`; leave the dots off them. `Config > Visuals.timing.loadingDots` sets how fast the dots move, and `0` shows all three, still. Nothing else in `LoadingScreen` is read, so an `Attention` label from an older kit can go.
+
 ## Notifications
 
 The toasts in `MainMenu > NotificationHolder` draw rich text. A locked Area's requirement shows its difficulty in colour, as the hub does. In your own `Config > Messages`, `<b>` works, and a plain `&` has to be written `&amp;`.

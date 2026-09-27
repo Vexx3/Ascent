@@ -54,10 +54,14 @@ and then:
    without them works as before, with neither. Copy `RingSelect > Requirements`
    across too: `AreaReqLabel` now sits in a `RequirementsList` inside it, and
    the hub does not start without one.
-10. **Install the new Tower Setup plugin.** It is a toolbar of buttons now
+10. **Delete `TowerGUI > LoadingScreen > Attention`.** The kit no longer reads
+    it or hides it, so a copy left behind shows its own text on every loading
+    screen. `LoadingLabel` now says what is loading, with animated dots:
+    leave the dots off your own `loading` lines in `Config > Messages`.
+11. **Install the new Tower Setup plugin.** It is a toolbar of buttons now
     rather than one window, and its **Check** window says whether it matches
     the kit the place runs.
-11. **Publish every place at the same time, then shut down the old servers.**
+12. **Publish every place at the same time, then shut down the old servers.**
     This release runs Scribe 2.5.0, whose save has a new shape, and a server
     still on the old version refuses a player whose save a new one has written.
     Then check the Output of one live server: anything Config gets wrong is now
@@ -564,6 +568,20 @@ too many on the way now says so, instead of "couldn't send that gift".
 the guide. Every page's *Suggest a change to this page* link now opens somewhere
 you can actually edit, and a fix to the kit itself can be pasted into a bug
 report. You still get the kit through the Vendr hub and the Discord.
+
+**Every loading screen says what it is loading, and its dots count up.** The
+tower places' screen and the hub's both read "Loading data" as a player joins
+and "Teleporting to Ring 2" during a teleport -- the server names the Area, or
+the hub, and only a place shared by several Areas, as the shipped examples
+are, falls back to "Teleporting". The dots are one shared piece now, drawn at
+full length with the unshown ones invisible so a scaled line keeps its size,
+and the copy Roblox shows between places keeps all three. Their speed moved
+from `Config > RingSelect` to `Config > Visuals.timing.loadingDots`, which
+both screens read; a Visuals without it gets the old 0.4 seconds. The lines
+sit together in the `loading` group of `Config > Messages`, and the Play and
+Enter buttons that wait on saved data say "Loading data..." too. The tower
+screen's `Attention` line, and its "Please wait!", are gone.
+[UI & HUD](https://kiels.dev/Ascent/guide/ui-and-hud#hud)
 
 **Tower Setup is a toolbar now, not one window with six tabs.** Each job is
 its own button, and only the ones the open place can use appear: a tower

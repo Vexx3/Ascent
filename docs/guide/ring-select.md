@@ -35,9 +35,8 @@ Start the hub from `Ascent Hub.rbxlx` and every tower place from `Ascent Area.rb
 | `scrollTween` | 0.35s Quad Out | How the Area list scrolls. |
 | `loadingScreen.minimumTime` | `1.5` | Least seconds the loading screen stays up. |
 | `loadingScreen.tipInterval` | `5` | Seconds between tips. `0` keeps one. |
-| `loadingScreen.dotInterval` | `0.4` | Seconds between loading dots. `0` stops them. |
 
-The screen's words are under `ringSelect` in `Config > Messages`.
+The screen's words are under `ringSelect` in `Config > Messages`, and its loading lines under `loading`. The loading dots' speed is `Config > Visuals.timing.loadingDots`, shared with the tower places.
 
 ### Controls
 
@@ -167,9 +166,9 @@ A crowded ring narrows its bars to fit. A tower beaten in either mode counts. To
 
 ### Loading Screen
 
-`LoadingScreen` covers the screen until the player's data has loaded, for at least `minimumTime`. `LoadingLabel` reads `ringSelect.loading` with animated dots (leave the dots off your own wording). `TipLabel` shows a random tip from `ringSelect.tips` every `tipInterval` seconds.
+`LoadingScreen` covers the screen until the player's data has loaded, for at least `minimumTime`. `LoadingLabel` reads `loading.playerData` ("Loading data") with animated dots (leave the dots off your own wording). `TipLabel` shows a random tip from `ringSelect.tips` every `tipInterval` seconds.
 
-It comes back for every teleport out of the hub, reading `ringSelect.teleporting`. A copy of it stays on screen during the teleport itself. If the teleport fails, it goes away and the reason is shown.
+It comes back for every teleport out of the hub, saying where to: `loading.teleportingTo` with the Area's name, or `loading.teleporting` when the server cannot tell which Area a place is. A copy of it stays on screen during the teleport itself. If the teleport fails, it goes away and the reason is shown.
 
 Without a `LoadingScreen`, the hub shows the screen straight away. Tower places do the same with the loading screen in `TowerGUI`.
 
