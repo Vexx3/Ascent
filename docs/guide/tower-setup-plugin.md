@@ -18,7 +18,7 @@ Open it from the **Ascent** toolbar → **Tower Setup**. Use the plugin that cam
 | :-- | :-- |
 | **Setup** | Is the place wired up: menus, folders, rewards. |
 | **Towers** | Every tower, worst first, with what's wrong. |
-| **Selected** | The tower you have selected: fix and edit it. |
+| **Selected** | The tower you have selected: fix and edit it. In the hub, a ring camera. |
 | **Cosmetics** | Your trails and auras, and how each is unlocked. |
 | **Shop** | What the ticket shop sells. |
 | **Config** | The settings you tune most, and the window's own preferences. |
@@ -48,6 +48,8 @@ Select a tower, or anything in it:
 - **In Config > Towers**: the tower's entry, and anything it disagrees with the tower about.
 
 With nothing selected, **New tower here** makes a tower folder called `NEW` with a spawn, winpad and client objects folder. Rename it to its acronym before anyone beats it.
+
+In the hub, select a ring camera (or its Area's folder) for **Look through** and **Move to my view**. See [Aiming a camera](./ring-select.md#aiming-a-camera).
 
 ### Seeing checkpoints while you build
 
@@ -117,3 +119,7 @@ The window matches the place's Place ID against `Config > Worlds` to know which 
 ### Checkpoint size
 
 The size **Add checkpoint here** builds at. Checkpoints aren't touch triggers: the server checks whether a player's path passed through one, so size them to cover the whole route. A player who skips one is kicked on reaching the winpad.
+
+### Camera guides
+
+**Show where each ring camera points** turns the hub's camera arrows on or off. They're on by default, drawn in edit mode only, and never saved with the place.

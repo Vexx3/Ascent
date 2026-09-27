@@ -497,6 +497,16 @@ beside the three that were already there. It was the one missing from a group
 that otherwise covered them all.
 [Seeing checkpoints while you build](https://kiels.dev/Ascent/guide/tower-setup-plugin#seeing-checkpoints-while-you-build)
 
+**You can see which way a hub camera faces.** Each ring camera is a one-stud
+invisible part, so its shot could only be seen by playing the hub. With the
+Tower Setup plugin installed, each one now shows an arrow, the edges of its
+shot and its Area's id, in edit mode only. Select one and the Selected tab
+offers **Look through**, which puts Studio's camera where it is, and **Move
+to my view**, which puts it where Studio's camera is. Look through, fly until
+the shot is right, then press it; Ctrl+Z undoes it. The Config tab turns the
+guides off.
+[Aiming a camera](https://kiels.dev/Ascent/guide/ring-select#aiming-a-camera)
+
 ### Changed
 
 **A shorter command list.** `tickets` is gone (`data-summary` shows the

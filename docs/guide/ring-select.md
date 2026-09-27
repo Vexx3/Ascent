@@ -65,7 +65,16 @@ Workspace
       Camera
 ```
 
-To call the folder something else, rename it and set `cameraFolder` to match. Without the folder, the camera stays where it is and the screen still works. The Output names any Area missing its camera part.
+The player's camera takes the part's exact position and the way its front faces, at the default field of view. To call the folder something else, rename it and set `cameraFolder` to match. Without the folder, the camera stays where it is and the screen still works. The Output names any Area missing its camera part.
+
+### Aiming a camera
+
+With the [Tower Setup window](./tower-setup-plugin.md) installed, every camera part shows an arrow, the edges of its shot and its Area's id, in edit mode only. Select one and the **Selected** tab offers:
+
+- **Look through**: moves Studio's camera to the part, so the viewport shows the shot.
+- **Move to my view**: moves the part to where Studio's camera is. Look through, fly until the shot is right, then press it. Ctrl+Z undoes it.
+
+The frame drawn in front of each camera is what a 16:9 screen shows.
 
 ## Lighting Per Ring
 
