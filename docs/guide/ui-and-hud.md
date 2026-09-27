@@ -4,7 +4,7 @@ The screens are in `StarterGui` and are yours to lay out. See [The Menus](./stud
 
 ## HUD
 
-`TowerGUI` shows the tower's acronym, the timer, the restart hold, boost use, rush progress, the Practice and All Jumps labels, and the loading screen (while data loads and during a teleport). The **Hide Timer** setting hides the timer.
+`TowerGUI` shows the tower's acronym, the timer, the restart hold, boost use, rush progress, the Practice and All Jumps labels, and the loading screen (while data loads and during a teleport). The **Hide Timer** setting hides the timer. The kit raises its `DisplayOrder` to at least 12, above the topbar icons, so on a narrow screen those icons never cover the timer.
 
 `LoadingScreen` can be a Frame or a CanvasGroup. Either fades in and out; a CanvasGroup fades as one image, a Frame fades each part inside it. It covers the screen at once when a player joins.
 
