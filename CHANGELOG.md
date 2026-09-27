@@ -1,5 +1,70 @@
 # Changelog
 
+## 1.1.0
+
+Charts that start below Easy, an Elo that counts a player's hardest towers
+first, Flip Indication, and the v6 kit's own damage handler, so heal parts
+heal.
+
+### Updating
+
+Coming from 1.0.0, follow [Updating Ascent](https://kiels.dev/Ascent/guide/updating).
+Nothing else has to be done by hand: a Config without the new settings keeps
+Elo and difficulty ratings exactly as they were, and gets Flip Indication
+switched on. To use the rest:
+
+1. **For the weighted Elo, add `falloff = 0.95` to `Config > Elo.points`.**
+   It lowers the Elo of anyone who has beaten many towers well below their
+   hardest, so check any Area locked behind `elo`. The global Elo board shows
+   each player's old number until they next join.
+2. **To start the chart below Easy, add `firstRating` to `Config > Towers`**
+   (see **Added**), then move every tower's difficulty and every category's
+   `from` and `to` to the new numbers.
+3. **To offer Flip Indication in the menu, copy `SettingsMenu > VisualFrame >
+   FlipIndication` from this release's place.** Without the row it is on for
+   everyone, at `Config > Settings.flipIndication`, which defaults to on.
+
+### Fixed
+
+- **Heal parts in v6 towers heal.** The tower damage remote refused the
+  `"Heals"` a v6 heal part sends, along with anything else that was not a
+  positive number. It now runs the v6 tower creation kit's own handler
+  (6.1.3): a number is damage, `"Heals"` heals to full, any other string deals
+  5, and only damage starts the 0.1-second cooldown, so a hit straight after
+  a heal still lands.
+
+### Added
+
+- **Flip Indication**, a Visual setting, on to start. While a player stands
+  in a part that corner flips them, a black copy of their body with white
+  edges shows where the flip would put them, moving as they do, with a white
+  cone on its head where they will face. It uses FlipManager's own test and
+  arithmetic, so it lands exactly where pressing flip does, `TeleToObject`
+  included, and shows nothing on a part the flip would not move them off. It
+  faces the way the character really ends up: towards the camera with shift
+  lock on or in first person, the way they walk while moving, and turned
+  round when they stand still.
+- **`firstRating` in `Config > Towers`**, the rating of the first entry in
+  `difficulties`, 1 when left out. `0` puts a difficulty such as Effortless
+  below Easy, and a negative number suits charts that go below zero, like the
+  Joke Towers chart's Class Negative. Ratings follow it everywhere: the
+  Completions menu, categories, Area locks, announcements, Elo, the startup
+  checks and the Tower Setup plugin's Difficulty box, which no longer refuses
+  a number below 0. The rating of a negative difficulty is the whole number at
+  or below it, so `-0.3` is rating -1.
+- **`falloff` in `Config > Elo.points`, shipped at 0.95.** Towers count
+  hardest first, each for `falloff` of the one before it, the way osu! weighs
+  a player's plays. Beating more still always adds, but no pile of towers adds
+  up to more than 20 times the hardest, so 200 Challenging towers (2,099) no
+  longer outrank one Catastrophic (3,570), where as a plain sum they were worth
+  20,995. `1` is the plain sum, and what a Config without it gets.
+
+### Changed
+
+- **Elo prices a tower from the bottom of the chart**, so the first
+  difficulty is worth `scale` wherever the chart starts. With `firstRating`
+  at 1 nothing moves.
+
 ## 1.0.0
 
 The first stable release. From here on, the names in
