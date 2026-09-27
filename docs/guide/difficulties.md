@@ -68,7 +68,7 @@ A tower's own `noBoosts` in its entry overrides its type either way, so one Cita
 
 ## Edit A Difficulty
 
-`difficulties` is a list in rating order: the first entry is rating 1.
+`difficulties` is a list in rating order. The first entry is rating `firstRating`, which is `1`, and each one after is one higher.
 
 ```luau
 {
@@ -94,6 +94,24 @@ To add a rating above Nil, add an entry at the end, and a ticket reward for it i
 ::: warning Renaming a difficulty
 The name is used by ticket rewards, unlock rules and cosmetics. Rename it everywhere, or the Output will list what no longer matches.
 :::
+
+## Starting Below Easy
+
+Some charts start below Easy, with a difficulty such as Effortless at `0`, or go below zero entirely. Set `firstRating` in `Config > Towers` to the first entry's rating:
+
+```luau
+firstRating = 0,
+
+difficulties = {
+	{ name = "Effortless", color = Color3.fromRGB(0, 255, 213) },
+	{ name = "Easy", color = Color3.fromRGB(124, 255, 77) },
+	-- ...
+},
+```
+
+Now Effortless is `0` and Easy stays `1`, so an Effortless tower is written `0.45`. A negative `firstRating` works the same way. The rating is always the whole number at or below the difficulty, so `-0.3` is rating `-1`, `.70` of the way up it (High).
+
+Everything follows the chart: the Completions menu, locks, announcements, Elo and the plugin. A category's `from` and `to` are ratings too, so give Effortless a category with `from = 0`, and move the others if your list shifted. The Output names any tower or category outside the chart.
 
 ## Difficulty Categories
 
