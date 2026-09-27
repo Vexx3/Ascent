@@ -23,7 +23,7 @@ Players change their settings in the in-game Settings menu, and their choices ar
 | `hideCosmetics` | Visual | `"Off"`, `"Everyone Else"`, `"Yours"`, `"All"` | Hides trails and auras. |
 | `hideBubbleChat` | Visual | `false` | Hides chat bubbles. |
 | `transparentAccessories` | Visual | `false` | Fades your own hats and hair when the camera is close. |
-| `musicVolume` | Audio | `0.5`, `0`–`2` | Music volume. |
+| `musicVolume` | Audio | `0.5`, `0`–`2` | Music volume. The slider's stops are `musicVolumeSteps`, in percent. |
 | `audioVisualizer` | Audio | `"Off"`, `"Low"`, `"Medium"`, `"High"`, `"OMG Why"`, `"AAAAA"` | Camera shake with the music. |
 | `alignmentDot` | Misc | `false` | Shows the alignment dot, the `dot` frame in the menu's ScreenGui. |
 | `mobileDPad` | Controls | `"Off"`, `"Mode 1"`, `"Mode 2"` | An on-screen D-pad. |

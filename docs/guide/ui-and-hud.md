@@ -22,7 +22,7 @@ The toasts in `MainMenu > NotificationHolder` draw rich text. A locked Area's re
 - `MainMenu > PlaceVersionLabel`.
 - The music system's `LegacyMusicGui > Button`.
 
-Faded buttons still work. On a phone, a tap presses the button and shows it for three seconds. The timer, health, keys, backpack and touch controls never fade.
+Faded buttons still work. On a phone, a tap presses the button and shows it for three seconds. The fades and both waits are in `Config > Visuals.timing`. The timer, health, keys, backpack and touch controls never fade.
 
 **To fade an element of your own**, give it the tag `HideUI` (**Properties → Tags**). Everything inside a tagged frame fades with it.
 
@@ -34,7 +34,7 @@ The settings row is `SettingsMenu > VisualFrame > HideUI`. Without it the settin
 
 It follows the flip's own rules, so it shows only on a part the flip would move you off: one tagged `CanFlip` or holding a `CanFlip`, not switched off (`Activated = false`) and not tagged `DoNotFlipPlayer`. Like the flip, it needs an R6 body.
 
-It's on to start (`flipIndication` in `Config > Settings`). The settings row is `SettingsMenu > VisualFrame > FlipIndication`. Without it the setting isn't offered, and players get the default.
+It's on to start (`flipIndication` in `Config > Settings`), and its colours are `Config > Visuals.flipIndication`. The settings row is `SettingsMenu > VisualFrame > FlipIndication`. Without it the setting isn't offered, and players get the default.
 
 ## Main Menu
 

@@ -58,6 +58,8 @@ Changing a save key starts everyone on an empty save.
 | `timings.teleportCooldown` | `1.5` | Least seconds between one player's teleports. |
 | `timings.teleportTimeout` | `30` | Seconds before a stuck teleport is reported as failed. |
 | `timings.maximumQuickResetDelay` | `3` | The highest Quick Reset setting. |
+| `timings.shutdownWarnings` | `{ 300, 120, 60, 30, 15 }` | Seconds before a shutdown that everyone is warned. |
+| `timings.shutdownNotice` | `8` | Seconds each shutdown warning stays up. |
 | `timerSyncInterval` | `2` | Seconds between timer corrections. |
 | `checkpointInterval` | `0.25` | How often checkpoints are checked. |
 | `restartCooldown` | `0.1` | Least seconds between restarts. |
@@ -160,6 +162,7 @@ What a **new** player's settings start as. Players' own choices are saved, so th
 | `alignmentDot` | `false` |
 | `audioVisualizer` | `"Off"` |
 | `musicVolume` | `0.5` |
+| `musicVolumeSteps` | `{ 0, 25, 50, 75, 100, 125, 150, 170, 200 }` |
 | `checkpointCamera` | `true` |
 | `checkpointTransparency` | `0.5` |
 | `keybinds` | see [Settings](./settings.md) |
@@ -187,8 +190,11 @@ Colours, sounds and timings for the kit's own UI.
 | `shopBuyButton` | The Buy button, affordable and not. |
 | `allJumpsMarker` | The All Jumps checkpoint block's colour and material. |
 | `menuSounds` | Click, hover, notification and victory sounds. |
-| `timing` | Animation lengths, how long notifications stay up, and how fast the loading dots move (`loadingDots`). |
+| `timing` | Animation lengths, how long notifications stay up, how fast the loading dots move (`loadingDots`), and Hide UI's fades (`hideUIFadeIn`, `hideUIFadeOut`, `hideUILinger`, `hideUITapLinger`). |
 | `audioVisualizerStrength` | How hard each Audio Visualiser option shakes the camera. |
+| `flipIndication` | The Flip Indication copy's `body` and `edges`. |
+| `cosmeticPreview` | How far behind (`distance`) and above (`height`) the cosmetics preview camera sits. |
+| `layoutEditor` | The Edit UI Layout screen's colours. |
 
 Difficulty colours are in `Towers`, rarity colours in `Economy`.
 

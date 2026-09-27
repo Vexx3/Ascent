@@ -98,13 +98,14 @@ A purchase is charged once, however many times it is clicked, and an owned item 
 ```luau
 featured = {
 	refreshMinutes = 60,
+	refreshWarning = 30,
 	itemCount = 4,
 	discountPercent = 25,
 	categories = { "Trails", "Auras", "Items" },
 },
 ```
 
-Every server shows the same featured items and changes them at the same time. Featured items are `discountPercent` off (`0` for none, at most 90, never below 1 ticket). Players are warned 30 seconds before the change; the words are in `Config > Messages.shopRotation`.
+Every server shows the same featured items and changes them at the same time. Featured items are `discountPercent` off (`0` for none, at most 90, never below 1 ticket). Players are warned `refreshWarning` seconds before the change (`0` for no warning); the words are in `Config > Messages.shopRotation`.
 
 ## The Shop Menu
 

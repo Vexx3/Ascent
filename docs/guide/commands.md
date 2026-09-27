@@ -54,6 +54,7 @@ Someone running a command above their role is told which role it needs. `kick`, 
 | `enabled` | `true` | Turns the console on or off. |
 | `allowStudio` | `true` | Studio testers get the top role. |
 | `activationKeys` | `{ F4 }` | The keys that open it. |
+| `consoleIcon` | a terminal icon | The console button's image in the topbar. |
 | `maxTicketChange` | `1000000` | The most `tickets-add` changes at once. |
 | `maxTicketBalance` | `1000000000` | The highest balance `tickets-set` allows. |
 | `saveTimeout` | `15` | Seconds a command waits for a save to confirm. |
