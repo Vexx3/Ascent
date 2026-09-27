@@ -44,11 +44,12 @@ and then:
    label. The Output names the Config line until it is renamed; the row still
    works under its old name. See **Changed** for what the setting does now.
 8. **Copy `ButtonsHolder > AJMenuButton` and `MainMenu > AJSettings` from the new
-   place** for the checkpoint panel, and add `checkpointCamera = true` and
-   `checkpointTransparency = 0.5` to `Config > Settings`. The transparency
+   place** for the checkpoint panel, and add `checkpointCamera = true`,
+   `checkpointTransparency = 0.5`, `checkpointButtons = true` and
+   `checkpointLighting = true` to `Config > Settings`. The transparency
    used to be `allJumpsMarker.transparency` in `Config > Visuals`, which is no
    longer read: move your value across. Without the button and panel the game
-   works as before; without the lines, those two values are the defaults.
+   works as before; without the lines, those values are the defaults.
 9. **In the hub, copy `RingSelect > TopRightBar > FriendButton`, `ServerButton`
    and `Lists` from the new hub place** for its friend and server lists. A hub
    without them works as before, with neither. Copy `RingSelect > Requirements`
@@ -571,6 +572,22 @@ too many on the way now says so, instead of "couldn't send that gift".
 the guide. Every page's *Suggest a change to this page* link now opens somewhere
 you can actually edit, and a fix to the kit itself can be pasted into a bug
 report. You still get the kit through the Vendr hub and the Discord.
+
+**A checkpoint puts the tower's buttons and lighting back.** In All Jumps and
+Practice, placing a checkpoint now also remembers every button -- pressed or
+not, and how far a timed one's timer had run -- and the lighting the
+tower's lighting changers had set, and loading it, by teleport or by dying,
+puts both back. A button pressed three seconds into a ten-second timer lets go
+seven seconds after the checkpoint loads. v6 buttons are restored through the
+framework's own timer, whose start it reads the whole time it counts down;
+v5 buttons count down where nothing can read them, so their press times are
+noted as they happen and a restored one is let go on time by the kit.
+Lighting is read over every property the framework drives and put back
+through it, so a changer's tween still running cannot finish over it. The
+checkpoint panel has a switch for each, `CPLoadButtons` and
+`CPLoadLighting`, saved as `checkpointButtons` and `checkpointLighting`,
+both on to start; a panel without the rows still works.
+[Buttons and lighting at a checkpoint](https://kiels.dev/Ascent/guide/practice-all-jumps#buttons-and-lighting-at-a-checkpoint)
 
 **The hub has sounds, music, and a Music Volume slider.** Every button on the
 ring select screen clicks when pressed and when the pointer moves onto it,

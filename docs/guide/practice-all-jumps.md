@@ -46,5 +46,16 @@ In both modes, `ButtonsHolder > AJMenuButton` opens `MainMenu > AJSettings`:
 | `CPLoadCam > ToggleButton` | Whether going to a checkpoint also turns the camera to where it faced. |
 | `CPTransparency > InputBox`, `Button` | How see-through the markers are, 0 to 1. |
 | `TPCheckpoint > InputBox`, `Button` | Go to a checkpoint by number. |
+| `CPLoadButtons > ToggleButton` | Whether going to a checkpoint also puts the tower's buttons back as they were. Optional. |
+| `CPLoadLighting > ToggleButton` | Whether going to a checkpoint also puts back the lighting its lighting changers had set. Optional. |
 
-Enter in a box does the same as its button. The two choices are saved, starting from `checkpointCamera` and `checkpointTransparency` in `Config > Settings`. The panel is optional.
+Enter in a box does the same as its button. The choices are saved, starting from `checkpointCamera`, `checkpointTransparency`, `checkpointButtons` and `checkpointLighting` in `Config > Settings`. The panel is optional.
+
+### Buttons and lighting at a checkpoint
+
+A checkpoint remembers the tower's buttons and lighting when it's placed, and puts them back when it's loaded, whether by teleporting to it or by dying:
+
+- **Buttons**: every button goes back to pressed or not. A timed one comes back with the time it had left, so a button pressed 3 seconds into a 10-second timer lets go 7 seconds after the checkpoint loads. This works for v5 and v6 buttons alike.
+- **Lighting**: whatever the lighting changers had set, of either version: the time of day, fog, sky and effects.
+
+Each is taken whether its switch is on or not, so turning one on later still works with checkpoints already placed.
