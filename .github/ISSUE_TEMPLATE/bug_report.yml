@@ -24,7 +24,7 @@ body:
     attributes:
       label: Kit version
       description: Run `kit-info` in the admin console (F4 by default), or press Play and read the `AscentVersion` attribute on `game` in the Properties window.
-      placeholder: 1.0.0-rc.3
+      placeholder: 1.0.0
     validations:
       required: true
   - type: dropdown
