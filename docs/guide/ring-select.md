@@ -26,7 +26,7 @@ Start the hub from `Ascent Hub.rbxlx` and every tower place from `Ascent Area.rb
 | :-- | :-- | :-- |
 | `keys` | `Q E`, arrows, `WASD` | Key names per action, as `Enum.KeyCode` spells them. An empty list unbinds the action. |
 | `detailedProgress` | `false` | Whether a new player starts on the Detailed Progress Meter. |
-| `beatenColor` | green | A beaten tower's strip, and a met requirement. |
+| `beatenColor` | green | A beaten tower's strip, and a met requirement. A tower beaten only in All Jumps uses `Config > Visuals.completions.allJumpsBeaten`, the Completions menu's yellow. |
 | `notBeatenColor` | red | An unbeaten tower's strip. |
 | `cameraFolder` | `"Rings"` | The Workspace folder holding each Area's set. |
 | `cameraPartName` | `"Camera"` | The part in an Area's folder the camera flies to. |
@@ -164,9 +164,9 @@ A button's `Image` is the Area's `image` from `Config > Worlds`, or the place's 
 One of the two shows, by the player's **Detailed Progress Meter** setting:
 
 - **`AreaProgress`**: one bar reading `7/12`. Hover it for the percentage, to one decimal place: `7/12 (58.3%)`.
-- **`DetailedProgress`**: one bar per tower, easiest first, in its difficulty colour, with `Status` green when beaten. Hovering a bar shows `HoverTower` and outlines the tower's frame in white: the Model or part named after its acronym in the Area's folder under `Rings`.
+- **`DetailedProgress`**: one bar per tower, easiest first, in its difficulty colour, with `Status` green when beaten, yellow when beaten only in All Jumps, and red otherwise. Hovering a bar shows `HoverTower` and outlines the tower's frame in white: the Model or part named after its acronym in the Area's folder under `Rings`.
 
-A crowded ring narrows its bars to fit. A tower beaten in either mode counts. Tower rushes don't count. `TotalBeaten` counts every Area.
+A crowded ring narrows its bars to fit. Only normal wins count, as in the Completions menu and the Area locks: an All Jumps win shows yellow but adds nothing. Tower rushes don't count. `TotalBeaten` counts every Area.
 
 `SettingsButton` opens `Settings`. Its rows can sit anywhere inside it; the shipped screen keeps them in `OptionList`:
 

@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.1.1
+
+A fix for the hub's progress, which counted All Jumps wins as beaten.
+
+### Updating
+
+Coming from 1.1.0, update the hub's scripts: its `Shared` and
+`StarterPlayerScripts > Client`, or follow
+[Updating Ascent](https://kiels.dev/Ascent/guide/updating) for every place. No
+Config or saved data changes.
+
+### Fixed
+
+- **The hub counted All Jumps wins as beaten.** The total at the top right and
+  each Area's count took a tower beaten in either mode, while the Completions
+  menu and every Area lock count only normal wins, so the hub could promise a
+  player progress a lock then refused. It now counts normal wins only, and a
+  tower beaten only in All Jumps shows its strip in the Completions menu's
+  yellow, `Config > Visuals.completions.allJumpsBeaten`, rather than green.
+
 ## 1.1.0
 
 Charts that start below Easy, an Elo that counts a player's hardest towers
