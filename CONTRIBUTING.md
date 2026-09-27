@@ -21,6 +21,10 @@ anyone.
   build — usually a link to a page or heading that does not exist — cannot be
   merged until it passes.
 
+Once merged, a change is announced in the Discord with a link to each page it
+touched. Put `[skip notify]` in the pull request's title to leave out one too
+small to announce, such as a typo fix.
+
 Write the way the guide is written:
 
 - Say what a setting does, and what goes wrong without it.
