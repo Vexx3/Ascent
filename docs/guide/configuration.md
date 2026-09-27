@@ -150,6 +150,7 @@ What a **new** player's settings start as. Players' own choices are saved, so th
 | `fpsDisplay` | `false` |
 | `hideTimer` | `false` |
 | `hideUI` | `false` |
+| `flipIndication` | `true` |
 | `hideDisabledItems` | `false` |
 | `invisiblePlayers` | `"Off"` |
 | `mobileDPad` | `"Off"` |
