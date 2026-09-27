@@ -26,8 +26,13 @@ Start the hub from `Ascent Hub.rbxlx` and every tower place from `Ascent Area.rb
 | :-- | :-- | :-- |
 | `keys` | `Q E`, arrows, `WASD` | Key names per action, as `Enum.KeyCode` spells them. An empty list unbinds the action. |
 | `detailedProgress` | `false` | Whether a new player starts on the Detailed Progress Meter. |
+| `progressMeter` | `"Choice"` | `"Choice"` lets each player pick their progress view. `"Simple"` always shows the single bar and `"Detailed"` one bar per tower; both hide the switch. |
+| `saveSettings` | `true` | Whether the screen's Settings are saved. Off, the view starts on `detailedProgress` every visit, Music Volume starts where the tower places left it, and nothing picked here is saved. |
 | `beatenColor` | green | A beaten tower's strip, and a met requirement. A tower beaten only in All Jumps uses `Config > Visuals.completions.allJumpsBeaten`, the Completions menu's yellow. |
 | `notBeatenColor` | red | An unbeaten tower's strip. |
+| `hoverColor` | white | The outline on a tower in the ring while its bar is hovered. |
+| `selectedTransparency`, `unselectedTransparency` | `0`, `0.5` | How see-through the picked Area card is, and the rest. |
+| `unavailableDarken` | `0.5` | How far a server list button darkens while it can't be used, `0` to `1`. |
 | `cameraFolder` | `"Rings"` | The Workspace folder holding each Area's set. |
 | `cameraPartName` | `"Camera"` | The part in an Area's folder the camera flies to. |
 | `cameraTween` | 0.7s Quint Out | How the camera and lighting move between rings. |
@@ -161,19 +166,19 @@ A button's `Image` is the Area's `image` from `Config > Worlds`, or the place's 
 
 ### Progress
 
-One of the two shows, by the player's **Detailed Progress Meter** setting:
+One of the two shows, by the player's **Detailed Progress Meter** setting, or always the same one if `progressMeter` is `"Simple"` or `"Detailed"`:
 
 - **`AreaProgress`**: one bar reading `7/12`. Hover it for the percentage, to one decimal place: `7/12 (58.3%)`.
 - **`DetailedProgress`**: one bar per tower, easiest first, in its difficulty colour, with `Status` green when beaten, yellow when beaten only in All Jumps, and red otherwise. Hovering a bar shows `HoverTower` and outlines the tower's frame in white: the Model or part named after its acronym in the Area's folder under `Rings`.
 
 A crowded ring narrows its bars to fit. Only normal wins count, as in the Completions menu and the Area locks: an All Jumps win shows yellow but adds nothing. Tower rushes don't count. `TotalBeaten` counts every Area.
 
-`SettingsButton` opens `Settings`. Its rows can sit anywhere inside it; the shipped screen keeps them in `OptionList`:
+`SettingsButton` opens `Settings`. Its rows can sit anywhere inside it; the shipped screen keeps them in `OptionList`. The panel, its button and each row are optional: delete what you don't want, and a panel left with nothing to change hides its button.
 
 - **`DetailedProgress`**: the Detailed Progress Meter switch.
 - **`MusicVolume`**: the same Music Volume setting as the tower places' Audio settings, from 0% to 200%, so a player who turns the music down in one place hears it down in all of them.
 
-Both choices are saved.
+Both choices are saved, unless `saveSettings` is off.
 
 ### Sounds
 
