@@ -34,7 +34,7 @@ A secret ending:
 2. Set `EndingID = "SecretVault"` and `EndingName = "The Secret Vault"`.
 3. Set `BadgeID` for its own badge, and `PreventTowerBadge = true` if it shouldn't also give the tower's.
 
-The [Tower Setup window](./tower-setup-plugin.md#endings)'s **Add another ending** does this for you.
+The [Tower Setup plugin](./tower-setup-plugin.md#endings)'s **Add another ending** does this for you.
 
 ## Winpad Attributes
 

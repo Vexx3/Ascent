@@ -69,12 +69,13 @@ The player's camera takes the part's exact position and the way its front faces,
 
 ### Aiming a camera
 
-With the [Tower Setup window](./tower-setup-plugin.md) installed, every camera part shows an arrow, the edges of its shot and its Area's id, in edit mode only. Select one and the **Selected** tab offers:
+With the [Tower Setup plugin](./tower-setup-plugin.md) installed, every camera part shows an arrow, the edges of its shot and its Area's id, in edit mode only. Its toolbar in the hub has:
 
-- **Look through**: moves Studio's camera to the part, so the viewport shows the shot.
-- **Move to my view**: moves the part to where Studio's camera is. Look through, fly until the shot is right, then press it. Ctrl+Z undoes it.
+- **Look Through**: moves Studio's camera to the selected camera, so the viewport shows the shot. With none selected it starts at the first; press it again for the next Area's.
+- **Aim Here**: moves the selected camera to where Studio's camera is. Look through, fly until the shot is right, then press it. Ctrl+Z undoes it.
+- **Cameras**: turns the arrows off and on.
 
-The frame drawn in front of each camera is what a 16:9 screen shows.
+The frame drawn in front of each camera is what a 16:9 screen shows. The plugin's **Check** window lists any Area without a camera.
 
 ## Lighting Per Ring
 

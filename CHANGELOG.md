@@ -54,8 +54,9 @@ and then:
    without them works as before, with neither. Copy `RingSelect > Requirements`
    across too: `AreaReqLabel` now sits in a `RequirementsList` inside it, and
    the hub does not start without one.
-10. **Install the new Tower Setup plugin.** Its Setup tab now says whether it
-    matches the kit the place runs.
+10. **Install the new Tower Setup plugin.** It is a toolbar of buttons now
+    rather than one window, and its **Check** window says whether it matches
+    the kit the place runs.
 11. **Publish every place at the same time, then shut down the old servers.**
     This release runs Scribe 2.5.0, whose save has a new shape, and a server
     still on the old version refuses a player whose save a new one has written.
@@ -267,16 +268,10 @@ values no check expects. A box now refuses what is not a number, puts back
 what it held and says why underneath. IDs and counts must be whole, and each
 Config number is held to what the server will start with.
 
-**Tower Setup could write a Config file that no longer loads.** A text value
-holding a backslash was written straight into a quoted string, where it
-starts an escape; `C:\path` stopped the whole file parsing. Such a value is
-refused now. Numbers were written to fourteen significant digits, which
-rounded a sixteen-digit badge ID; whole numbers are written whole.
-
-**The checkpoint size setting did nothing.** The Config tab saved it and
-**Add checkpoint here** ignored it, always building a flat 24 by 1 by 24
-slab -- the shape the server's position sampling is most likely to miss a
-falling player through. New checkpoints are built at the saved size.
+**The checkpoint size setting did nothing.** It was saved, and **Add
+checkpoint here** ignored it, always building a flat 24 by 1 by 24 slab -- the
+shape the server's position sampling is most likely to miss a falling player
+through. New checkpoints are built at the saved size.
 
 **A tower with its checkpoints shown counted none.** Checkpoints moved into
 Workspace for editing were not counted, so the next one added was named `1`
@@ -291,22 +286,19 @@ tower place that updated; the hub now ships `Config` whole. The Tower Setup
 window reported an edit to a locked package script as done when Studio had
 not taken it; it reads the script back and says to unlock it. And an edit it
 made to an unlocked package said nothing about publishing, which is the step
-that stops a change staying in one place. The Setup tab also reports a
+that stops a change staying in one place. The Check window also reports a
 `Config` missing a module, a copy with AutoUpdate off, and a place behind the
 latest published version. [Sharing Config between your places](https://kiels.dev/Ascent/guide/configuration#sharing-config-between-your-places)
 
-**Smaller Tower Setup fixes.** Two towers, cosmetics or shop items sharing a
-name drew as one. Pointing a sign at a part made a second `ObjectValue` when
-the tower's existing one sat deeper than the top level, and pressing it with
-nothing selected did nothing silently. **Add to catalogue** ignored whether
-the write worked, and showed its line in a box that looked editable and was
-not. A Tool whose name differed from another only by a symbol was offered to
-the shop under the same key, and one starting with a digit could not be
-added at all. **New tower here** made a second `NEW` beside the first. The
-Menus check described the client's startup order from before this release,
-so several of its "what this costs" explanations were wrong. Config read
-through `require` stayed as it was when the place opened; it is re-read now
-whenever a Config script changes.
+**Smaller Tower Setup fixes.** Two towers sharing a name drew as one. Pointing
+a sign at a part made a second `ObjectValue` when the tower's existing one sat
+deeper than the top level, and pressing it with nothing selected did nothing
+silently. **Add to catalogue** ignored whether the write worked, and showed
+its line in a box that looked editable and was not. **New tower here** made a
+second `NEW` beside the first. The Menus check described the client's startup
+order from before this release, so several of its "what this costs"
+explanations were wrong. Config read through `require` stayed as it was when
+the place opened; it is re-read now whenever a Config script changes.
 
 ### Added
 
@@ -482,7 +474,7 @@ game reads and somewhere you cannot see them. **Show in Workspace** moves a
 tower's folder into the tower so you can drag them, **Put back** returns it,
 and a new checkpoint added while a tower is shown lands beside the others
 rather than out of sight. A shown tower loads with no checkpoints, so the
-Setup tab carries a banner and a **Put all back** button the whole time one
+Check window carries a banner and a **Put all back** button the whole time one
 is out, and the folder is marked so closing Studio does not lose track of it.
 
 **It also notices checkpoints left in Workspace by hand.** A folder in the
@@ -492,20 +484,25 @@ with no fix, because which set you meant to keep is not something a button
 can know. A folder counts if it is named for checkpoints or holds a part
 numbered `1`, `2`, `3`; `ClientSidedObjects` never does.
 
-**`checkpointsMissingWarning` is in the Config tab**, under Build warnings
-beside the three that were already there. It was the one missing from a group
-that otherwise covered them all.
 [Seeing checkpoints while you build](https://kiels.dev/Ascent/guide/tower-setup-plugin#seeing-checkpoints-while-you-build)
 
 **You can see which way a hub camera faces.** Each ring camera is a one-stud
 invisible part, so its shot could only be seen by playing the hub. With the
 Tower Setup plugin installed, each one now shows an arrow, the edges of its
-shot and its Area's id, in edit mode only. Select one and the Selected tab
-offers **Look through**, which puts Studio's camera where it is, and **Move
-to my view**, which puts it where Studio's camera is. Look through, fly until
-the shot is right, then press it; Ctrl+Z undoes it. The Config tab turns the
-guides off.
+shot and its Area's id, in edit mode only. In the hub, **Look Through** puts
+Studio's camera where the selected one is, and pressing it again steps to the
+next Area's; **Aim Here** puts the selected camera where Studio's camera is.
+Look through, fly until the shot is right, then press it; Ctrl+Z undoes it.
+**Cameras** turns the guides off.
 [Aiming a camera](https://kiels.dev/Ascent/guide/ring-select#aiming-a-camera)
+
+**Test Tower plays the selected tower in one click.** It starts a playtest
+that puts you straight into the tower instead of walking to its portal. With a
+part inside the tower selected, such as a checkpoint, you start on top of it,
+which saves climbing a long tower to test its top; that run earns nothing,
+like one with a Studio test tool. It travels as Studio's own test arguments,
+which only a test a plugin started carries, so a live server never acts on it.
+[Test Tower](https://kiels.dev/Ascent/guide/tower-setup-plugin#test-tower)
 
 ### Changed
 
@@ -568,15 +565,26 @@ the guide. Every page's *Suggest a change to this page* link now opens somewhere
 you can actually edit, and a fix to the kit itself can be pasted into a bug
 report. You still get the kit through the Vendr hub and the Discord.
 
-**The Tower Setup window is easier to find your way round.** The tab for the
-selected tower is called **Selected** rather than **Tower**, which sat beside
-**Towers** and read as the same thing. Cards are rounded, and every card that
-needs attention says so in its corner and is outlined in the matching colour.
-**Open** on the Towers tab jumps to a tower on the Selected tab, which now
-leads with that tower's own problems and fixes. The window reopens on the tab
-you left it on, and says what each file edit did in a notice you can dismiss.
-**Take out of the shop** asks twice, since a file edit is not Ctrl+Z's to undo.
-A cosmetic's **Beat tower** is picked from `Config > Towers` rather than typed.
+**Tower Setup is a toolbar now, not one window with six tabs.** Each job is
+its own button, and only the ones the open place can use appear: a tower
+place gets **Towers**, **Add Checkpoint**, **Checkpoints** and **Test Tower**,
+the hub gets **Cameras**, **Look Through** and **Aim Here**, and both get
+**Check** and **Config**. The one-click tools act on the selection with no
+window open, and each can be given a key in Studio's Customize Shortcuts. The
+Towers window lists every tower and, with one selected, becomes its editor,
+leading with that tower's own problems and fixes. **Check** is what the Setup
+tab was; in the hub it checks what the ring select needs -- a camera for every
+Area, lighting a ring can set, `hubPlaceId` -- rather than reporting a tower
+place's folders as missing. **Config** opens any Config module in one click.
+
+The forms that edited Config for you -- the Config, Shop and Cosmetics tabs --
+are gone. Each setting is one line of a file with a comment explaining it,
+which the file says better than a form, and a form writing Luau had already
+produced a Config file that would not load. The checks for a missing Tool,
+trail or aura stay in Check, and **Add to catalogue** still writes a tower's
+line. Cards are rounded, and every card that needs attention says so in its
+corner and is outlined in the matching colour. [The Tower Setup
+plugin](https://kiels.dev/Ascent/guide/tower-setup-plugin)
 
 **Working from the repository: one build step, live sync, and both places at
 once.** darklua is gone -- the kit ran it with no rules, so it only copied

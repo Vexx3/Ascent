@@ -21,7 +21,7 @@ Config > Towers
 
 **Checkpoints go in ServerStorage, not in the tower.** That's the step people miss.
 
-The [Tower Setup window](./tower-setup-plugin.md) builds this for you and tells you what's missing.
+The [Tower Setup plugin](./tower-setup-plugin.md) builds this for you and tells you what's missing.
 
 ## Checkpoints Are The Anti-Cheat
 

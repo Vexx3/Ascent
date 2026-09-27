@@ -14,7 +14,7 @@ It takes a few minutes per place, and nothing a player has saved is touched.
 2. **Save a copy of each place** with **File → Save to File As**, so there is a
    way back.
 3. Check which version you are on: run `kit-info` in the admin console, or look
-   at the Tower Setup window's Setup tab.
+   at the Tower Setup plugin's Check window.
 
 ## What to replace and what to keep
 
@@ -72,8 +72,8 @@ left to do.
 
 The kit finds its menus by name, so a restyled menu keeps working across
 updates. A release that adds something to a menu says so under Updating, with
-the ScreenGui to copy across from the new file. The Setup tab of the
-[Tower Setup window](./tower-setup-plugin.md) lists every name the client
+the ScreenGui to copy across from the new file. The Check window of the
+[Tower Setup plugin](./tower-setup-plugin.md) lists every name the client
 looks for and marks the ones your place is missing.
 
 ## The hub
@@ -81,10 +81,10 @@ looks for and marks the ones your place is missing.
 Do the same with the new `Ascent Hub.rbxlx` in your hub: replace `Server`,
 `Client`, `Shared` (keeping `Config`) and `Packages`, and keep the rest.
 
-## The Tower Setup window
+## The Tower Setup plugin
 
 Replace `Tower Setup.rbxm` in your plugins folder — **Plugins → Plugins
-Folder** in Studio — and restart Studio. Its Setup tab says whether it matches
+Folder** in Studio — and restart Studio. Its Check window says whether it matches
 the version the place runs; one from another release checks the place against
 the wrong rules.
 

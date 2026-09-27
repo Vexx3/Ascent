@@ -32,7 +32,7 @@ Select the model and set its attributes:
 | `AttachmentName` | String | An aura's attachment. |
 | `Attachment0Name`, `Attachment1Name` | String | A trail's attachments. |
 
-With no unlock attributes it only comes from the shop or a game pass. The [Tower Setup window](./tower-setup-plugin.md#cosmetics)'s Cosmetics tab edits these for you.
+With no unlock attributes it only comes from the shop or a game pass. Set them in the Properties window, under **Attributes**.
 
 ## In `Config > Economy`
 

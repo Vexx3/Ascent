@@ -16,7 +16,7 @@ updates are announced. You receive:
 | :-- | :-- |
 | `Ascent Area.rbxlx` | A tower place. Every Ring, Zone or other Area of your game starts from this. |
 | `Ascent Hub.rbxlx` | The hub players join first, with the ring select screen. See [Ring Select](./ring-select.md). |
-| `Tower Setup.rbxm` | The Studio plugin that checks your place while you build. See [Tower Setup Window](./tower-setup-plugin.md). |
+| `Tower Setup.rbxm` | The Studio plugin that checks your place while you build. See [Tower Setup Plugin](./tower-setup-plugin.md). |
 
 Each new version is listed in the [changelog](../changelog.md), with anything
 you have to change by hand under **Updating**. [Updating Ascent](./updating.md)
@@ -85,7 +85,7 @@ towers = {
 ```
 
 Every place carries this list, so a tower must be here to exist outside the
-place you built it in. The [Tower Setup window](./tower-setup-plugin.md) writes
+place you built it in. The [Tower Setup plugin](./tower-setup-plugin.md) writes
 the line for you from the tower's Studio attributes.
 
 ::: danger The acronym is permanent
@@ -101,8 +101,8 @@ Low within it. See [Difficulties](./difficulties.md).
 Put your tower model in `Workspace > Towers`, named with its acronym. Then give
 it a spawn, a winpad, and checkpoints.
 
-Fastest route is the [Tower Setup window](./tower-setup-plugin.md) — its
-Towers tab lists what each tower is missing and adds most of it in one click.
+Fastest route is the [Tower Setup plugin](./tower-setup-plugin.md) — its
+Towers window lists what each tower is missing and adds most of it in one click.
 It is a Studio plugin shipped beside the place file, so
 [install it](./tower-setup-plugin.md#installing-it) first. To do it by hand,
 follow [Building A Tower](./tower-setup.md).
@@ -159,7 +159,7 @@ setup** — an empty Output is the goal.
 - **Avatar** is R6 under **Game Settings → Avatar**, and the two teams in
   `Config > Project.teamNames` exist.
 - **Every tower** has checkpoints and a minimum time. The Tower Setup
-  window's Towers tab shows which do not.
+  plugin's Towers window shows which do not.
 - **Build warnings** in `Config > Project` are turned off once nothing is
   left to fix, so the Output stays quiet in live servers.
 

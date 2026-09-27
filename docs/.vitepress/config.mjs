@@ -55,7 +55,7 @@ export default defineConfig({
           text: 'Towers',
           items: [
             { text: 'Building A Tower', link: '/guide/tower-setup' },
-            { text: 'Tower Setup Window', link: '/guide/tower-setup-plugin' },
+            { text: 'Tower Setup Plugin', link: '/guide/tower-setup-plugin' },
             { text: 'Winpads & Endings', link: '/guide/winpads-endings' },
             { text: 'Difficulties', link: '/guide/difficulties' },
             { text: 'Markers & Portals', link: '/guide/markers-portals' },

@@ -1,6 +1,6 @@
-# The Tower Setup Window
+# The Tower Setup Plugin
 
-Tower Setup is a Studio window that checks your towers, menus and Config against what the kit expects, explains anything wrong, and fixes most of it in one click.
+Tower Setup adds an **Ascent** toolbar to Studio. Each button does one job, and the one-click tools act on whatever you have selected, with no window to open. It only shows the buttons the open place can use: tower tools in a tower place, camera tools in the hub.
 
 ## Installing it
 
@@ -10,54 +10,58 @@ It's a Studio plugin, not part of the place. Get it from the [Creator Store](htt
 2. Copy `Tower Setup.rbxm` into it.
 3. Restart Studio.
 
-Open it from the **Ascent** toolbar → **Tower Setup**. Use the plugin that came with your version of the kit; the Setup tab says if they don't match.
+Use the plugin that came with your version of the kit; **Check** says if they don't match.
 
-## The six tabs
+## The toolbar
 
-| Tab | For |
-| :-- | :-- |
-| **Setup** | Is the place wired up: menus, folders, rewards. |
-| **Towers** | Every tower, worst first, with what's wrong. |
-| **Selected** | The tower you have selected: fix and edit it. In the hub, a ring camera. |
-| **Cosmetics** | Your trails and auras, and how each is unlocked. |
-| **Shop** | What the ticket shop sells. |
-| **Config** | The settings you tune most, and the window's own preferences. |
+| Button | Where | Does |
+| :-- | :-- | :-- |
+| **Towers** | Tower places | Opens the Towers window: every tower, or the one you have selected. |
+| **Add Checkpoint** | Tower places | Adds the selected tower's next checkpoint where you're looking. |
+| **Checkpoints** | Tower places | Shows the selected tower's checkpoints in Workspace, or puts them back. Lit while they're out. |
+| **Test Tower** | Tower places | Playtests straight into the selected tower. |
+| **Cameras** | Hub | Shows which way each ring camera points. |
+| **Look Through** | Hub | Shows the selected ring camera's shot. Press again for the next Area's. |
+| **Aim Here** | Hub | Moves the selected ring camera to where you're looking from. |
+| **Check** | Both | Opens the Check window: is this place ready to publish? |
+| **Config** | Both | Lists every Config module. Pick one to open it. |
 
-Each card that needs attention is outlined and says how many errors or warnings it has. Changes to the place can be undone with Ctrl+Z. Changes to Config are edits to one line of a script, so the window tells you what it wrote.
+**Add Checkpoint**, **Checkpoints**, **Test Tower**, **Look Through** and **Aim Here** can each be bound to a key in Studio's **Customize Shortcuts** window: search for *Ascent*.
 
-## Setup
+Everything the plugin changes in the place can be undone with Ctrl+Z. If a button can't act, for example with nothing selected, the Output says why.
 
-- **Menus**: every frame and button the kit looks for in `StarterGui`, and what breaks without it. Nothing here is fixed for you, since menus are yours to design.
-- **Folders and services**: the folders, markers, teams and chat channels the kit needs, a `Config` package that is out of date, rushes naming unknown towers, and similar place-wide problems. Missing folders and teams have a fix button. Markers don't, since only you know where they go.
-- **Rewards**: every shop item, cosmetic, game pass and completion tool whose Tool or model is missing from `ServerStorage`. The same checks print to the Output when the game starts.
+## Test Tower
 
-## Towers
+Select a tower and press **Test Tower**. A playtest starts and puts you straight into that tower with a fresh timer, with no walk to its portal.
 
-Every tower, worst first. It catches a missing spawn or winpad, a misspelled `WinPad`, gaps or repeats in checkpoint numbers, checkpoints in the wrong place, a missing minimum time or difficulty, signs pointing at nothing, and towers missing from `Config > Towers`.
+Select a part inside the tower instead, such as a checkpoint, and you start on top of that part, which saves climbing a long tower to test its top. That run counts like one with a Studio test tool: the win checks are skipped and it earns nothing.
 
-Fixes: **Add Spawn**, **Add WinPad**, **Rename to WinPad**, **Create folder**, **Move to ServerStorage**, **Put back** and **Renumber by height** (numbers checkpoints from lowest to highest). **Open** takes you to the tower on the Selected tab.
+## The Towers window
 
-## Selected
+With nothing selected, it lists every tower, worst first. It catches a missing spawn or winpad, a misspelled `WinPad`, gaps or repeats in checkpoint numbers, checkpoints in the wrong place, a missing minimum time or difficulty, signs pointing at nothing, and towers missing from `Config > Towers`.
 
-Select a tower, or anything in it:
+Fixes: **Add Spawn**, **Add WinPad**, **Rename to WinPad**, **Create folder**, **Move to ServerStorage**, **Put back** and **Renumber by height** (numbers checkpoints from lowest to highest). **Open** selects the tower. **New tower here** makes a tower folder called `NEW` with a spawn, winpad and client objects folder where you're looking; rename it to its acronym before anyone beats it.
 
-- **Structure**: what it has and is missing. **Add checkpoint here** drops a checkpoint in front of the camera, numbered next. Also **Renumber by height**, **Select checkpoints**, **Show in Workspace** / **Put back**, and **Add ClientSidedObjects**.
+Select a tower, or anything in it, and the window becomes that tower's editor:
+
+- **The top card**: what's wrong with it, and **Test tower**, **Select tower**, and **All towers** to go back to the list.
+- **Structure**: what it has and is missing. **Add checkpoint here** (the same as the toolbar button), **Renumber by height**, **Select checkpoints**, **Show in Workspace** / **Put back**, **Add ClientSidedObjects**, and the **Checkpoint size** new checkpoints are built at.
 - **How it plays**: minimum time, All Jumps badge, ticket multiplier, **Pay tickets on rebeats**, and **Ban boost items**.
 - **What this tower is**: name, difficulty, area, badge and type.
 - **Signs** and **Endings**, below.
 - **In Config > Towers**: the tower's entry, and anything it disagrees with the tower about.
 
-With nothing selected, **New tower here** makes a tower folder called `NEW` with a spawn, winpad and client objects folder. Rename it to its acronym before anyone beats it.
-
-In the hub, select a ring camera (or its Area's folder) for **Look through** and **Move to my view**. See [Aiming a camera](./ring-select.md#aiming-a-camera).
-
 ### Seeing checkpoints while you build
 
-Checkpoints live in `ServerStorage > TowerCheckpoints`, where you can't see them. **Show in Workspace** moves a tower's checkpoints into it so you can place them; **Put back** returns them.
+Checkpoints live in `ServerStorage > TowerCheckpoints`, where you can't see them. The **Checkpoints** button (or **Show in Workspace**) moves a tower's checkpoints into it so you can place them; press it again, or **Put back**, to return them.
 
 ::: danger Put them back before you publish
-While shown, the tower loads with **no checkpoints**, so anyone can win it, and players can see the route. The Setup tab shows a **Put all back** button whenever any tower is shown.
+While shown, the tower loads with **no checkpoints**, so anyone can win it, and players can see the route. The Check window shows a **Put all back** button whenever any tower is shown.
 :::
+
+### Checkpoint size
+
+The size **Add Checkpoint** builds at, kept with the plugin rather than the place. Checkpoints aren't touch triggers: the server checks whether a player's path passed through one, so size them to cover the whole route. A player who skips one is kicked on reaching the winpad.
 
 ### Checkpoints in the wrong place
 
@@ -66,7 +70,7 @@ While shown, the tower loads with **no checkpoints**, so anyone can win it, and 
 
 ### Adding a tower to the catalogue
 
-A tower needs an entry in `Config > Towers` for other places to know it. When it has none, the tab shows the line it would add:
+A tower needs an entry in `Config > Towers` for other places to know it. When it has none, the editor shows the line it would add:
 
 ```luau
 ToH = { name = "Tower of Hell", difficulty = 5.33, area = "Ring1" },
@@ -96,30 +100,35 @@ Every winpad gets a card. The winpad whose ending ID is empty is the **main endi
 
 **Do not award the tower's badge** stops this ending also giving the tower's badge. **Add another ending** copies the winpad as a side ending; **Remove ending** deletes it.
 
-## Cosmetics
+## The Check window
 
-Every trail and aura in `ServerStorage > Cosmetics`, with its name, rarity, locked hint and unlock rules. **Any one** unlock rule unlocks it; with none, it only comes from the shop or a pass. A model with no rarity isn't a cosmetic yet, and the tab says so. See [Cosmetics](./cosmetics.md).
+In a tower place:
 
-The model's name is saved with everyone who owns it, so don't rename it after release.
+- **This place**: which Area this is, whether `Config` is a package, and whether the plugin matches the kit's version.
+- **Menus**: every frame and button the kit looks for in `StarterGui`, and what breaks without it. Nothing here is fixed for you, since menus are yours to design.
+- **Folders and services**: the folders, markers, teams and chat channels the kit needs, a `Config` package that is out of date, rushes naming unknown towers, and similar place-wide problems. Missing folders and teams have a fix button. Markers don't, since only you know where they go.
+- **Rewards**: every shop item, cosmetic, game pass and completion tool whose Tool or model is missing from `ServerStorage`. The same checks print to the Output when the game starts.
 
-## Shop
+**Check the towers** opens the Towers window.
 
-Everything the ticket shop sells, one card each, editing `Config > Economy` one line at a time. **Not in the shop yet** lists Tools and cosmetics nothing sells, with a button to add each at 10 tickets. **On sale and unbuyable** lists items whose Tool or cosmetic is missing. See [Tickets & Shop](./ticket-shop.md).
+### Which Area this place is
 
-**Take out of the shop** asks twice. Players keep what they bought.
+The plugin matches the place's Place ID against `Config > Worlds` to know which Area it is. For an unpublished place, pick the Area under **This place**. A new tower takes it as its Area.
+
+### In the hub
+
+The Check window checks what the ring select needs instead:
+
+- `StarterGui > RingSelect`, the screen itself.
+- A camera part for every Area in `Config > Worlds`, anchored so it doesn't fall when the hub starts. **Anchor it** fixes one that isn't.
+- Folders in `Workspace > Rings` named after no Area, which the ring select never shows.
+- Ring lighting attributes that aren't a Lighting property taking that kind of value.
+- `hubPlaceId` in `Config > Worlds`: set, and this place's.
+
+## Hub cameras
+
+Every ring camera shows an arrow, the edges of its shot and its Area's id, in edit mode only. **Cameras** turns them off and on. **Look Through** puts Studio's camera where the selected camera is; with none selected it starts at the first, and pressing it again steps through every Area's shot. Fly until the shot is right, then **Aim Here** moves the camera to your view. See [Aiming a camera](./ring-select.md#aiming-a-camera).
 
 ## Config
 
-The settings you tune most, written straight into `Shared > Config`, one value at a time. Comments and formatting are left alone. Values the game can't run with are refused.
-
-### Which area this place is
-
-The window matches the place's Place ID against `Config > Worlds` to know which Area it is. For an unpublished place, pick the Area under **This window** at the bottom of the tab.
-
-### Checkpoint size
-
-The size **Add checkpoint here** builds at. Checkpoints aren't touch triggers: the server checks whether a player's path passed through one, so size them to cover the whole route. A player who skips one is kicked on reaching the winpad.
-
-### Camera guides
-
-**Show where each ring camera points** turns the hub's camera arrows on or off. They're on by default, drawn in edit mode only, and never saved with the place.
+**Config** lists every module in `Shared > Config`. Pick one to open it in the script editor, or **Select the Config folder** to find it in the Explorer. Each setting has a comment saying what it does; see the [Configuration Reference](./configuration.md).

@@ -97,7 +97,7 @@ towers = {
 },
 ```
 
-The key is the acronym, which must match the tower's model name in `Workspace > Towers`. **Every tower needs an entry**, or it is missing from every other place. The [Tower Setup window](./tower-setup-plugin.md) writes it for you.
+The key is the acronym, which must match the tower's model name in `Workspace > Towers`. **Every tower needs an entry**, or it is missing from every other place. The [Tower Setup plugin](./tower-setup-plugin.md#adding-a-tower-to-the-catalogue) writes it for you.
 
 | Field | Required | Purpose |
 | :-- | :-- | :-- |
@@ -240,7 +240,7 @@ Every place in your game needs the same `Config`. Make it a Roblox [package](htt
 - An unlocked, edited copy stops auto-updating until you publish it.
 - Auto-update happens in Studio. **Publish every place** after a change, or live servers keep the old settings.
 - Don't delete the `PackageLink`.
-- Package the whole `Config`. The Tower Setup window's Setup tab warns about a package missing modules or behind the latest version.
+- Package the whole `Config`. Tower Setup's **Check** window warns about a package missing modules or behind the latest version.
 - If you use Rojo, don't package `Config`; Rojo already keeps every place in step.
 :::
 

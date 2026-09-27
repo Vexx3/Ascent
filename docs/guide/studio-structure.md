@@ -44,7 +44,7 @@ StarterGui
 
 The hub has only its own `RingSelect` screen. See [Ring Select](./ring-select.md).
 
-`ButtonsHolder`, `Main`, `ButtonsContainer` and `MenusContainer` are required: without one, the loading screen never goes away. A missing name inside a menu turns that menu off, with a warning in the Output. The [Tower Setup window](./tower-setup-plugin.md#setup)'s Setup tab checks every name before you press Play.
+`ButtonsHolder`, `Main`, `ButtonsContainer` and `MenusContainer` are required: without one, the loading screen never goes away. A missing name inside a menu turns that menu off, with a warning in the Output. The [Tower Setup plugin](./tower-setup-plugin.md#the-check-window)'s Check window checks every name before you press Play.
 
 ## Names
 

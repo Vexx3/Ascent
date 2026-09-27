@@ -18,7 +18,7 @@ A save key changed, which points at a new, empty save. Change it back and the ol
 
 ### The loading screen never goes away
 
-The Output says why. Usually Studio API access is off, or `MainMenu` is missing `ButtonsHolder`, `Main`, `Main > ButtonsContainer` or `Main > MenusContainer`. The [Tower Setup window](./tower-setup-plugin.md#setup)'s Setup tab lists missing menu parts.
+The Output says why. Usually Studio API access is off, or `MainMenu` is missing `ButtonsHolder`, `Main`, `Main > ButtonsContainer` or `Main > MenusContainer`. The [Tower Setup plugin](./tower-setup-plugin.md#the-check-window)'s Check window lists missing menu parts.
 
 ## Towers
 

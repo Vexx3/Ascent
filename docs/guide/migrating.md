@@ -27,9 +27,9 @@ Copy `Workspace > Towers > YourTower` and its checkpoint folder into the new kit
 
 ## What you have to set
 
-**An entry in `Config > Towers`, naming its Area.** Old kits have no Areas, and without the entry a tower never appears on the Completions chart. Select the tower, pick its Area on the Selected tab of [Tower Setup](./tower-setup-plugin.md), and press **Add to catalogue**.
+**An entry in `Config > Towers`, naming its Area.** Old kits have no Areas, and without the entry a tower never appears on the Completions chart. Select the tower, pick its Area in the Towers window of [Tower Setup](./tower-setup-plugin.md), and press **Add to catalogue**.
 
-Then read Tower Setup's Towers and Setup tabs. After a move, look for **Not in the catalogue**, **Nothing describes this tower**, and **Checkpoints with no tower** (usually a tower renamed on the way).
+Then read Tower Setup's Towers and Check windows. After a move, look for **Not in the catalogue**, **Nothing describes this tower**, and **Checkpoints with no tower** (usually a tower renamed on the way).
 
 ## What has no equivalent
 
