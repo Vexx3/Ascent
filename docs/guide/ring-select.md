@@ -141,9 +141,15 @@ RingSelect                       ScreenGui
   TotalBeaten                    TextLabel
   SettingsButton                 GuiButton
   Settings                       Frame
-    DetailedProgress             Frame
-      ToggleButton               TextButton
-        Circle                   Frame
+    OptionList                   ScrollingFrame
+      MusicVolume                Frame       <- optional
+        SliderFrame              Frame
+          Thumb                  TextButton
+          Fill                   Frame
+        ValueLabel               TextLabel
+      DetailedProgress           Frame
+        ToggleButton             TextButton
+          Circle                 Frame
   LoadingScreen                  Frame       <- optional
     LoadingLabel                 TextLabel
     TipLabel                     TextLabel
@@ -162,7 +168,25 @@ One of the two shows, by the player's **Detailed Progress Meter** setting:
 
 A crowded ring narrows its bars to fit. A tower beaten in either mode counts. Tower rushes don't count. `TotalBeaten` counts every Area.
 
-`SettingsButton` opens `Settings`, which holds the Detailed Progress Meter switch. The choice is saved.
+`SettingsButton` opens `Settings`. Its rows can sit anywhere inside it; the shipped screen keeps them in `OptionList`:
+
+- **`DetailedProgress`**: the Detailed Progress Meter switch.
+- **`MusicVolume`**: the same Music Volume setting as the tower places' Audio settings, from 0% to 200%, so a player who turns the music down in one place hears it down in all of them.
+
+Both choices are saved.
+
+### Sounds
+
+The screen's sounds are Sound instances in `SoundService > RingSelect`, set up in Studio rather than in Config, so change the `SoundId` or `Volume` on the Sound itself:
+
+| Sound | Plays |
+| :-- | :-- |
+| `Button` | When any button on the screen is pressed, or the play key. |
+| `Hover` | When the pointer moves onto a button. Without it, `Button` plays. |
+| `Switch` | When the camera moves to another ring or subrealm, or the World changes. |
+| `Music` | On loop. Set it to `Looped` and `Playing` in Studio: nothing else starts it. Its `Volume` is multiplied by each player's Music Volume. |
+
+Any of them can be deleted for silence. Clicking a ring's row plays both `Button` and `Switch`. The Tower Setup plugin's **Check** window says if the folder is missing or the music won't play.
 
 ### Loading Screen
 

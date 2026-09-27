@@ -124,6 +124,7 @@ The Check window checks what the ring select needs instead:
 - Folders in `Workspace > Rings` named after no Area, which the ring select never shows.
 - Ring lighting attributes that aren't a Lighting property taking that kind of value.
 - `hubPlaceId` in `Config > Worlds`: set, and this place's.
+- `SoundService > RingSelect`, and its `Music` set to loop and play. **Loop and play it** fixes that.
 
 ## Hub cameras
 

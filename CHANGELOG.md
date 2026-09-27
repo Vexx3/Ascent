@@ -53,7 +53,10 @@ and then:
    and `Lists` from the new hub place** for its friend and server lists. A hub
    without them works as before, with neither. Copy `RingSelect > Requirements`
    across too: `AreaReqLabel` now sits in a `RequirementsList` inside it, and
-   the hub does not start without one.
+   the hub does not start without one. For the hub's sounds and its Music
+   Volume slider, copy `SoundService > RingSelect` and
+   `RingSelect > Settings > OptionList > MusicVolume`; without them the screen
+   is silent and has no slider.
 10. **Delete `TowerGUI > LoadingScreen > Attention`.** The kit no longer reads
     it or hides it, so a copy left behind shows its own text on every loading
     screen. `LoadingLabel` now says what is loading, with animated dots:
@@ -568,6 +571,19 @@ too many on the way now says so, instead of "couldn't send that gift".
 the guide. Every page's *Suggest a change to this page* link now opens somewhere
 you can actually edit, and a fix to the kit itself can be pasted into a bug
 report. You still get the kit through the Vendr hub and the Discord.
+
+**The hub has sounds, music, and a Music Volume slider.** Every button on the
+ring select screen clicks when pressed and when the pointer moves onto it,
+moving to another ring or World swooshes, and a piece of music loops for as
+long as the screen is up. They are Sound instances in
+`SoundService > RingSelect` -- `Button`, `Hover`, `Switch` and `Music` --
+set up in Studio rather than listed in Config, so a fangame changes one by
+changing the Sound. The music plays at its own volume times the player's
+saved Music Volume, which the hub's Settings panel now has a slider for: the
+same setting and the same steps as the tower places' Audio settings, so a
+player who turns it down anywhere hears it down everywhere. Settings rows can
+sit anywhere in the panel; the shipped screen keeps them in `OptionList`.
+[Ring Select](https://kiels.dev/Ascent/guide/ring-select#sounds)
 
 **Every loading screen says what it is loading, and its dots count up.** The
 tower places' screen and the hub's both read "Loading data" as a player joins
