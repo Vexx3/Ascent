@@ -30,7 +30,7 @@ The settings row is `SettingsMenu > VisualFrame > HideUI`. Without it the settin
 
 ## Flip Indication
 
-**Flip Indication**, in the Visual settings, shows where a corner flip would put you while you stand in a flip part: a black copy of your body with white edges, moving as you do, and a white dome on its head where you'd face. It lands exactly where pressing flip would, `TeleToObject` included.
+**Flip Indication**, in the Visual settings, shows where a corner flip would put you while you stand in a flip part: a black copy of your body with white edges, moving as you do, and a white cone on its head pointing where you'll face. It lands exactly where pressing flip would, `TeleToObject` included, and faces the way you'll really end up: towards the camera with shift lock on or in first person, the way you're walking if you're moving, and turned round if you're standing still.
 
 It follows the flip's own rules, so it shows only on a part the flip would move you off: one tagged `CanFlip` or holding a `CanFlip`, not switched off (`Activated = false`) and not tagged `DoNotFlipPlayer`. Like the flip, it needs an R6 body.
 
