@@ -166,7 +166,9 @@ return function(context)
 end
 ```
 
-They are checked against `Config > Admin` like every other command. An argument
+They are checked against `Config > Admin` like every other command: add their
+`Group` to `permissions` with the lowest role that may run them, such as
+`["My Game"] = "Moderator"`, or only the top role can. An argument
 type of your own goes in a Folder named `Types` inside `CustomCommands`. The
 [Cmdr documentation](https://eryn.io/Cmdr/guide/Commands.html) covers what a
 command can declare.

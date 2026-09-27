@@ -14,7 +14,7 @@ All settings are ModuleScripts in `ReplicatedStorage > Shared > Config`. Each on
 | [`Settings`](#settings) | New players' settings and keys | this page, [Settings](./settings.md) |
 | `CustomSettings` | Settings you add | [Adding A Saved Setting](./custom-settings.md) |
 | [`Chat`](#chat) | Chat tags, win messages, webhooks | [Chat](./chat.md) |
-| [`Admin`](#admin) | Who can use admin commands | [Admin Commands](./commands.md) |
+| [`Admin`](#admin) | Staff roles, and which commands each can use | [Admin Commands](./commands.md) |
 | [`Visuals`](#visuals) | The kit's UI colours, sounds, timings | this page |
 | [`Messages`](#messages) | Every other line of text players read | this page |
 
@@ -97,7 +97,7 @@ towers = {
 },
 ```
 
-The key is the acronym, which must match the tower's model name in `Workspace > Towers`. **Every tower needs an entry**, or it is missing from every other place. The [Tower Setup window](./tower-setup-plugin.md) writes it for you.
+The key is the acronym, which must match the tower's model name in `Workspace > Towers`. **Every tower needs an entry**, or it is missing from every other place. The [Tower Setup plugin](./tower-setup-plugin.md#adding-a-tower-to-the-catalogue) writes it for you.
 
 | Field | Required | Purpose |
 | :-- | :-- | :-- |
@@ -171,7 +171,7 @@ What each does, and the allowed values, are on [Settings](./settings.md).
 
 ## Admin
 
-Who can use the admin console. See [Admin Commands](./commands.md). The owner of the experience always can.
+Your staff roles (by user ID or group rank), the lowest role each group of commands needs, and per-command exceptions. The owner of the experience always has the top role. See [Roles and permissions](./commands.md#roles-and-permissions).
 
 ## Visuals
 
@@ -186,23 +186,23 @@ Colours, sounds and timings for the kit's own UI.
 | `shopBuyButton` | The Buy button, affordable and not. |
 | `allJumpsMarker` | The All Jumps checkpoint block's colour and material. |
 | `menuSounds` | Click, hover, notification and victory sounds. |
-| `timing` | Animation lengths, and how long notifications stay up. |
+| `timing` | Animation lengths, how long notifications stay up, and how fast the loading dots move (`loadingDots`). |
 | `audioVisualizerStrength` | How hard each Audio Visualiser option shakes the camera. |
 
 Difficulty colours are in `Towers`, rarity colours in `Economy`.
 
 ## Messages
 
-Every line of text players read, apart from win messages and chat tags (those are in `Chat`). Reword or translate them freely. Text in `{Braces}` is filled in for you; each message's comment says which it takes.
+Every line of text players read, apart from win messages and chat tags (those are in `Chat`). Reword or translate them freely. Text in `{Braces}` is filled in for you; each message's comment says which it takes. Notifications draw rich text, so write `&amp;` for a plain `&`.
 
 | Group | Holds |
 | :-- | :-- |
-| `loading` | The loading screen. |
+| `loading` | Every loading screen's line: loading data, and teleporting to where. |
 | `ringSelect` | The hub screen. |
 | `dataKicks` | Kicks for unusable saves. |
 | `wins` | The `[GLOBAL]` and `[SERVER]` prefixes. |
 | `rewards` | Ticket payouts. |
-| `teleports` | Teleport refusals and the loading screen's "Teleporting...". |
+| `teleports` | Teleport refusals. |
 | `friends` | Joining friends. |
 | `personalServers` | Personal servers. |
 | `durations` | "a week", "10 minutes". |
@@ -240,7 +240,7 @@ Every place in your game needs the same `Config`. Make it a Roblox [package](htt
 - An unlocked, edited copy stops auto-updating until you publish it.
 - Auto-update happens in Studio. **Publish every place** after a change, or live servers keep the old settings.
 - Don't delete the `PackageLink`.
-- Package the whole `Config`. The Tower Setup window's Setup tab warns about a package missing modules or behind the latest version.
+- Package the whole `Config`. Tower Setup's **Check** window warns about a package missing modules or behind the latest version.
 - If you use Rojo, don't package `Config`; Rojo already keeps every place in step.
 :::
 

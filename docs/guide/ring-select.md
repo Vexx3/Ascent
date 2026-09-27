@@ -35,9 +35,8 @@ Start the hub from `Ascent Hub.rbxlx` and every tower place from `Ascent Area.rb
 | `scrollTween` | 0.35s Quad Out | How the Area list scrolls. |
 | `loadingScreen.minimumTime` | `1.5` | Least seconds the loading screen stays up. |
 | `loadingScreen.tipInterval` | `5` | Seconds between tips. `0` keeps one. |
-| `loadingScreen.dotInterval` | `0.4` | Seconds between loading dots. `0` stops them. |
 
-The screen's words are under `ringSelect` in `Config > Messages`.
+The screen's words are under `ringSelect` in `Config > Messages`, and its loading lines under `loading`. The loading dots' speed is `Config > Visuals.timing.loadingDots`, shared with the tower places.
 
 ### Controls
 
@@ -65,7 +64,17 @@ Workspace
       Camera
 ```
 
-To call the folder something else, rename it and set `cameraFolder` to match. Without the folder, the camera stays where it is and the screen still works. The Output names any Area missing its camera part.
+The player's camera takes the part's exact position and the way its front faces, at the default field of view. To call the folder something else, rename it and set `cameraFolder` to match. Without the folder, the camera stays where it is and the screen still works. The Output names any Area missing its camera part.
+
+### Aiming a camera
+
+With the [Tower Setup plugin](./tower-setup-plugin.md) installed, every camera part shows an arrow, the edges of its shot and its Area's id, in edit mode only. Its toolbar in the hub has:
+
+- **Look Through**: moves Studio's camera to the selected camera, so the viewport shows the shot. With none selected it starts at the first; press it again for the next Area's.
+- **Aim Here**: moves the selected camera to where Studio's camera is. Look through, fly until the shot is right, then press it. Ctrl+Z undoes it.
+- **Cameras**: turns the arrows off and on.
+
+The frame drawn in front of each camera is what a 16:9 screen shows. The plugin's **Check** window lists any Area without a camera.
 
 ## Lighting Per Ring
 
@@ -132,9 +141,15 @@ RingSelect                       ScreenGui
   TotalBeaten                    TextLabel
   SettingsButton                 GuiButton
   Settings                       Frame
-    DetailedProgress             Frame
-      ToggleButton               TextButton
-        Circle                   Frame
+    OptionList                   ScrollingFrame
+      MusicVolume                Frame       <- optional
+        SliderFrame              Frame
+          Thumb                  TextButton
+          Fill                   Frame
+        ValueLabel               TextLabel
+      DetailedProgress           Frame
+        ToggleButton             TextButton
+          Circle                 Frame
   LoadingScreen                  Frame       <- optional
     LoadingLabel                 TextLabel
     TipLabel                     TextLabel
@@ -153,13 +168,31 @@ One of the two shows, by the player's **Detailed Progress Meter** setting:
 
 A crowded ring narrows its bars to fit. A tower beaten in either mode counts. Tower rushes don't count. `TotalBeaten` counts every Area.
 
-`SettingsButton` opens `Settings`, which holds the Detailed Progress Meter switch. The choice is saved.
+`SettingsButton` opens `Settings`. Its rows can sit anywhere inside it; the shipped screen keeps them in `OptionList`:
+
+- **`DetailedProgress`**: the Detailed Progress Meter switch.
+- **`MusicVolume`**: the same Music Volume setting as the tower places' Audio settings, from 0% to 200%, so a player who turns the music down in one place hears it down in all of them.
+
+Both choices are saved.
+
+### Sounds
+
+The screen's sounds are Sound instances in `SoundService > RingSelect`, set up in Studio rather than in Config, so change the `SoundId` or `Volume` on the Sound itself:
+
+| Sound | Plays |
+| :-- | :-- |
+| `Button` | When any button on the screen is pressed, or the play key. |
+| `Hover` | When the pointer moves onto a button. Without it, `Button` plays. |
+| `Switch` | When the camera moves to another ring or subrealm, or the World changes. |
+| `Music` | On loop. Set it to `Looped` and `Playing` in Studio: nothing else starts it. Its `Volume` is multiplied by each player's Music Volume. |
+
+Any of them can be deleted for silence. Clicking a ring's row plays both `Button` and `Switch`. The Tower Setup plugin's **Check** window says if the folder is missing or the music won't play.
 
 ### Loading Screen
 
-`LoadingScreen` covers the screen until the player's data has loaded, for at least `minimumTime`. `LoadingLabel` reads `ringSelect.loading` with animated dots (leave the dots off your own wording). `TipLabel` shows a random tip from `ringSelect.tips` every `tipInterval` seconds.
+`LoadingScreen` covers the screen until the player's data has loaded, for at least `minimumTime`. `LoadingLabel` reads `loading.playerData` ("Loading data") with animated dots (leave the dots off your own wording). `TipLabel` shows a random tip from `ringSelect.tips` every `tipInterval` seconds.
 
-It comes back for every teleport out of the hub, reading `ringSelect.teleporting`. A copy of it stays on screen during the teleport itself. If the teleport fails, it goes away and the reason is shown.
+It comes back for every teleport out of the hub, saying where to: `loading.teleportingTo` with the Area's name, or `loading.teleporting` when the server cannot tell which Area a place is. A copy of it stays on screen during the teleport itself. If the teleport fails, it goes away and the reason is shown.
 
 Without a `LoadingScreen`, the hub shows the screen straight away. Tower places do the same with the loading screen in `TowerGUI`.
 
@@ -175,7 +208,7 @@ Beat 2 Extreme+ Towers (1/2)
 
 Met rules are drawn in `beatenColor`, and a difficulty in its own colour. A difficulty rule counts that difficulty **or harder**. The wording is `locks` in `Config > Messages`.
 
-If `AreaReqLabel` is `TextScaled`, short lines come out bigger than long ones. A `UITextSizeConstraint` inside it evens them out.
+`RequirementsList` and `AreaReqLabel` are sized as a share of `Requirements` rather than in pixels, so the lines are the same size against the panel on every device. The line's height sets how big its text is: make `AreaReqLabel` taller for bigger lines. A line too long for its width shrinks to fit. Avoid a `UITextSizeConstraint` here: its limit is in pixels, so it only takes effect on big screens and the lines stop matching across devices.
 
 Messages from the server, such as a refusal or a cooldown, replace the lines for a few seconds. While a [list](#friends-and-servers) is open, they go to that list's `Warning` instead.
 

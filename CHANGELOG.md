@@ -23,10 +23,14 @@ and then:
 3. **In `Config > Chat`, delete the loop at the top and the `byGamePass =
    gamePassTags` line.** A VIP pass's tag comes from its `chatTag` in
    `Config > GamePasses` as before; the kit works it out itself now.
-4. **Check `Config > Admin.userIds` and `Config > Chat.tags.byUser`.** Earlier
-   releases shipped the kit author's own account in both. Take it out if it is
-   still there. Whoever owns the experience -- you, or the owner of the group it
-   belongs to -- has the console without being listed.
+4. **Replace `Config > Admin` with this release's, and check
+   `Config > Chat.tags.byUser`.** Admin now gives staff roles (see **Added**):
+   put the IDs from your old `userIds` into a role's `userIds`. Earlier
+   releases shipped the kit author's own account in both lists; take it out of
+   `tags.byUser` if it is still there. Whoever owns the experience -- you, or
+   the owner of the group it belongs to -- has every command without being
+   listed. Until you change it, an old `userIds` still gives every command, and
+   the Output says so.
 5. **In `Config > Settings.keybinds`, set `allJumpsPlace = "E"` and
    `allJumpsTeleport = "Q"`**, unless you already gave them keys of your own.
    The old defaults shared keys with Corner Flip and Quick Restart (see
@@ -40,19 +44,28 @@ and then:
    label. The Output names the Config line until it is renamed; the row still
    works under its old name. See **Changed** for what the setting does now.
 8. **Copy `ButtonsHolder > AJMenuButton` and `MainMenu > AJSettings` from the new
-   place** for the checkpoint panel, and add `checkpointCamera = true` and
-   `checkpointTransparency = 0.5` to `Config > Settings`. The transparency
+   place** for the checkpoint panel, and add `checkpointCamera = true`,
+   `checkpointTransparency = 0.5`, `checkpointButtons = true` and
+   `checkpointLighting = true` to `Config > Settings`. The transparency
    used to be `allJumpsMarker.transparency` in `Config > Visuals`, which is no
    longer read: move your value across. Without the button and panel the game
-   works as before; without the lines, those two values are the defaults.
+   works as before; without the lines, those values are the defaults.
 9. **In the hub, copy `RingSelect > TopRightBar > FriendButton`, `ServerButton`
    and `Lists` from the new hub place** for its friend and server lists. A hub
    without them works as before, with neither. Copy `RingSelect > Requirements`
    across too: `AreaReqLabel` now sits in a `RequirementsList` inside it, and
-   the hub does not start without one.
-10. **Install the new Tower Setup plugin.** Its Setup tab now says whether it
-    matches the kit the place runs.
-11. **Publish every place at the same time, then shut down the old servers.**
+   the hub does not start without one. For the hub's sounds and its Music
+   Volume slider, copy `SoundService > RingSelect` and
+   `RingSelect > Settings > OptionList > MusicVolume`; without them the screen
+   is silent and has no slider.
+10. **Delete `TowerGUI > LoadingScreen > Attention`.** The kit no longer reads
+    it or hides it, so a copy left behind shows its own text on every loading
+    screen. `LoadingLabel` now says what is loading, with animated dots:
+    leave the dots off your own `loading` lines in `Config > Messages`.
+11. **Install the new Tower Setup plugin.** It is a toolbar of buttons now
+    rather than one window, and its **Check** window says whether it matches
+    the kit the place runs.
+12. **Publish every place at the same time, then shut down the old servers.**
     This release runs Scribe 2.5.0, whose save has a new shape, and a server
     still on the old version refuses a player whose save a new one has written.
     Then check the Output of one live server: anything Config gets wrong is now
@@ -263,16 +276,10 @@ values no check expects. A box now refuses what is not a number, puts back
 what it held and says why underneath. IDs and counts must be whole, and each
 Config number is held to what the server will start with.
 
-**Tower Setup could write a Config file that no longer loads.** A text value
-holding a backslash was written straight into a quoted string, where it
-starts an escape; `C:\path` stopped the whole file parsing. Such a value is
-refused now. Numbers were written to fourteen significant digits, which
-rounded a sixteen-digit badge ID; whole numbers are written whole.
-
-**The checkpoint size setting did nothing.** The Config tab saved it and
-**Add checkpoint here** ignored it, always building a flat 24 by 1 by 24
-slab -- the shape the server's position sampling is most likely to miss a
-falling player through. New checkpoints are built at the saved size.
+**The checkpoint size setting did nothing.** It was saved, and **Add
+checkpoint here** ignored it, always building a flat 24 by 1 by 24 slab -- the
+shape the server's position sampling is most likely to miss a falling player
+through. New checkpoints are built at the saved size.
 
 **A tower with its checkpoints shown counted none.** Checkpoints moved into
 Workspace for editing were not counted, so the next one added was named `1`
@@ -287,24 +294,41 @@ tower place that updated; the hub now ships `Config` whole. The Tower Setup
 window reported an edit to a locked package script as done when Studio had
 not taken it; it reads the script back and says to unlock it. And an edit it
 made to an unlocked package said nothing about publishing, which is the step
-that stops a change staying in one place. The Setup tab also reports a
+that stops a change staying in one place. The Check window also reports a
 `Config` missing a module, a copy with AutoUpdate off, and a place behind the
 latest published version. [Sharing Config between your places](https://kiels.dev/Ascent/guide/configuration#sharing-config-between-your-places)
 
-**Smaller Tower Setup fixes.** Two towers, cosmetics or shop items sharing a
-name drew as one. Pointing a sign at a part made a second `ObjectValue` when
-the tower's existing one sat deeper than the top level, and pressing it with
-nothing selected did nothing silently. **Add to catalogue** ignored whether
-the write worked, and showed its line in a box that looked editable and was
-not. A Tool whose name differed from another only by a symbol was offered to
-the shop under the same key, and one starting with a digit could not be
-added at all. **New tower here** made a second `NEW` beside the first. The
-Menus check described the client's startup order from before this release,
-so several of its "what this costs" explanations were wrong. Config read
-through `require` stayed as it was when the place opened; it is re-read now
-whenever a Config script changes.
+**Smaller Tower Setup fixes.** Two towers sharing a name drew as one. Pointing
+a sign at a part made a second `ObjectValue` when the tower's existing one sat
+deeper than the top level, and pressing it with nothing selected did nothing
+silently. **Add to catalogue** ignored whether the write worked, and showed
+its line in a box that looked editable and was not. **New tower here** made a
+second `NEW` beside the first. The Menus check described the client's startup
+order from before this release, so several of its "what this costs"
+explanations were wrong. Config read through `require` stayed as it was when
+the place opened; it is re-read now whenever a Config script changes.
 
 ### Added
+
+**Staff roles for the admin console.** `Config > Admin` lists roles, lowest
+first -- Moderator, Admin and Owner as shipped, renamed or added to as you like
+-- and a player gets one by user ID or by rank in your group. Each group of
+commands names the lowest role that can run it, and one command can differ
+from its group: as shipped, moderators kick, mute, freeze and run the tower
+commands, admins also give rewards and read data, and only the owner exports or
+erases a save. A command nobody has placed needs the highest role. Kick, mute
+and freeze refuse anyone of your own role or above, and `staff` lists who is
+online with which role.
+[Roles and permissions](https://kiels.dev/Ascent/guide/commands#roles-and-permissions)
+
+**Console commands for the things staff are asked to do.**
+`gamepass-grant` gives a pass as if it were bought -- its tool, trail, tag and
+tickets arrive at once -- and `gamepass-revoke` takes back one given that way.
+`tower-grant` and `tower-revoke` give or take a completion with its points
+and Elo, in either mode, for any tower in `Config > Towers`. `shop-item-revoke`
+takes a shop item and its tool back. `mute`, `unmute`, `freeze` and
+`unfreeze` last until the player leaves the server, and a mute can be timed.
+[Admin Commands](https://kiels.dev/Ascent/guide/commands)
 
 **Hooks for your own Scripts.** `ServerScriptService > Server > Events`
 announces a tower won, a rush won, a tower loaded or left, a shop purchase, a
@@ -458,7 +482,7 @@ game reads and somewhere you cannot see them. **Show in Workspace** moves a
 tower's folder into the tower so you can drag them, **Put back** returns it,
 and a new checkpoint added while a tower is shown lands beside the others
 rather than out of sight. A shown tower loads with no checkpoints, so the
-Setup tab carries a banner and a **Put all back** button the whole time one
+Check window carries a banner and a **Put all back** button the whole time one
 is out, and the folder is marked so closing Studio does not lose track of it.
 
 **It also notices checkpoints left in Workspace by hand.** A folder in the
@@ -468,12 +492,34 @@ with no fix, because which set you meant to keep is not something a button
 can know. A folder counts if it is named for checkpoints or holds a part
 numbered `1`, `2`, `3`; `ClientSidedObjects` never does.
 
-**`checkpointsMissingWarning` is in the Config tab**, under Build warnings
-beside the three that were already there. It was the one missing from a group
-that otherwise covered them all.
 [Seeing checkpoints while you build](https://kiels.dev/Ascent/guide/tower-setup-plugin#seeing-checkpoints-while-you-build)
 
+**You can see which way a hub camera faces.** Each ring camera is a one-stud
+invisible part, so its shot could only be seen by playing the hub. With the
+Tower Setup plugin installed, each one now shows an arrow, the edges of its
+shot and its Area's id, in edit mode only. In the hub, **Look Through** puts
+Studio's camera where the selected one is, and pressing it again steps to the
+next Area's; **Aim Here** puts the selected camera where Studio's camera is.
+Look through, fly until the shot is right, then press it; Ctrl+Z undoes it.
+**Cameras** turns the guides off.
+[Aiming a camera](https://kiels.dev/Ascent/guide/ring-select#aiming-a-camera)
+
+**Test Tower plays the selected tower in one click.** It starts a playtest
+that puts you straight into the tower instead of walking to its portal. With a
+part inside the tower selected, such as a checkpoint, you start on top of it,
+which saves climbing a long tower to test its top; that run earns nothing,
+like one with a Studio test tool. It travels as Studio's own test arguments,
+which only a test a plugin started carries, so a live server never acts on it.
+[Test Tower](https://kiels.dev/Ascent/guide/tower-setup-plugin#test-tower)
+
 ### Changed
+
+**A shorter command list.** `tickets` is gone (`data-summary` shows the
+balance), and so are `cosmetic-equip`, `checkpoint-return` and `server-time`.
+Of Cmdr's own, `announce` is `notify`, `version` and `uptime` are
+`kit-info` (which now shows how long the server has been up), and seventeen
+scripting commands such as `run`, `math` and `json-array-encode` are left out
+of the suggestions.
 
 **A shop Item shows its Tool's own icon.** An `Items` entry in
 `Config > Economy.shop` now draws the `TextureId` of the Tool it hands out, so
@@ -496,6 +542,18 @@ capitalised and plural where the count is more than one, following
 `towerWord` and `towerWordPlural` in `Config > Project`.
 [Locked Areas](https://kiels.dev/Ascent/guide/ring-select#locked-areas)
 
+**Notifications draw rich text, and a refusal colours its difficulty.** A
+locked Area's rule shows its difficulty in colour in a notification, as the
+hub's list does. `<b>` now works in `Config > Messages`, and a plain `&` in one
+of your messages has to be written `&amp;`. A name or note a player typed is
+escaped, so it cannot be read as markup.
+[Notifications](https://kiels.dev/Ascent/guide/ui-and-hud#notifications)
+
+**`TowerGUI > LoadingScreen` can be a Frame.** A CanvasGroup still works and
+fades as one image; a Frame fades each part inside it, and keeps text sharp,
+which a CanvasGroup's single image softens. Either covers the screen at once
+when a player joins.
+
 **Reset on Death is Restart on Death, and it covers every death.** It used to
 restart the tower only for Roblox's Reset button; a killbrick still ended a
 Normal run or sent All Jumps and Practice to their checkpoint. On, any death or
@@ -515,15 +573,72 @@ the guide. Every page's *Suggest a change to this page* link now opens somewhere
 you can actually edit, and a fix to the kit itself can be pasted into a bug
 report. You still get the kit through the Vendr hub and the Discord.
 
-**The Tower Setup window is easier to find your way round.** The tab for the
-selected tower is called **Selected** rather than **Tower**, which sat beside
-**Towers** and read as the same thing. Cards are rounded, and every card that
-needs attention says so in its corner and is outlined in the matching colour.
-**Open** on the Towers tab jumps to a tower on the Selected tab, which now
-leads with that tower's own problems and fixes. The window reopens on the tab
-you left it on, and says what each file edit did in a notice you can dismiss.
-**Take out of the shop** asks twice, since a file edit is not Ctrl+Z's to undo.
-A cosmetic's **Beat tower** is picked from `Config > Towers` rather than typed.
+**A checkpoint puts the tower's buttons and lighting back.** In All Jumps and
+Practice, placing a checkpoint now also remembers every button -- pressed or
+not, and how far a timed one's timer had run -- and the lighting the
+tower's lighting changers had set, and loading it, by teleport or by dying,
+puts both back. A button pressed three seconds into a ten-second timer lets go
+seven seconds after the checkpoint loads, with its countdown on the button and
+in the timer list as if it had just been touched. v6 buttons are restored
+through the framework's own timer, whose start it reads the whole time it
+counts down. v5 buttons are timed by the tower's own button script, which
+starts a timer only for a press it saw touched, so their press times are
+noted as they happen and a restored one's countdown is run the way that
+script runs it, replacing any of its own still running.
+Lighting is read over every property the framework drives and put back
+through it, so a changer's tween still running cannot finish over it. The
+checkpoint panel has a switch for each, `CPLoadButtons` and
+`CPLoadLighting`, saved as `checkpointButtons` and `checkpointLighting`,
+both on to start; a panel without the rows still works.
+[Buttons and lighting at a checkpoint](https://kiels.dev/Ascent/guide/practice-all-jumps#buttons-and-lighting-at-a-checkpoint)
+
+**The hub has sounds, music, and a Music Volume slider.** Every button on the
+ring select screen clicks when pressed and when the pointer moves onto it,
+moving to another ring or World swooshes, and a piece of music loops for as
+long as the screen is up. They are Sound instances in
+`SoundService > RingSelect` -- `Button`, `Hover`, `Switch` and `Music` --
+set up in Studio rather than listed in Config, so a fangame changes one by
+changing the Sound. The music plays at its own volume times the player's
+saved Music Volume, which the hub's Settings panel now has a slider for: the
+same setting and the same steps as the tower places' Audio settings, so a
+player who turns it down anywhere hears it down everywhere. Settings rows can
+sit anywhere in the panel; the shipped screen keeps them in `OptionList`.
+[Ring Select](https://kiels.dev/Ascent/guide/ring-select#sounds)
+
+**Every loading screen says what it is loading, and its dots count up.** The
+tower places' screen and the hub's both read "Loading data" as a player joins
+and "Teleporting to Ring 2" during a teleport -- the server names the Area, or
+the hub, and only a place shared by several Areas, as the shipped examples
+are, falls back to "Teleporting". The dots are one shared piece now, drawn at
+full length with the unshown ones invisible so a scaled line keeps its size,
+and the copy Roblox shows between places keeps all three. Their speed moved
+from `Config > RingSelect` to `Config > Visuals.timing.loadingDots`, which
+both screens read; a Visuals without it gets the old 0.4 seconds. The lines
+sit together in the `loading` group of `Config > Messages`, and the Play and
+Enter buttons that wait on saved data say "Loading data..." too. The tower
+screen's `Attention` line, and its "Please wait!", are gone.
+[UI & HUD](https://kiels.dev/Ascent/guide/ui-and-hud#hud)
+
+**Tower Setup is a toolbar now, not one window with six tabs.** Each job is
+its own button, and only the ones the open place can use appear: a tower
+place gets **Towers**, **Add Checkpoint**, **Checkpoints** and **Test Tower**,
+the hub gets **Cameras**, **Look Through** and **Aim Here**, and both get
+**Check** and **Config**. The one-click tools act on the selection with no
+window open, and each can be given a key in Studio's Customize Shortcuts. The
+Towers window lists every tower and, with one selected, becomes its editor,
+leading with that tower's own problems and fixes. **Check** is what the Setup
+tab was; in the hub it checks what the ring select needs -- a camera for every
+Area, lighting a ring can set, `hubPlaceId` -- rather than reporting a tower
+place's folders as missing. **Config** opens any Config module in one click.
+
+The forms that edited Config for you -- the Config, Shop and Cosmetics tabs --
+are gone. Each setting is one line of a file with a comment explaining it,
+which the file says better than a form, and a form writing Luau had already
+produced a Config file that would not load. The checks for a missing Tool,
+trail or aura stay in Check, and **Add to catalogue** still writes a tower's
+line. Cards are rounded, and every card that needs attention says so in its
+corner and is outlined in the matching colour. [The Tower Setup
+plugin](https://kiels.dev/Ascent/guide/tower-setup-plugin)
 
 **Working from the repository: one build step, live sync, and both places at
 once.** darklua is gone -- the kit ran it with no rules, so it only copied
