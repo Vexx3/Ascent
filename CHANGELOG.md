@@ -578,10 +578,13 @@ Practice, placing a checkpoint now also remembers every button -- pressed or
 not, and how far a timed one's timer had run -- and the lighting the
 tower's lighting changers had set, and loading it, by teleport or by dying,
 puts both back. A button pressed three seconds into a ten-second timer lets go
-seven seconds after the checkpoint loads. v6 buttons are restored through the
-framework's own timer, whose start it reads the whole time it counts down;
-v5 buttons count down where nothing can read them, so their press times are
-noted as they happen and a restored one is let go on time by the kit.
+seven seconds after the checkpoint loads, with its countdown on the button and
+in the timer list as if it had just been touched. v6 buttons are restored
+through the framework's own timer, whose start it reads the whole time it
+counts down. v5 buttons are timed by the tower's own button script, which
+starts a timer only for a press it saw touched, so their press times are
+noted as they happen and a restored one's countdown is run the way that
+script runs it, replacing any of its own still running.
 Lighting is read over every property the framework drives and put back
 through it, so a changer's tween still running cannot finish over it. The
 checkpoint panel has a switch for each, `CPLoadButtons` and

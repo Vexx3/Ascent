@@ -55,7 +55,7 @@ Enter in a box does the same as its button. The choices are saved, starting from
 
 A checkpoint remembers the tower's buttons and lighting when it's placed, and puts them back when it's loaded, whether by teleporting to it or by dying:
 
-- **Buttons**: every button goes back to pressed or not. A timed one comes back with the time it had left, so a button pressed 3 seconds into a 10-second timer lets go 7 seconds after the checkpoint loads. This works for v5 and v6 buttons alike.
+- **Buttons**: every button goes back to pressed or not. A timed one comes back with the time it had left, so a button pressed 3 seconds into a 10-second timer lets go 7 seconds after the checkpoint loads, counting down on the button and in the timer list as if it had just been touched. This works for v5 and v6 buttons alike.
 - **Lighting**: whatever the lighting changers had set, of either version: the time of day, fog, sky and effects.
 
 Each is taken whether its switch is on or not, so turning one on later still works with checkpoints already placed.
