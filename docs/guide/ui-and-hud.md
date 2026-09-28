@@ -14,6 +14,23 @@ Its `LoadingLabel` says what is loading, with dots that count up: "Loading data"
 
 The toasts in `MainMenu > NotificationHolder` draw rich text. A locked Area's requirement shows its difficulty in colour, as the hub does. In your own `Config > Messages`, `<b>` works, and a plain `&` has to be written `&amp;`.
 
+## Menu Sounds
+
+The menus' sounds are Sound instances in `SoundService > Menu`, in every place, the hub too. Change the `SoundId`, `Volume` or anything else on the Sound itself:
+
+| Sound | Plays |
+| :-- | :-- |
+| `Click` | When a button is pressed. |
+| `Tab` | When a menu opens or a tab switches. Without it, `Click` plays. |
+| `Hover` | When the pointer moves onto a button. The shipped place has none, so hovering is silent. |
+| `Notification` | With a notification. |
+| `Award` | With a notification that gives the player something: tickets, or a gift. Without it, `Notification` plays. |
+| `Purchase` | When a purchase goes through: a shop item, a gift sent, or a game pass. Without it, `Notification` plays, and a game pass plays nothing. |
+| `Error` | For a refusal or a failure: a locked Area, a teleport that failed, not enough tickets, or equipping a switched-off backpack item. Without it, `Notification` plays. |
+| `Victory` | To the player who beat a tower. |
+
+Every one is optional. The Check window of the [Tower Setup plugin](./tower-setup-plugin.md) warns when the folder is missing.
+
 ## Hide UI
 
 **Hide UI**, in the Visual settings, fades what a climb doesn't need, and brings it back while the pointer is over it:
