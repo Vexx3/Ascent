@@ -191,7 +191,7 @@ Colours, sounds and timings for the kit's own UI.
 | `menu` | Selected tabs, toggles, equipped cosmetics, shop text. |
 | `shopBuyButton` | The Buy button, affordable and not. |
 | `allJumpsMarker` | The All Jumps checkpoint block's colour and material. |
-| `menuSounds` | Click, hover, notification, award and victory sounds. `award` plays in place of the notification sound when a toast gives the player something: tickets, a gift, a shop item. |
+| `menuSounds` | Click, tab, notification, award, purchase, error and victory sounds. Hovering is silent unless you add `hover` and `hoverVolume`. `tab` plays in place of the click when a menu opens or a tab switches. `award` plays in place of the notification sound when a toast gives the player something: tickets, or a gift. `purchase` plays when a purchase goes through: a shop item, a gift sent, or a game pass. `error` plays for a refusal or a failure, like a locked Area, not enough tickets, or equipping a switched-off backpack item. |
 | `timing` | Animation lengths, how long notifications stay up, how fast the loading dots move (`loadingDots`), and Hide UI's fades (`hideUIFadeIn`, `hideUIFadeOut`, `hideUILinger`, `hideUITapLinger`). |
 | `audioVisualizerStrength` | How hard each Audio Visualiser option shakes the camera. |
 | `flipIndication` | The Flip Indication copy's `body` and `edges`. |
