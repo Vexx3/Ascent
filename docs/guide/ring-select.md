@@ -187,7 +187,7 @@ The screen's sounds are Sound instances in `SoundService > RingSelect`, set up i
 | Sound | Plays |
 | :-- | :-- |
 | `Button` | When any button on the screen is pressed, or the play key. |
-| `Hover` | When the pointer moves onto a button. Without it, `Button` plays. |
+| `Hover` | When the pointer moves onto a button. Optional: the shipped hub has none, so hovering is silent. |
 | `Switch` | When the camera moves to another ring or subrealm, or the World changes. |
 | `Music` | On loop. Set it to `Looped` and `Playing` in Studio: nothing else starts it. Its `Volume` is multiplied by each player's Music Volume. |
 
