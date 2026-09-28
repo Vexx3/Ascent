@@ -48,6 +48,23 @@ The text inside each sidebar button is deliberately shorter than the button, so 
 
 Shows the player's (or any looked-up player's) completed towers, All Jumps towers and rushes, attempts and wins, best times, time spent, hardest completion, and Elo with global rank. Percentages show one decimal place, rounded down.
 
+### Extended Completions
+
+Some towers stop counting once they're gone. An event tower (Halloween, Christmas, April Fools) or a place that has closed can't be beaten by anyone new, so normal completions leave it out. So do tower rushes, which aren't towers.
+
+- **Normal view**, the default: those towers, their places and every rush are hidden and not counted. Each Area's bar reads `Normal`.
+- **Extended Completions**, in the Visual settings: they're all shown, by Area and by difficulty, and every bar counts everything shown. Each Area's bar reads `Extended`.
+
+Mark what's extended in Config:
+
+- `extended = true` on an Area in `Config > Worlds`: every tower in it. See [Worlds](./worlds-personal-servers.md).
+- `extended = true` on a tower in `Config > Towers`: an event tower in a normal place. See [Configuration](./configuration.md).
+- Every rush is extended already.
+
+Only the count changes. An extended tower still counts for Area unlocks, tower points and the leaderboard, Elo, and cosmetic unlocks, and still pays its badge and tickets. The hardest tower is never a rush. When you look someone up, *your* setting decides which view you see.
+
+It's off to start (`extendedCompletions` in `Config > Settings`). The bar words are `normal` and `extended` in `Config > Messages.completions`. The settings row is `SettingsMenu > VisualFrame > ExtendedCompletions`. Without it the setting isn't offered, and players get the normal view.
+
 ## Spectate
 
 Watches another player: their name, tower, timer, rush progress, mode, boost use, health, frame rate, and how many are spectating them. See [Settings](./settings.md#spectating).

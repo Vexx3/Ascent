@@ -113,6 +113,7 @@ The key is the acronym, which must match the tower's model name in `Workspace > 
 | `allJumpsPoints` | no | Points for an All Jumps win. |
 | `type` | no | A tower type. See [Tower Types](./difficulties.md#tower-types). |
 | `noBoosts` | no | Overrides its type's boost rule. |
+| `extended` | no | An event tower. The Completions chart shows and counts it only under [Extended Completions](./ui-and-hud.md#extended-completions). |
 
 Most of these can also be set as attributes on the tower model, and the attribute wins in that place. See [Building A Tower](./tower-setup.md). Endings are only attributes; see [Winpads & Endings](./winpads-endings.md).
 
@@ -153,6 +154,7 @@ What a **new** player's settings start as. Players' own choices are saved, so th
 | `hideTimer` | `false` |
 | `hideUI` | `false` |
 | `flipIndication` | `true` |
+| `extendedCompletions` | `false` |
 | `hideDisabledItems` | `false` |
 | `invisiblePlayers` | `"Off"` |
 | `mobileDPad` | `"Off"` |

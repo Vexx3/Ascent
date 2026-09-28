@@ -171,7 +171,7 @@ One of the two shows, by the player's **Detailed Progress Meter** setting, or al
 - **`AreaProgress`**: one bar reading `7/12`. Hover it for the percentage, to one decimal place: `7/12 (58.3%)`.
 - **`DetailedProgress`**: one bar per tower, easiest first, in its difficulty colour, with `Status` green when beaten, yellow when beaten only in All Jumps, and red otherwise. Hovering a bar shows `HoverTower` and outlines the tower's frame in white: the Model or part named after its acronym in the Area's folder under `Rings`.
 
-A crowded ring narrows its bars to fit. Only normal wins count, as in the Completions menu and the Area locks: an All Jumps win shows yellow but adds nothing. Tower rushes don't count. `TotalBeaten` counts every Area.
+A crowded ring narrows its bars to fit. Only normal wins count, as in the Completions menu and the Area locks: an All Jumps win shows yellow but adds nothing. Tower rushes and [extended](./ui-and-hud.md#extended-completions) towers don't count. `TotalBeaten` counts every Area except extended ones; an extended Area's own card still counts its towers.
 
 `SettingsButton` opens `Settings`. Its rows can sit anywhere inside it; the shipped screen keeps them in `OptionList`. The panel, its button and each row are optional: delete what you don't want, and a panel left with nothing to change hides its button.
 
