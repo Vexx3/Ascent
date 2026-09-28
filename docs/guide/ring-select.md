@@ -8,7 +8,7 @@ Everything it shows comes from `Config > Worlds` and `Config > Towers`.
 
 1. **Make the hub a place in the same experience** as your tower places, and make it the **start place** in the Creator Hub. A place in another experience cannot read the player's save.
 2. **Put its Place ID in `hubPlaceId`** in `Config > Worlds`.
-3. **Start it from `Ascent Hub.rbxlx`.** It holds only the code the hub needs, plus the whole of `Config`.
+3. **Start it from `Ascent Hub.rbxlx`.** Its `Server` and `Client` hold only what the hub runs. Its `Shared` is the same as every tower place's, so one `Shared`, or a package made from it, fits them all.
 4. **Set three things:**
    - `StarterGui > RingSelect > ResetOnSpawn` to **false**.
    - `Players > CharacterAutoLoads` to **false**.
@@ -17,7 +17,7 @@ Everything it shows comes from `Config > Worlds` and `Config > Towers`.
    The Output says so on startup if either of the last two is wrong.
 
 ::: warning Hub and tower places are different files
-Start the hub from `Ascent Hub.rbxlx` and every tower place from `Ascent Area.rbxlx`. Their scripts are not interchangeable, and copying one into the other breaks both.
+Start the hub from `Ascent Hub.rbxlx` and every tower place from `Ascent Area.rbxlx`. Their `Server` and `Client` are not interchangeable, and copying one into the other breaks both. `Shared` is the same in both files.
 :::
 
 ## Config > RingSelect
