@@ -2,6 +2,8 @@
 
 Check the **Output** window first. The kit names the tower, item or setting behind nearly every problem, and when a server starts it lists anything in `Config` that the place is missing.
 
+In a published game, open the Developer Console with `F9`. Something that fails during play, like a save, a teleport or a purchase, names the player and the reason. Expand the line for the rest, including the player's user ID.
+
 ## Saved Data
 
 ### Progress does not save in Studio

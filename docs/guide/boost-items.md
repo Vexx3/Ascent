@@ -30,7 +30,7 @@ Tag a healing Tool `Heal`, and the backpack's **Heals** button covers it.
 
 ## Switching items off
 
-Open the backpack for three buttons above it: **All**, **Heals** and **Boosts**. A switched-off item turns red and can't be equipped at all, so a legit run can't use a boost by accident. **Right-click** (or double-tap) one item to switch just that one off, or back on from a switched-off group. The choices are saved.
+Open the backpack for three buttons above it: **All**, **Heals** and **Boosts**. A switched-off item turns red and can't be equipped at all (trying plays the error sound), so a legit run can't use a boost by accident. **Right-click** (or double-tap) one item to switch just that one off, or back on from a switched-off group. The choices are saved.
 
 With **Hide Disabled Items** (Settings > Visual) on, switched-off items leave the backpack entirely.
 

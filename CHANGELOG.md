@@ -1,5 +1,128 @@
 # Changelog
 
+## 1.2.0
+
+### Updating
+
+Coming from 1.1.1, follow [Updating Ascent](https://kiels.dev/Ascent/guide/updating),
+then:
+
+1. **Copy `SoundService > Menu` from this release's place into every place,
+   the hub too, then delete `menuSounds` from `Config > Visuals` and
+   `StarterGui > MainMenu > DeathSound`.** Every kit sound plays from it now
+   (see **Changed**), and without it they are silent.
+
+A Config without the other new fields looks as before, except that tower
+rushes now show on the Completions chart only under Extended Completions (see
+**Changed**). To use the rest:
+
+2. **Copy `SettingsMenu > VisualFrame > ExtendedCompletions` from this
+   release's place.** Without the row the setting isn't offered, and everyone
+   sees the normal view.
+3. **Mark event places and towers `extended = true`**: the Area in
+   `Config > Worlds`, or the tower in `Config > Towers`.
+4. **To silence hovering in the hub, delete `SoundService > RingSelect >
+   Hover`.** A hub from an earlier release has one.
+
+### Fixed
+
+- **The topbar icons could cover the timer on a small screen.** TopbarPlus
+  draws the backpack, FPS display and console buttons at DisplayOrder 10 and
+  11, and `TowerGUI` sat at 0, so where a narrow screen pushed them into the
+  middle they drew over it. The HUD now raises `TowerGUI` to at least 12,
+  and a DisplayOrder you authored higher is kept.
+
+### Added
+
+- **Ring Select is configurable end to end** in `Config > RingSelect`, all
+  optional, so a Config without them is unchanged:
+  - `progressMeter`: `"Choice"` lets each player pick the progress view as
+    before; `"Simple"` or `"Detailed"` fixes it and hides the switch.
+  - `saveSettings`: off, nothing a player picks in the hub's Settings is
+    saved. The view starts on `detailedProgress` every visit, and Music
+    Volume starts where the tower places left it.
+  - `hoverColor`, `selectedTransparency`, `unselectedTransparency` and
+    `unavailableDarken`, the looks that were fixed in code.
+- **The hub's Settings panel, its button and each row are optional.** Delete
+  what you don't want; a panel left with nothing to change hides its button,
+  where a missing piece used to stop the screen.
+- **The tower places' remaining looks and timings are in Config**, each
+  optional and defaulting to what shipped:
+  - `Config > Visuals`: `flipIndication` colours, the `cosmeticPreview`
+    camera, the `layoutEditor` colours, and Hide UI's fades and waits in
+    `timing`.
+  - `Config > Project.timings`: `shutdownWarnings` and `shutdownNotice`.
+  - `Config > Economy.shop.featured.refreshWarning`, `0` for no warning.
+  - `Config > Admin.consoleIcon`.
+  - `Config > Settings.musicVolumeSteps`, checked on load: a list that
+    does not rise from 0 to 200 warns and uses the default.
+- **Extended Completions**, a Visual setting, off to start. Event towers,
+  places that have closed and tower rushes leave the normal Completions count:
+  the chart hides them, and each Area's bar counts normal towers only. With
+  the setting on they are shown, by Area and by difficulty, and each bar
+  counts everything shown and reads `Extended` instead of `Normal`.
+  - Mark a place `extended = true` in `Config > Worlds`, or one tower in
+    `Config > Towers`. Every rush is extended already.
+  - Only the count changes. An extended tower still counts for Area unlocks,
+    tower points, Elo and cosmetic unlocks, and the hardest tower is never a
+    rush.
+  - The hub's `TotalBeaten` and each Area's count leave extended towers out
+    too. An extended Area's own card still counts its towers.
+  - The bar words are `normal` and `extended` in
+    `Config > Messages.completions`.
+- **Award, purchase and error sounds**, in `SoundService > Menu`, in place of
+  the notification sound every toast played:
+  - `Award` (6979299092) when a toast gives the player something: tickets
+    for a tower or a game pass, or a gift received.
+  - `Purchase` (133292918309565) when a purchase goes through: a ticket-shop
+    item, a gift sent, or a game pass bought from any prompt.
+  - `Error` (132281440773764) for a refusal or a failure: a locked Area, a
+    teleport or personal server that did not work, not enough tickets, a
+    gift or purchase refused, bad input in All Jumps, a Completions lookup
+    that failed, and an item switched off in the backpack when a player
+    tries to equip it. The hub plays it for its refusals too, Play on a
+    locked ring included.
+  - `ClientNotification` takes an optional third value, `"Award"`,
+    `"Purchase"` or `"Error"`, for a game's own.
+- **A tab sound**, `SoundService > Menu > Tab` (12222170), for opening
+  a menu or switching tabs: the menu's own buttons, Settings, Teleport's
+  Worlds, the shop's sections and the cosmetics tabs. Every other button
+  keeps the click.
+
+### Changed
+
+- **The menu sounds are Sounds in the place, not IDs in Config.**
+  `SoundService > Menu` holds Click, Tab, Notification, Award, Purchase,
+  Error, Victory and Death, so each is restyled in Studio -- its ID, volume,
+  pitch, effects -- the way the hub's already were in `SoundService >
+  RingSelect`. `Config > Visuals.menuSounds` is gone, and the All Jumps death
+  sound moved there from `StarterGui > MainMenu > DeathSound`, which the kit
+  searched the whole PlayerGui for. Each is optional: a missing Tab
+  plays Click, and a missing Award, Purchase or Error plays Notification.
+- **Hovering a button is silent, and the click is new.** The shipped
+  `SoundService > Menu` has no Hover, and Click is 12221976. In the hub,
+  `SoundService > RingSelect > Hover` no longer falls back to `Button` when
+  it is missing, and the shipped hub has none. Add a Sound named Hover to
+  either for a sound on hover.
+- **The hub's `Shared` is the same as a tower place's.** `Ascent Hub.rbxlx`
+  carried only the 36 modules the hub loads; it now carries all 48, byte for
+  byte the tower places' copy, so one `Shared`, or one package made from it,
+  fits every place. The modules the hub never requires don't run there.
+- **Tower rushes show on the Completions chart only under Extended
+  Completions.** They never counted towards a bar, and in the normal view
+  they are now hidden with the other extended entries. With the setting on
+  they count, and the By Difficulty view, which left them out, shows them in
+  their difficulty's row.
+- **A failure during play is a structured log.** A save, request, teleport,
+  purchase or badge that fails, a player kicked from a tower, and the
+  client's own failures go through `LogService:Warn`: a fixed message with
+  the details beside it -- the player's name and user ID, the tower, the
+  reason. They read as before in the Output and the Developer Console, with
+  the details a click away, and Creator Analytics groups error reports by
+  that message instead of by each player's line. Warnings about how the
+  place or Config is set up are unchanged. The record of each admin command
+  is an Info line rather than a print.
+
 ## 1.1.1
 
 A fix for the hub's progress, which counted All Jumps wins as beaten.

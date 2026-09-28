@@ -79,7 +79,8 @@ looks for and marks the ones your place is missing.
 ## The hub
 
 Do the same with the new `Ascent Hub.rbxlx` in your hub: replace `Server`,
-`Client`, `Shared` (keeping `Config`) and `Packages`, and keep the rest.
+`Client`, `Shared` (keeping `Config`) and `Packages`, and keep the rest. The
+hub's `Shared` is the same as a tower place's, so either file's will do.
 
 ## The Tower Setup plugin
 

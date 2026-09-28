@@ -17,6 +17,7 @@ Almost every change a fangame makes is in one of these:
 | `ServerStorage > Cosmetics` | Trails and auras. |
 | `ServerStorage > CompletionTools` | Tools given for beating towers. |
 | `StarterGui` | The menus. See below. |
+| `SoundService > Menu` | The menus' sounds. See [Menu Sounds](./ui-and-hud.md#menu-sounds). |
 | `ServerScriptService > CustomCommands` | Your own admin commands. |
 | Your own Scripts in `ServerScriptService` and `StarterPlayerScripts` | Your own code, using [the hooks](./hooks.md). |
 

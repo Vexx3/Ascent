@@ -1,6 +1,8 @@
 # Cosmetics
 
-Players unlock Trails and Auras and equip one of each from the Cosmetics menu. Each one is a model in `ServerStorage > Cosmetics`:
+Players unlock Trails and Auras and equip one of each from the Cosmetics menu. A Trail is a `Trail`. An Aura is everything else a player wears: particles, `Fire`, `Smoke`, `Sparkles`, lights, beams, or parts such as wings or a halo. See [Auras: Particles And More](#auras-particles-and-more).
+
+Each one is a model in `ServerStorage > Cosmetics`:
 
 ```text
 ServerStorage
@@ -89,7 +91,17 @@ Unlocking doesn't equip it. `enabled.cosmetics` in `Config > Economy` turns the 
 
 ## Assets
 
-A Trail can be a `Trail`, `Folder` or `Model`, attached to `HumanoidRootPart` unless it says otherwise. An Aura can hold particles, attachments, lights, `Fire`, `Smoke`, `Sparkles` and parts. For a whole-body aura, put effects in folders named after body parts.
+A Trail can be a `Trail`, `Folder` or `Model`, attached to `HumanoidRootPart` unless it says otherwise.
+
+### Auras: Particles And More
+
+Anything that isn't a trail is an Aura, in `ServerStorage > Cosmetics > Auras`. Build it in one of three shapes:
+
+- **One effect**: a `ParticleEmitter`, `Fire`, `Smoke`, `Sparkles`, light, `Beam` or `BillboardGui` on its own. It goes on an attachment at the centre of `BodyPart` (`HumanoidRootPart` unless you set it). Set `AttachmentName` to one the body part already has to move it: `BodyPart = "Head"` and `AttachmentName = "HatAttachment"` puts it on top of the head.
+- **An `Attachment` holding effects**: it goes into `BodyPart` as it is, so its `Position` places the effects.
+- **A `Folder`, `Model` or part**: parts are welded on, and can't collide or weigh the player down. Effects inside come along. To cover the whole body, name a part or folder inside it after a body part (`Head`, `Torso`, `Left Arm`, `Right Leg` and so on), and what's in it goes on that limb. Inside a part named after a limb, things keep where they sit against it. Without any such names, the whole thing goes on `BodyPart`.
+
+The shipped place has three to copy: `Fallen`, `Moonflower` and `Shinning`. Set the same attributes on an aura as on a trail, on its top instance, whatever that is.
 
 ## Previewing a cosmetic
 

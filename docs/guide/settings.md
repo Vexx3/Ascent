@@ -19,11 +19,12 @@ Players change their settings in the in-game Settings menu, and their choices ar
 | `hideTimer` | Visual | `false` | Hides the run timer. |
 | `hideUI` | Visual | `false` | Fades the menu buttons while climbing. See [Hide UI](./ui-and-hud.md#hide-ui). |
 | `flipIndication` | Visual | `true` | Shows where a corner flip would put you. See [Flip Indication](./ui-and-hud.md#flip-indication). |
+| `extendedCompletions` | Visual | `false` | Shows and counts event towers, closed places and rushes on the Completions chart. See [Extended Completions](./ui-and-hud.md#extended-completions). |
 | `hideDisabledItems` | Visual | `false` | Hides switched-off backpack items instead of greying them. |
 | `hideCosmetics` | Visual | `"Off"`, `"Everyone Else"`, `"Yours"`, `"All"` | Hides trails and auras. |
 | `hideBubbleChat` | Visual | `false` | Hides chat bubbles. |
 | `transparentAccessories` | Visual | `false` | Fades your own hats and hair when the camera is close. |
-| `musicVolume` | Audio | `0.5`, `0`–`2` | Music volume. |
+| `musicVolume` | Audio | `0.5`, `0`–`2` | Music volume. The slider's stops are `musicVolumeSteps`, in percent. |
 | `audioVisualizer` | Audio | `"Off"`, `"Low"`, `"Medium"`, `"High"`, `"OMG Why"`, `"AAAAA"` | Camera shake with the music. |
 | `alignmentDot` | Misc | `false` | Shows the alignment dot, the `dot` frame in the menu's ScreenGui. |
 | `mobileDPad` | Controls | `"Off"`, `"Mode 1"`, `"Mode 2"` | An on-screen D-pad. |

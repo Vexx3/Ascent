@@ -31,7 +31,8 @@ names the missing towers in the Output window.
 ## Add Its Display Entry
 
 A rush also needs an entry in `towers`, beside the real towers, so it shows up
-on the Completions chart with everything else:
+on the Completions chart. Rushes show there only under
+[Extended Completions](./ui-and-hud.md#extended-completions):
 
 ```luau
 towers = {

@@ -39,6 +39,7 @@ The order you write them in is the order players see them.
 | `requirements` | none | Unlock rules, below. |
 | `sub` | `false` | Draws it as a subrealm, on the narrower card under the Area above it. |
 | `disabled` | `false` | Hides the Area, or a whole World. |
+| `extended` | `false` | An event place, or one that has closed. Its towers are shown and counted only under [Extended Completions](./ui-and-hud.md#extended-completions), and the hub's total leaves it out. |
 
 At the top of the file:
 
