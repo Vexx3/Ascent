@@ -28,6 +28,7 @@ The menus' sounds are Sound instances in `SoundService > Menu`, in every place, 
 | `Purchase` | When a purchase goes through: a shop item, a gift sent, or a game pass. Without it, `Notification` plays, and a game pass plays nothing. |
 | `Error` | For a refusal or a failure: a locked Area, a teleport that failed, not enough tickets, or equipping a switched-off backpack item. Without it, `Notification` plays. |
 | `Victory` | To the player who beat a tower. |
+| `Death` | When an All Jumps death puts the player back on their checkpoint. |
 
 Every one is optional. The Check window of the [Tower Setup plugin](./tower-setup-plugin.md) warns when the folder is missing.
 
