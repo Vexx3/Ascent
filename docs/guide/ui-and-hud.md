@@ -64,7 +64,7 @@ The text inside each sidebar button is deliberately shorter than the button, so 
 
 ## Completions Menu
 
-Shows the player's (or any looked-up player's) completed towers, All Jumps towers and rushes, attempts and wins, best times, time spent, hardest completion, and Elo with global rank. Percentages show one decimal place, rounded down.
+Shows the player's (or any looked-up player's) completed towers, All Jumps towers and rushes, attempts and wins, best times, time spent, hardest completion, and Elo with global rank. Percentages show one decimal place, rounded down. A bar at 100% cycles through the rainbow, as rush names always do; `rainbowSpeed` in `Config > Visuals.completions` sets how fast.
 
 ### Extended Completions
 
