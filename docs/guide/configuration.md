@@ -210,6 +210,7 @@ Every line of text players read, apart from win messages and chat tags (those ar
 | `dataKicks` | Kicks for unusable saves. |
 | `wins` | The `[GLOBAL]` and `[SERVER]` prefixes. |
 | `rewards` | Ticket payouts. |
+| `personalBests` | A win's time against the player's best, and the `BestTime` label. |
 | `teleports` | Teleport refusals. |
 | `friends` | Joining friends. |
 | `personalServers` | Personal servers. |

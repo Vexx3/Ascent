@@ -6,6 +6,8 @@ The screens are in `StarterGui` and are yours to lay out. See [The Menus](./stud
 
 `TowerGUI` shows the tower's acronym, the timer, the restart hold, boost use, rush progress, the Practice and All Jumps labels, and the loading screen (while data loads and during a teleport). The **Hide Timer** setting hides the timer. The kit raises its `DisplayOrder` to at least 12, above the topbar icons, so on a narrow screen those icons never cover the timer.
 
+A TextLabel named `BestTime` anywhere in `TowerGUI` shows the player's best time for what they're climbing: the tower, or the whole rush during one, in Normal or All Jumps. It hides when there is no best yet, in Practice, and with **Hide Timer** on. The shipped place has one at the top of `TimerPanel > CurrentStatus`. Its words are `hud` in the `personalBests` group of `Config > Messages`.
+
 `LoadingScreen` can be a Frame or a CanvasGroup. Either fades in and out; a CanvasGroup fades as one image, a Frame fades each part inside it. It covers the screen at once when a player joins.
 
 Its `LoadingLabel` says what is loading, with dots that count up: "Loading data" as a player joins, and "Teleporting to Ring 2" during a teleport, naming the Area (or the hub) whenever the server knows it. The words are the `loading` group of `Config > Messages`; leave the dots off them. `Config > Visuals.timing.loadingDots` sets how fast the dots move, and `0` shows all three, still. Nothing else in `LoadingScreen` is read, so an `Attention` label from an older kit can go.
@@ -13,6 +15,10 @@ Its `LoadingLabel` says what is loading, with dots that count up: "Loading data"
 ## Notifications
 
 The toasts in `MainMenu > NotificationHolder` draw rich text. A locked Area's requirement shows its difficulty in colour, as the hub does. In your own `Config > Messages`, `<b>` works, and a plain `&` has to be written `&amp;`.
+
+A message that is already showing isn't added again: the toast on screen keeps its place and starts its time over. At most five toasts show at once, and a sixth sends the oldest away.
+
+Each win sends one telling the player how it compares with their best: their first time, a new best and how much faster, or the best that still stands. A boosted run isn't compared. The words are the `personalBests` group of `Config > Messages`; set one to `""` to stop it being sent.
 
 ## Menu Sounds
 
@@ -24,7 +30,7 @@ The menus' sounds are Sound instances in `SoundService > Menu`, in every place, 
 | `Tab` | When a menu opens or a tab switches. Without it, `Click` plays. |
 | `Hover` | When the pointer moves onto a button. The shipped place has none, so hovering is silent. |
 | `Notification` | With a notification. |
-| `Award` | With a notification that gives the player something: tickets, or a gift. Without it, `Notification` plays. |
+| `Award` | With a notification that gives the player something: tickets, a gift, or a new best time. Without it, `Notification` plays. |
 | `Purchase` | When a purchase goes through: a shop item, a gift sent, or a game pass. Without it, `Notification` plays, and a game pass plays nothing. |
 | `Error` | For a refusal or a failure: a locked Area, a teleport that failed, not enough tickets, or equipping a switched-off backpack item. Without it, `Notification` plays. |
 | `Victory` | To the player who beat a tower. |

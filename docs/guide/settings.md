@@ -80,8 +80,18 @@ Roblox gives games no real frame cap, so the kit holds frames back by keeping th
 | `fpsIncrease` | `Equals` | Raise the FPS Cap. |
 | `fpsDecrease` | `Minus` | Lower the FPS Cap. |
 | `emotes` | `dance2` = `T`, `laugh` = `Y`, `cheer` = `U` | One key per emote. |
+| `quickRestartController` | `ButtonY` | Restart on a controller, held like the key. |
+| `allJumpsPlaceController` | `DPadUp` | Place an All Jumps checkpoint on a controller. |
+| `allJumpsTeleportController` | `DPadRight` | Go to it. |
+| `allJumpsRemoveController` | `DPadDown` | Remove it. |
 
 Give every action its own key; the Output warns about two sharing one. To add a keybind of your own, see [Adding A Saved Setting](./custom-settings.md).
+
+### On a controller
+
+On a controller, the Controls tab shows the rows that have a controller button: Quick Restart, the three All Jumps keys and Corner Flip. Pressing a row's button and then a controller button rebinds it, and each device keeps its own key. FPS and emote rows are keyboard only and stay hidden there.
+
+The D-pad also steers menus, so the All Jumps buttons do nothing while a menu has the controller's selection. Leave a `...Controller` key out of `Config > Settings` and that action starts with no button; players can still pick one.
 
 ### Emote keys
 

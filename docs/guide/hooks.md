@@ -59,9 +59,10 @@ A `win` has these fields:
 | `mode` | `"Normal"` or `"AllJumps"`. Practice never wins. |
 | `boosted` | Whether a boost item was used. |
 | `firstWin` | Whether this was the first win of that tower in that mode. |
+| `personalBest` | Whether this time is now the player's best for that tower in that mode. |
 | `rush` | The rush it was part of, or `nil`. |
 
-A `rush` has `rush` (its name), `time`, `mode` and `boosted`.
+A `rush` has `rush` (its name), `time`, `mode`, `boosted` and `personalBest`.
 
 ::: tip Waiting for the kit
 Your Script may start before the kit's does. Connecting to an event needs no
