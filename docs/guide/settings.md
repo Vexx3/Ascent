@@ -19,7 +19,6 @@ Players change their settings in the in-game Settings menu, and their choices ar
 | `hideTimer` | Visual | `false` | Hides the run timer. Clicking the timer toggles it too. |
 | `hideUI` | Visual | `false` | Fades the menu buttons while climbing. See [Hide UI](./ui-and-hud.md#hide-ui). |
 | `flipIndication` | Visual | `true` | Shows where a corner flip would put you. See [Flip Indication](./ui-and-hud.md#flip-indication). |
-| `extendedCompletions` | Visual | `false` | Shows and counts event towers, closed places and rushes on the Completions chart. See [Extended Completions](./ui-and-hud.md#extended-completions). |
 | `hideDisabledItems` | Visual | `false` | Hides switched-off backpack items instead of greying them. |
 | `hideCosmetics` | Visual | `"Off"`, `"Everyone Else"`, `"Yours"`, `"All"` | Hides trails and auras. |
 | `hideBubbleChat` | Visual | `false` | Hides chat bubbles. |
@@ -27,6 +26,8 @@ Players change their settings in the in-game Settings menu, and their choices ar
 | `musicVolume` | Audio | `0.5`, `0`–`2` | Music volume. The slider's stops are `musicVolumeSteps`, in percent. |
 | `audioVisualizer` | Audio | `"Off"`, `"Low"`, `"Medium"`, `"High"`, `"OMG Why"`, `"AAAAA"` | Camera shake with the music. |
 | `alignmentDot` | Misc | `false` | Shows the alignment dot, the `dot` frame in the menu's ScreenGui. |
+| `extendedCompletions` | Misc | `false` | Shows and counts event towers, closed places and rushes on the Completions chart. See [Extended Completions](./ui-and-hud.md#extended-completions). |
+| `disableProgress` | Misc | `false` | Disable Progress Message: your [far messages](./announcements-webhooks.md#far-messages) aren't sent, in chat or on Discord. |
 | `mobileDPad` | Controls | `"Off"`, `"Mode 1"`, `"Mode 2"` | An on-screen D-pad. |
 | `checkpointCamera` | Checkpoint panel | `true` | Going to a checkpoint also turns the camera back. See [Practice & All Jumps](./practice-all-jumps.md#the-checkpoint-panel). |
 | `checkpointTransparency` | Checkpoint panel | `0.5`, `0`–`1` | How see-through checkpoint markers are. |

@@ -77,7 +77,7 @@ Shows the player's (or any looked-up player's) completed towers, All Jumps tower
 Some towers stop counting once they're gone. An event tower (Halloween, Christmas, April Fools) or a place that has closed can't be beaten by anyone new, so normal completions leave it out. So do tower rushes, which aren't towers.
 
 - **Normal view**, the default: those towers, their places and every rush are hidden and not counted. Each Area's bar reads `Normal`.
-- **Extended Completions**, in the Visual settings: they're all shown, by Area and by difficulty, and every bar counts everything shown. Each Area's bar reads `Extended`.
+- **Extended Completions**, in the Misc settings: they're all shown, by Area and by difficulty, and every bar counts everything shown. Each Area's bar reads `Extended`.
 
 Mark what's extended in Config:
 
@@ -87,7 +87,7 @@ Mark what's extended in Config:
 
 Only the count changes. An extended tower still counts for Area unlocks, tower points and the leaderboard, Elo, and cosmetic unlocks, and still pays its badge and tickets. The hardest tower is never a rush. When you look someone up, *your* setting decides which view you see.
 
-It's off to start (`extendedCompletions` in `Config > Settings`). The bar words are `normal` and `extended` in `Config > Messages.completions`. The settings row is `SettingsMenu > VisualFrame > ExtendedCompletions`. Without it the setting isn't offered, and players get the normal view.
+It's off to start (`extendedCompletions` in `Config > Settings`). The bar words are `normal` and `extended` in `Config > Messages.completions`. The settings row is `SettingsMenu > MiscFrame > ExtendedCompletions`; a row of that name works in any tab, so a place with it under `VisualFrame` is fine. Without it the setting isn't offered, and players get the normal view.
 
 ## Spectate
 

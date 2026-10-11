@@ -61,6 +61,7 @@ A run counts when it ends without a win: dying, restarting, the Exit button, lea
 - Practice runs never count. All Jumps runs count with `allJumpsRuns = true`, and boosted runs count unless `boostedRuns = false`.
 - Nothing is said for a run that got far faster than the tower's [minimum time](./tower-setup.md#minimum-time) allows for that much of it. That's also what stops one player flooding the chat, so there's no cooldown on top: a speedrunner gets every far run said. A tower with no minimum time has nothing pacing it, so give every tower one.
 - Nobody "quits far" when the server shuts down.
+- A player who turns on **Disable Progress Message** in Settings > Misc (`disableProgress`) has none, in chat or on Discord. The row is `SettingsMenu > MiscFrame > DisableProgress`; without it the setting isn't offered.
 
 ### How far is far
 

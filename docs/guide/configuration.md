@@ -155,6 +155,7 @@ What a **new** player's settings start as. Players' own choices are saved, so th
 | `hideUI` | `false` |
 | `flipIndication` | `true` |
 | `extendedCompletions` | `false` |
+| `disableProgress` | `false` |
 | `hideDisabledItems` | `false` |
 | `invisiblePlayers` | `"Off"` |
 | `mobileDPad` | `"Off"` |
