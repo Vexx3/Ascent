@@ -40,27 +40,31 @@ Placeholders: `{PlayerName}`, `{EndingName}`, `{DifficultyEmoji}`, `{Time}`, `{B
 
 ## Far Messages
 
-When a run ends far up a hard tower, Discord hears about it, as in EToH:
+When a run ends far up a hard tower, the server's chat says so, as in EToH. It's the same `[SERVER]:` line a win gets, in the same font and the tower's difficulty colour:
 
-> **kiel** died VERY far in **ToTDS [emoji]** after `12:34.56`
+> [SERVER]: kiel died VERY far in ToTDS after 12:34.56
 
-They go to Discord only, never to the chat, and they're **off** until you set them up:
+Only that server sees it. Far messages are on once `farMessages` is in `Config > Chat`; `chat = false` turns the chat line off.
+
+To post them to Discord as well:
 
 1. Turn on **Allow HTTP Requests**, as above.
 2. Add a secret named `FAR_WEBHOOK` holding a Discord webhook URL: a channel of its own, or the same URL as a win channel.
-3. Set `farMessages.enabled = true` in `Config > Chat`.
+3. Set `farMessages.discord = true` in `Config > Chat`.
 
-### Which runs post
+> **kiel** died VERY far in **ToTDS [emoji]** after `12:34.56`
 
-A run posts when it ends without a win: dying, restarting, the Exit button, leaving the game, or switching to Practice. Each has its word in `actions` (`died`, `restarted`, `exited`, `quit`, `practiced`). Set one to `""` to stop it posting; switching to All Jumps or back to Normal is off to begin with.
+### Which runs count
 
-- Practice runs never post. All Jumps runs post with `allJumpsRuns = true`, and boosted runs post unless `boostedRuns = false`.
-- Nothing posts for a run that got far faster than the tower's [minimum time](./tower-setup.md#minimum-time) allows for that much of it.
-- One player posts at most once every 30 seconds, and nobody "quits far" when the server shuts down.
+A run counts when it ends without a win: dying, restarting, the Exit button, leaving the game, or switching to Practice. Each has its word in `actions` (`died`, `restarted`, `exited`, `quit`, `practiced`). Set one to `""` to leave that ending out; switching to All Jumps or back to Normal is left out to begin with.
+
+- Practice runs never count. All Jumps runs count with `allJumpsRuns = true`, and boosted runs count unless `boostedRuns = false`.
+- Nothing is said for a run that got far faster than the tower's [minimum time](./tower-setup.md#minimum-time) allows for that much of it. That's also what stops one player flooding the chat, so there's no cooldown on top: a speedrunner gets every far run said. A tower with no minimum time has nothing pacing it, so give every tower one.
+- Nobody "quits far" when the server shuts down.
 
 ### How far is far
 
-A tower's **set** lists its levels in order. Each has a `word` and an `at`: `at = 0.7` is reached once the run has passed 70% of the tower's checkpoints. The furthest level reached is the one posted, and a tower without checkpoints never posts.
+A tower's **set** lists its levels in order. Each has a `word` and an `at`: `at = 0.7` is reached once the run has passed 70% of the tower's checkpoints. The furthest level reached is the one said, and a tower without checkpoints never says one.
 
 | Set | Levels |
 | :-- | :-- |
@@ -70,18 +74,17 @@ A tower's **set** lists its levels in order. Each has a `word` and an `at`: `at 
 | `Rediculously Long` | far, VERY far, EXTREMELY FAR |
 | `Inhumanely Long` | far, VERY far, EXTREMELY FAR, REDICULOUSLY FAR |
 | `Impossibly Long` | slightly far, then the four above |
-| `CoV` | Impossibly Long's, then INHUMANELY FAR |
 
 Change the words and the `at`s freely, or add sets of your own. Which set a tower uses is the first of:
 
 1. **Its own.** `farMessages = "Impossibly Long"` on its entry in `Config > Towers`, or a `FarMessages` attribute on the tower. `"None"` turns it off.
-2. **Its type's**, from `byType` (citadels use `Citadel`), if the tower is hard enough to post at all.
-3. **Its difficulty's**, from `byDifficulty`. Each difficulty listed covers itself and everything harder, up to the next one listed, so `Catastrophic` and `Horrific` cover Catastrophic and up. Easier towers post nothing.
+2. **Its type's**, from `byType` (citadels use `Citadel`), if the tower is hard enough to count at all.
+3. **Its difficulty's**, from `byDifficulty`. Each difficulty listed covers itself and everything harder, up to the next one listed, so `Catastrophic` and `Horrific` cover Catastrophic and up. Easier towers say nothing.
 
 So a long tower only needs its set named on its entry:
 
 ```luau
-CoV = { name = "Citadel of Void", difficulty = 13.6, area = "Zone9", type = "Citadel", farMessages = "CoV" },
+ToEL = { name = "Tower of Extreme Length", difficulty = 12.4, area = "Ring1", farMessages = "Impossibly Long" },
 ```
 
 ### Marking checkpoints
@@ -90,9 +93,12 @@ To put the levels at exact spots, like EToH's hand-placed triggers, give checkpo
 
 A tower with any marks uses only its marks, so a level nobody marked is never reached there. The Output warns about a mark naming a level its tower's set doesn't have.
 
-### The message
+### The messages
 
-`message` in `farMessages` takes `{Player}`, `{Action}`, `{Far}`, `{Tower}` (the acronym), `{TowerName}`, `{Difficulty}`, `{DifficultyEmoji}`, `{Time}`, `{Progress}` (such as `72%`) and `{Checkpoint}` (such as `7/10`). `{Player}` follows `useDisplayName` in `Config > Project`.
+`chatMessage` is the chat line and `discordMessage` the Discord post. Both take `{Player}`, `{Action}`, `{Far}`, `{Tower}` (the acronym), `{TowerName}`, `{Difficulty}`, `{Time}`, `{Progress}` (such as `72%`) and `{Checkpoint}` (such as `7/10`). `{Player}` follows `useDisplayName` in `Config > Project`.
+
+- `{DifficultyEmoji}` is a Discord emoji, so it belongs in `discordMessage`. In chat it shows as its code.
+- The chat line is [rich text](https://create.roblox.com/docs/ui/rich-text), so `<b>{Far}</b>` makes the word bold. The `[SERVER]:` before it is `wins.serverPrefix` in `Config > Messages`, shared with win lines.
 
 For your own logging, every run ending is also the [`runEnded` event](./hooks.md).
 

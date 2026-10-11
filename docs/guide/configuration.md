@@ -173,7 +173,7 @@ What each does, and the allowed values, are on [Settings](./settings.md).
 
 ## Chat
 
-`tags` gives players chat tags, `messages` holds the win messages, `webhooks` the Discord ones, and `farMessages` the posts when a run ends far up a hard tower. See [Chat](./chat.md), [Announcements & Webhooks](./announcements-webhooks.md) and [Far Messages](./announcements-webhooks.md#far-messages).
+`tags` gives players chat tags, `messages` holds the win messages, `webhooks` the Discord ones, and `farMessages` the lines in chat (and optionally Discord) when a run ends far up a hard tower. See [Chat](./chat.md), [Announcements & Webhooks](./announcements-webhooks.md) and [Far Messages](./announcements-webhooks.md#far-messages).
 
 ## Admin
 
