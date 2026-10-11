@@ -40,7 +40,7 @@ Placeholders: `{PlayerName}`, `{EndingName}`, `{DifficultyEmoji}`, `{Time}`, `{B
 
 ## Far Messages
 
-When a run ends far up a hard tower, the server's chat says so, as in EToH. It's the same `[SERVER]:` line a win gets, in the same font and the tower's difficulty colour:
+When a run ends far up a hard tower, the server's chat says so, as in EToH. It's the same `[SERVER]:` line a win gets, in the tower's difficulty colour. It's always in the plain win font, even on a difficulty whose wins use the fancy one, since it's progress rather than a win:
 
 > [SERVER]: kiel died VERY far in ToTDS after 12:34.56
 

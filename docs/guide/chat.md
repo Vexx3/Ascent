@@ -64,4 +64,4 @@ Placeholders: `{PlayerName}`, `{EndingName}`, `{Time}`, and `{BoostList}` in `bo
 
 Each message starts with `[SERVER]:`, or `[GLOBAL]:` for a win announced to every server. Those prefixes are in `Config > Messages` under `wins`. Which difficulties are announced to every server is set in `Config > Towers`; see [Announcements & Webhooks](./announcements-webhooks.md).
 
-[Far messages](./announcements-webhooks.md#far-messages) use the same channel, fonts and `[SERVER]:` prefix, so changing these changes them too.
+[Far messages](./announcements-webhooks.md#far-messages) use the same channel and `[SERVER]:` prefix, so changing those changes them too. They always use `fontFace` and `fontSize`, never the fancy font.
