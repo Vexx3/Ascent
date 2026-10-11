@@ -56,7 +56,7 @@ To post them to Discord as well:
 
 ### Which runs count
 
-A run counts when it ends without a win: dying, restarting, the Exit button, leaving the game, or switching to Practice. Each has its word in `actions` (`died`, `restarted`, `exited`, `quit`, `practiced`). Set one to `""` to leave that ending out; switching to All Jumps or back to Normal is left out to begin with.
+A run counts when it ends without a win: dying, restarting, the Exit button, leaving the game, or switching to Practice or All Jumps. Each has its word in `actions` (`died`, `restarted`, `exited`, `quit`, `practiced`, `all-jumped`), so switching to All Jumps far up a Normal run says `kiel all-jumped far in ToTDS`. Set one to `""` to leave that ending out; switching back to Normal is left out to begin with.
 
 - Practice runs never count. All Jumps runs count with `allJumpsRuns = true`, and boosted runs count unless `boostedRuns = false`.
 - Nothing is said for a run that got far faster than the tower's [minimum time](./tower-setup.md#minimum-time) allows for that much of it. That's also what stops one player flooding the chat, so there's no cooldown on top: a speedrunner gets every far run said. A tower with no minimum time has nothing pacing it, so give every tower one.
