@@ -74,6 +74,10 @@ Players see each rule with their progress, such as `Beat 12 Towers (3/12)`. The 
 
 A refusal shows the rule as a notification, with its difficulty in colour. The server checks again before every teleport. A tower place also checks each player who arrives and sends anyone locked out back to the hub, except in Studio and for admins, so you can still build a locked Area.
 
+::: tip Lock the places themselves
+The arrival check only acts once a player has joined, and by then the Area has loaded for them. To stop them getting in at all, set **Access Control for Places** to **Secure within universe only** (Creator Dashboard → Audience → Access Settings). An Area place can then only be reached by a teleport the server makes, and every kit teleport is one. A player who follows a friend into an Area from the Roblox app lands in the hub instead, where the [friend list](./ring-select.md#friends-and-servers) still takes them there.
+:::
+
 ::: warning `scope` catches people out
 A World with no towers of its own can never meet a `towerCompletions` or `difficulties` rule without `scope = "All"`. The count stays at zero and the Area never opens.
 :::
