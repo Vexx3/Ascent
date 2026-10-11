@@ -16,7 +16,7 @@ Players change their settings in the in-game Settings menu, and their choices ar
 | `alignmentButtons` | Gameplay | `false` | Camera alignment arrows. Touch devices only. |
 | `emoteButtons` | Gameplay | `false` | The on-screen emote picker. The emote keys work either way. |
 | `fpsDisplay` | Visual | `false` | The FPS counter in the topbar. |
-| `hideTimer` | Visual | `false` | Hides the run timer. |
+| `hideTimer` | Visual | `false` | Hides the run timer. Clicking the timer toggles it too. |
 | `hideUI` | Visual | `false` | Fades the menu buttons while climbing. See [Hide UI](./ui-and-hud.md#hide-ui). |
 | `flipIndication` | Visual | `true` | Shows where a corner flip would put you. See [Flip Indication](./ui-and-hud.md#flip-indication). |
 | `extendedCompletions` | Visual | `false` | Shows and counts event towers, closed places and rushes on the Completions chart. See [Extended Completions](./ui-and-hud.md#extended-completions). |

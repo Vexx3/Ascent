@@ -4,9 +4,9 @@ The screens are in `StarterGui` and are yours to lay out. See [The Menus](./stud
 
 ## HUD
 
-`TowerGUI` shows the tower's acronym, the timer, the restart hold, boost use, rush progress, the Practice and All Jumps labels, and the loading screen (while data loads and during a teleport). The **Hide Timer** setting hides the timer. The kit raises its `DisplayOrder` to at least 12, above the topbar icons, so on a narrow screen those icons never cover the timer.
+`TowerGUI` shows the tower's acronym, the timer, the restart hold, boost use, rush progress, the Practice and All Jumps labels, and the loading screen (while data loads and during a teleport). The **Hide Timer** setting hides the timer, and so does clicking or tapping the timer; clicking the same spot again brings it back, and the setting follows either way. The kit raises its `DisplayOrder` to at least 12, above the topbar icons, so on a narrow screen those icons never cover the timer.
 
-A TextLabel named `BestTime` anywhere in `TowerGUI` shows the player's best time for what they're climbing: the tower, or the whole rush during one, in Normal or All Jumps. It hides when there is no best yet, in Practice, and with **Hide Timer** on. The shipped place has one at the top of `TimerPanel > CurrentStatus`. Its words are `hud` in the `personalBests` group of `Config > Messages`.
+A TextLabel named `BestTime` anywhere in `TowerGUI` shows the player's best time while the pointer is over the timer: the tower's, or the whole rush's during one, in Normal or All Jumps. It stays hidden when there is no best yet, in Practice, and with **Hide Timer** on. The shipped place has one at the top of `TimerPanel > CurrentStatus`. Its words are `hud` in the `personalBests` group of `Config > Messages`.
 
 `LoadingScreen` can be a Frame or a CanvasGroup. Either fades in and out; a CanvasGroup fades as one image, a Frame fades each part inside it. It covers the screen at once when a player joins.
 
@@ -18,7 +18,7 @@ The toasts in `MainMenu > NotificationHolder` draw rich text. A locked Area's re
 
 A message that is already showing isn't added again: the toast on screen keeps its place and starts its time over. At most five toasts show at once, and a sixth sends the oldest away.
 
-Each win sends one telling the player how it compares with their best: their first time, a new best and how much faster, or the best that still stands. A boosted run isn't compared. The words are the `personalBests` group of `Config > Messages`; set one to `""` to stop it being sent.
+A win that beats the player's best sends one saying by how much. A first time or a slower run sends nothing. The words are `newBest` in the `personalBests` group of `Config > Messages`; set it to `""` to send none.
 
 ## Menu Sounds
 
