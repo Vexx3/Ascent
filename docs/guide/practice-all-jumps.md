@@ -20,6 +20,8 @@ In both modes, players place their own checkpoints:
 
 Checkpoints stack: Remove takes off the newest, and Go and dying both return to the newest. With no checkpoint, dying returns to the tower's spawn. With **Restart on Death** on, dying restarts the tower instead and clears the checkpoints. Players can rebind the keys in Settings.
 
+Going back to a checkpoint, by Go or by dying, puts the player back as they were when they placed it: where they stood and faced, how fast they were moving, what they were doing, and their pose. One placed while climbing a truss comes back climbing.
+
 A restart in these modes is instant: only the player moves back to the spawn, and the tower isn't rebuilt. **ResetCOs** in `MainMenu > Main > ButtonsContainer` rebuilds the tower's moving parts without restarting the run: the player's checkpoints, and the tower's checkpoints already reached, stay, so going back to a checkpoint afterwards still counts toward the win.
 
 ## Practice Mode
