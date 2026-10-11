@@ -44,6 +44,7 @@ one that waits or errors holds nothing up.
 | `rushWon` | `player, rush` | The last tower of a rush is beaten. |
 | `towerLoaded` | `player, acronym, mode` | An attempt at a tower has loaded: entering it, restarting it, or reaching the next tower of a rush. |
 | `towerLeft` | `player, acronym` | A player leaves a tower without winning: the exit button, dying in Normal mode with Restart on Death off, or leaving the game. |
+| `runEnded` | `player, run` | A run ends without a win, whatever ended it: restarts and switching mode included. |
 | `shopPurchased` | `player, itemId, price` | A ticket shop purchase is saved. |
 | `gamePassApplied` | `player, passName` | The kit applies what a game pass gives: joining with it, buying it, or being gifted it. `passName` is its key in `Config > GamePasses`. |
 | `ticketsAwarded` | `player, amount, source` | Tickets are added. `source` is `"Tower"` or `"GamePass"`. |
@@ -63,6 +64,21 @@ A `win` has these fields:
 | `rush` | The rush it was part of, or `nil`. |
 
 A `rush` has `rush` (its name), `time`, `mode`, `boosted` and `personalBest`.
+
+A `run` has these fields:
+
+| Field | What it is |
+| :-- | :-- |
+| `tower` | The tower's acronym. |
+| `reason` | `"died"`, `"restarted"`, `"exited"` or `"quit"`, or `"practice"`, `"allJumps"` or `"normal"` for switching to that mode. |
+| `time` | Seconds in this tower. |
+| `mode` | `"Normal"`, `"AllJumps"` or `"Practice"`. |
+| `checkpoints` | How many of the tower's checkpoints the run had passed. |
+| `checkpointCount` | How many checkpoints the tower has. |
+| `boosted` | Whether a boost item was used. |
+| `rush` | The rush it was part of, or `nil`. |
+
+[Far messages](./announcements-webhooks.md#far-messages) are built on it.
 
 ::: tip Waiting for the kit
 Your Script may start before the kit's does. Connecting to an event needs no

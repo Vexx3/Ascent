@@ -36,6 +36,7 @@ Checkpoints aren't respawn points. They prove a player really climbed. The serve
 - Make them wide, thin, invisible parts across the whole path, with `CanCollide` off, so nobody can get past one without going through it.
 - **A tower with no checkpoints has no check at all.** Anyone who reaches the winpad wins.
 - **They check the order, not the speed.** The server looks every `checkpointInterval` (a quarter of a second) and counts a checkpoint the player's path crossed since its last look, so a fast fall still counts. That means an exploiter teleporting up the tower in short hops, up to 200 studs at a time, passes them too. The [minimum time](#minimum-time) is what stops that, so give every tower one.
+- **They also measure how far a run got**, for [far messages](./announcements-webhooks.md#far-messages). A `FarMessage` attribute on a checkpoint marks where a level of far starts.
 
 In Practice and All Jumps, dying returns the player to the spot they saved, not to these checkpoints. All Jumps wins are still checked the same way.
 

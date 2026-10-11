@@ -38,6 +38,64 @@ The messages are in `webhooks` in `Config > Chat`:
 
 Placeholders: `{PlayerName}`, `{EndingName}`, `{DifficultyEmoji}`, `{Time}`, `{BoostList}`, and `{TowerCount}` in rush messages. Posts never ping anyone. A missing secret is one warning in the Output.
 
+## Far Messages
+
+When a run ends far up a hard tower, Discord hears about it, as in EToH:
+
+> **kiel** died VERY far in **ToTDS [emoji]** after `12:34.56`
+
+They go to Discord only, never to the chat, and they're **off** until you set them up:
+
+1. Turn on **Allow HTTP Requests**, as above.
+2. Add a secret named `FAR_WEBHOOK` holding a Discord webhook URL: a channel of its own, or the same URL as a win channel.
+3. Set `farMessages.enabled = true` in `Config > Chat`.
+
+### Which runs post
+
+A run posts when it ends without a win: dying, restarting, the Exit button, leaving the game, or switching to Practice. Each has its word in `actions` (`died`, `restarted`, `exited`, `quit`, `practiced`). Set one to `""` to stop it posting; switching to All Jumps or back to Normal is off to begin with.
+
+- Practice runs never post. All Jumps runs post with `allJumpsRuns = true`, and boosted runs post unless `boostedRuns = false`.
+- Nothing posts for a run that got far faster than the tower's [minimum time](./tower-setup.md#minimum-time) allows for that much of it.
+- One player posts at most once every 30 seconds, and nobody "quits far" when the server shuts down.
+
+### How far is far
+
+A tower's **set** lists its levels in order. Each has a `word` and an `at`: `at = 0.7` is reached once the run has passed 70% of the tower's checkpoints. The furthest level reached is the one posted, and a tower without checkpoints never posts.
+
+| Set | Levels |
+| :-- | :-- |
+| `Catastrophic` | far |
+| `Horrific+` | far (70%), VERY far (90%) |
+| `Citadel` | pretty far, VERY far |
+| `Rediculously Long` | far, VERY far, EXTREMELY FAR |
+| `Inhumanely Long` | far, VERY far, EXTREMELY FAR, REDICULOUSLY FAR |
+| `Impossibly Long` | slightly far, then the four above |
+| `CoV` | Impossibly Long's, then INHUMANELY FAR |
+
+Change the words and the `at`s freely, or add sets of your own. Which set a tower uses is the first of:
+
+1. **Its own.** `farMessages = "Impossibly Long"` on its entry in `Config > Towers`, or a `FarMessages` attribute on the tower. `"None"` turns it off.
+2. **Its type's**, from `byType` (citadels use `Citadel`), if the tower is hard enough to post at all.
+3. **Its difficulty's**, from `byDifficulty`. Each difficulty listed covers itself and everything harder, up to the next one listed, so `Catastrophic` and `Horrific` cover Catastrophic and up. Easier towers post nothing.
+
+So a long tower only needs its set named on its entry:
+
+```luau
+CoV = { name = "Citadel of Void", difficulty = 13.6, area = "Zone9", type = "Citadel", farMessages = "CoV" },
+```
+
+### Marking checkpoints
+
+To put the levels at exact spots, like EToH's hand-placed triggers, give checkpoints in `ServerStorage > TowerCheckpoints` a `FarMessage` string attribute naming a level of the tower's set. `FarMessage = "VERY far"` on checkpoint `12` means passing checkpoint 12 is VERY far.
+
+A tower with any marks uses only its marks, so a level nobody marked is never reached there. The Output warns about a mark naming a level its tower's set doesn't have.
+
+### The message
+
+`message` in `farMessages` takes `{Player}`, `{Action}`, `{Far}`, `{Tower}` (the acronym), `{TowerName}`, `{Difficulty}`, `{DifficultyEmoji}`, `{Time}`, `{Progress}` (such as `72%`) and `{Checkpoint}` (such as `7/10`). `{Player}` follows `useDisplayName` in `Config > Project`.
+
+For your own logging, every run ending is also the [`runEnded` event](./hooks.md).
+
 ## Failed Win Checks
 
 A player who fails a win check is kicked, and the server sees a random line from `antiCheatKickMessages` in `Config > Chat`.
