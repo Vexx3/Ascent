@@ -173,7 +173,7 @@ One of the two shows, by the player's **Detailed Progress Meter** setting, or al
 
 A crowded ring narrows its bars to fit. Only normal wins count, as in the Completions menu and the Area locks: an All Jumps win shows yellow but adds nothing. Tower rushes and [extended](./ui-and-hud.md#extended-completions) towers don't count. `TotalBeaten` counts every Area except extended ones; an extended Area's own card still counts its towers.
 
-At 100% the bars turn rainbow, as the Completions menu's do: `Fill`, or every `Status` in the detailed view, once an Area is fully beaten, and the `TotalBeaten` text once every tower is. `rainbowSpeed` in `Config > Visuals.completions` sets how fast it cycles.
+Once an Area is fully beaten its bar turns rainbow, as the Completions menu's do: `Fill`, or every `Status` in the detailed view. `rainbowSpeed` in `Config > Visuals.completions` sets how fast it cycles.
 
 `SettingsButton` opens `Settings`. Its rows can sit anywhere inside it; the shipped screen keeps them in `OptionList`. The panel, its button and each row are optional: delete what you don't want, and a panel left with nothing to change hides its button.
 
