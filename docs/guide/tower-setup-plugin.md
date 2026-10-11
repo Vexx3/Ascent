@@ -67,6 +67,7 @@ The size **Add Checkpoint** builds at, kept with the plugin rather than the plac
 
 - **Checkpoints are in Workspace**: a checkpoint folder in the tower and none in `ServerStorage`. The tower loads with none. **Move to ServerStorage** fixes it.
 - **Two sets of checkpoints**: one in each. The game uses `ServerStorage`'s; delete the other.
+- **Checkpoint far from the tower**: one sits more than 50 studs outside the tower, where nobody climbing it can reach it, so every win is refused as out of order. Show the checkpoints and drag it onto the route. The server's Output names it too.
 
 ### Adding a tower to the catalogue
 

@@ -32,7 +32,7 @@ It has no folder in `ServerStorage > TowerCheckpoints`, or the folder is empty. 
 
 The server kicks a player for one of three reasons:
 
-- **"Completed the tower out of order"**: they missed a checkpoint. Usually a checkpoint too small to walk through; make it wide and thin across the whole path.
+- **"Completed the tower out of order"**: they missed a checkpoint. Usually a checkpoint too small to walk through; make it wide and thin across the whole path. If it happens to everyone, a checkpoint may be nowhere near the tower: the Output and the plugin's Check window name one that is.
 - **"Completed the tower too early"**: faster than `MinimumTime`. If honest players hit it, lower it.
 - **"Touched the winpad of a tower you're not in"**: the winpad is in another tower's folder.
 
