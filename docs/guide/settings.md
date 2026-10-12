@@ -15,6 +15,8 @@ Players change their settings in the in-game Settings menu, and their choices ar
 | `keyDisplayLimit` | Gameplay | `5`, `0`–`20` | How many recent key presses the key display shows. `0` hides it. |
 | `alignmentButtons` | Gameplay | `false` | Camera alignment arrows. Touch devices only. |
 | `emoteButtons` | Gameplay | `false` | The on-screen emote picker. The emote keys work either way. |
+| `uiScale` | Visual | `1`, `0.5`–`1.5` in steps of `0.05` | How big the menu and the tower HUD are drawn. See [The Player's Own Settings](./styling.md#the-player-s-own-settings). |
+| `reduceMotion` | Visual | `false` | Menus open and toasts arrive without sliding, and hover animations stop. Roblox's own Reduce Motion does the same either way. |
 | `fpsDisplay` | Visual | `false` | The FPS counter in the topbar. |
 | `hideTimer` | Visual | `false` | Hides the run timer. Clicking the timer toggles it too. |
 | `hideUI` | Visual | `false` | Fades the menu buttons while climbing. See [Hide UI](./ui-and-hud.md#hide-ui). |

@@ -1,6 +1,6 @@
 # UI & HUD
 
-The screens are in `StarterGui` and are yours to lay out. See [The Menus](./studio-structure.md#the-menus) for the names the kit looks for.
+The screens are in `StarterGui` and are yours to lay out. See [The Menus](./studio-structure.md#the-menus) for the names the kit looks for, and [Styling the Menu & HUD](./styling.md) for their colours, fonts and sizes.
 
 ## HUD
 

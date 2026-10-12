@@ -152,7 +152,7 @@ MenusContainer
         PlayerThumb
       InfoLabel
   SettingsMenu
-    SettingsSidebar
+    SettingsTabs
       PSButton
     PSFrame
       ToggleServerCode
@@ -175,7 +175,7 @@ Roblox can't tell whether a friend is in a personal server. Joining one sends th
 Set the `PersonalServers` pass's `id` in `Config > GamePasses` to sell them.
 
 - A pass owner presses an Area's `PSButton` to make a personal server there and go to it. It starts private.
-- In it, the owner's `SettingsMenu > SettingsSidebar > PSButton` opens the controls. `ToggleServerCode` creates a share code, shown in `CodeBox`. `RegenButton` replaces it. Turning the toggle off cancels it.
+- In it, the owner's `SettingsMenu > SettingsTabs > PSButton` opens the controls. `ToggleServerCode` creates a share code, shown in `CodeBox`. `RegenButton` replaces it. Turning the toggle off cancels it.
 - Anyone can join with the code through `PSMenu`, pass or not.
 - When the owner leaves, the server closes after `ownerLeaveGracePeriod` and guests go to the hub. They're warned when the owner leaves, and told if the owner comes back in time, which cancels the closing.
 - **Rejoin** in settings returns a player to the same personal server.

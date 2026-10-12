@@ -164,6 +164,8 @@ What a **new** player's settings start as. Players' own choices are saved, so th
 | `hideBubbleChat` | `false` |
 | `alignmentDot` | `false` |
 | `audioVisualizer` | `"Off"` |
+| `reduceMotion` | `false` |
+| `uiScale` | `1` |
 | `musicVolume` | `0.5` |
 | `musicVolumeSteps` | `{ 0, 25, 50, 75, 100, 125, 150, 170, 200 }` |
 | `checkpointCamera` | `true` |
@@ -182,15 +184,14 @@ Your staff roles (by user ID or group rank), the lowest role each group of comma
 
 ## Visuals
 
-Colours, sounds and timings for the kit's own UI.
+Colours, sounds and timings for the kit's own UI. The menu's and the HUD's own colours, fonts and sizes are in `ReplicatedStorage > Design` instead: see [Styling the Menu & HUD](./styling.md).
 
 | Section | Controls |
 | :-- | :-- |
 | `completions` | Completions menu colours, and how fast a 100% bar cycles. |
 | `towerSigns` | Portal signs and chart lines on the towers. |
 | `towerRush` | The tower list during a rush. |
-| `menu` | Selected tabs, toggles, equipped cosmetics, shop text. |
-| `shopBuyButton` | The Buy button, affordable and not. |
+| `menu` | The hub's sliding toggles, on (`toggleOn`) and off (`toggleOff`). |
 | `allJumpsMarker` | The All Jumps checkpoint block's colour and material. |
 | `timing` | Animation lengths, how long notifications stay up, how fast the loading dots move (`loadingDots`), and Hide UI's fades (`hideUIFadeIn`, `hideUIFadeOut`, `hideUILinger`, `hideUITapLinger`). |
 | `audioVisualizerStrength` | How hard each Audio Visualiser option shakes the camera. |

@@ -78,6 +78,7 @@ export default defineConfig({
           text: 'Players',
           items: [
             { text: 'UI & HUD', link: '/guide/ui-and-hud' },
+            { text: 'Styling the Menu & HUD', link: '/guide/styling' },
             { text: 'Settings', link: '/guide/settings' },
             { text: 'Chat', link: '/guide/chat' },
             { text: 'Announcements & Webhooks', link: '/guide/announcements-webhooks' },
