@@ -1,19 +1,24 @@
 # Player Elo
 
-Elo measures what a player has beaten. It only goes up: dying, leaving or losing costs nothing, and beating a tower again adds nothing.
+Elo is one number that shows how good a player is, based on the hardest towers
+they've beaten. It only ever goes up: dying, leaving or failing a run costs
+nothing, and beating a tower again adds nothing.
 
-**One number covers both modes.** An All Jumps win counts for a quarter of the same tower beaten normally. A tower counts once, for the better of the two.
+**One number covers both modes.** An All Jumps win is worth a quarter of a Normal
+win of the same tower, and each tower counts once, for whichever is worth more.
 
-## How It's Worked Out
+Elo ships off. To turn it on, set `enabled = true` in `Config > Elo`.
 
-Each distinct tower beaten is worth points, times its mode's multiplier. Towers then count hardest first, each for `falloff` of the one before it:
+## How it's worked out
+
+Every tower a player has beaten is worth some points. Harder towers are worth
+**much** more, because the points multiply with each step up in difficulty:
 
 ```text
-points = scale × difficultyGrowth ^ (rating above the first difficulty)
-elo    = hardest + second × 0.95 + third × 0.95² + ...
+points = scale × difficultyGrowth ^ (difficulties above the first)
 ```
 
-Points **multiply** per difficulty, so harder towers are worth far more. At the default `1.8`:
+With the defaults (`scale = 10`, `difficultyGrowth = 1.8`):
 
 | Difficulty | | Points |
 | --: | :-- | --: |
@@ -22,11 +27,20 @@ Points **multiply** per difficulty, so harder towers are worth far more. At the 
 | 8 | Insane | 612 |
 | 11 | Catastrophic | 3,570 |
 
-One Catastrophic is worth 357 Easy towers.
+One Catastrophic is worth as much as 357 Easy towers.
 
-**Beating more always adds, but it can't replace beating harder.** With `falloff` at `0.95`, no pile of towers adds up to more than 20 times your hardest:
+The player's towers are then added up, hardest first, with each one counting a
+little less than the one before (`falloff`):
 
-| Profile | Elo | As a plain sum |
+```text
+elo = hardest + second × 0.95 + third × 0.95² + ...
+```
+
+So beating more towers always adds something, but no pile of easy towers can
+outweigh a much harder one. With `falloff = 0.95`, a player's Elo can never be
+more than 20 times what their hardest tower is worth:
+
+| Player has beaten | Elo | A plain sum would be |
 | :-- | --: | --: |
 | 100 Easy | 199 | 1,000 |
 | 200 Challenging | 2,099 | 20,995 |
@@ -34,56 +48,70 @@ One Catastrophic is worth 357 Easy towers.
 | 1 Catastrophic and 10 Insane | 8,238 | 9,693 |
 | 30 Insane | 9,616 | 18,367 |
 
-So a player who has beaten 200 Challenging towers doesn't outrank someone with a Catastrophic, but 30 Insanes still show real depth.
-
 ## Settings
 
-`Config > Elo`:
+These are in `Config > Elo`:
 
-| Setting | Default | Effect |
+| Setting | Default | What it does |
 | :-- | :-- | :-- |
-| `points.scale` | `10` | What a tower on the first difficulty is worth. |
-| `points.difficultyGrowth` | `1.8` | Multiplier per difficulty. Higher rewards only your hardest towers; `1` is flat. |
-| `points.falloff` | `0.95` | What each tower counts for against the next harder one. `1` is a plain sum; `0` counts only the hardest. Left out, it's `1`. |
-| `leaderstat.enabled` | `false` | Show Elo on the player list. |
-| `leaderstat.name` | `"Elo"` | That column's name. |
-| `normal.enabled`, `allJumps.enabled` | `true` | Whether that mode counts. |
-| `normal.multiplier` | `1` | What a normal win is worth. |
-| `allJumps.multiplier` | `0.25` | What an All Jumps win is worth. `0` stops it counting. |
-| `normal.countRushClears`, `allJumps.countRushClears` | `true` | Whether towers beaten in a rush count. |
+| `enabled` | `false` | Elo as a whole. Off, wins are worth no Elo, and its Leaderboards tab, Completions stat and player list stat are hidden. |
+| `points.scale` | `10` | What a tower of the first difficulty is worth. |
+| `points.difficultyGrowth` | `1.8` | How much more each difficulty is worth than the one below. Higher makes only the hardest towers matter. `1` makes every tower worth the same. |
+| `points.falloff` | `0.95` | How much each tower counts compared with the next harder one. `1` adds them all up in full, and `0` counts only the hardest. If you leave it out, it's `1`. |
+| `leaderstat.enabled` | `false` | Shows Elo in the player list. |
+| `leaderstat.name` | `"Elo"` | The name of that player list column. |
+| `normal.enabled`, `allJumps.enabled` | `true` | Whether wins in that mode count. |
+| `normal.multiplier` | `1` | What a Normal win is worth. |
+| `allJumps.multiplier` | `0.25` | What an All Jumps win is worth. `0` stops them counting. |
+| `normal.countRushClears`, `allJumps.countRushClears` | `true` | Whether towers beaten during a rush count. |
 
-Turning a mode off keeps what players earned; turning it on again restores it.
+Turning a mode off doesn't take away what players earned. Turning it back on
+brings it back.
 
-## Where Players See It
+## Where players see it
 
-- **The player list**, with `leaderstat.enabled`.
-- **The Completions menu**, with the player's global rank: `1,240 (#7)`.
-- **A global leaderboard**, `Elo`, ranking everyone who has played. See [Leaderboards](./player-data.md#leaderboards).
-- **Locked Areas** can ask for a minimum Elo. See [Locking an Area behind Elo](./worlds-personal-servers.md#locking-an-area-behind-elo).
+- **The player list**, if `leaderstat.enabled` is on.
+- **The Completions menu**, with the player's rank across the whole game, such as
+  `1,240 (#7)`.
+- **The Leaderboards menu**, on the Elo board. See
+  [Leaderboards](./player-data.md#leaderboards).
+- **Locked Areas**, which can ask for a minimum Elo. See
+  [Behind Elo](./worlds-personal-servers.md#behind-elo).
 
-## Which Wins Count
+## Which wins count
 
-A win counts once the server has accepted it (checkpoints and minimum time). Wins with a boost item, a Studio test tool, or in Practice don't earn Elo, though a later clean win of the same tower does. Each tower of a rush counts on its own.
+A win counts once the server has accepted it, after checking checkpoints and the
+minimum time. Wins in Practice, wins using a boost item, and wins using a Studio
+test tool don't earn Elo, but a later clean win of the same tower does. Each tower
+in a rush counts on its own.
 
-## Changing Difficulties Later
+## Modifiers
 
-Elo is never stored as a running total: it's worked out again from the towers each player has beaten every time they join. So rebalancing needs nothing else from you. Change a tower's difficulty, or `scale`, `difficultyGrowth`, `falloff` or a multiplier, and every player's Elo moves to match the next time they join. Area locks, the Completions menu and announcements use it in every server that runs the new Config.
+A tower beaten with [modifiers](./modifiers.md) is worth more or less, depending on
+the set. Its points are multiplied by 1 plus each modifier's `elo`, kept between
+`elo.min` and `elo.max` in `Config > Modifiers`.
 
-Two things lag behind:
+Each tower counts once, at the best set it's been beaten with. A win with a
+modifier that has `counts = false` earns no Elo.
 
-- **The global Elo board** shows each player's Elo from their last visit, so it catches up as players come back.
-- **Tickets already paid** stay paid. A tower's new ticket reward applies from its next win.
+## Changing difficulties later
 
-Publish the change to every place at once, or servers will disagree about what a tower is worth.
+A player's Elo is worked out again every time they join, so if you change a
+tower's difficulty or a setting here, everyone's Elo follows. Publish the change to
+every place at the same time.
 
-A tower removed from `Config > Towers` stops counting, but players keep the record; putting it back restores its points.
+- The Elo leaderboard catches up as players come back.
+- Tickets that were already paid stay paid.
+- A tower you remove from `Config > Towers` stops counting. Putting it back brings
+  its points back.
 
-## In Code
+## Reading it from a script
 
 ```luau
+local ServerScriptService = game:GetService("ServerScriptService")
 local EloAwards = require(ServerScriptService.Server.Accounts.EloAwards)
 
-local result = EloAwards.get(player) -- nil until their data loads
+local result = EloAwards.get(player) -- nil until the player's data has loaded
 if result ~= nil then
 	print(result.score)
 end

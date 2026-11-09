@@ -1,17 +1,19 @@
 # Tickets & Shop
 
-Players earn tickets by beating towers and spend them in the ticket shop on Tools, Trails and Auras. Both are set up under `Config > Economy`.
+Players earn tickets by beating towers, and spend them in the ticket shop on
+tools, trails and auras. Both are set up in `Config > Economy`.
 
-## Turning It Off
+## Turning them off
 
-| Field | Default | Turns off |
+| Setting | Default | Set to `false` to turn off |
 | :-- | :-- | :-- |
-| `enabled.tickets` | `true` | Tickets, the counter, and the shop with them. |
-| `enabled.shop` | `true` | Just the shop. Tickets are still earned. |
+| `enabled.tickets` | `true` | Tickets, the ticket counter and the shop. |
+| `enabled.shop` | `true` | Just the shop. Players still earn tickets. |
 
-Turning something off removes its menu and stops the server from accepting it. Nothing saved is lost; turning it back on restores everything.
+Turning something off removes its menu and the server stops accepting it. Nothing
+saved is lost, so turning it back on gives players everything back.
 
-## Earning Tickets
+## Earning tickets
 
 ```luau
 tickets = {
@@ -24,16 +26,17 @@ tickets = {
 },
 ```
 
-| Field | Default | Purpose |
+| Setting | Default | What it does |
 | :-- | :-- | :-- |
-| `cooldownDays` | `7` | Days before the same tower pays the same player again. `0` for no cooldown. |
-| `rewards` | — | Tickets per **difficulty name**. `0`, or leaving one out, pays nothing. |
-| `perTower[x].multiplier` | `1` | Scales one tower's reward. |
-| `perTower[x].allowRebeats` | `false` | That tower pays on every win, ignoring the cooldown. |
+| `cooldownDays` | `7` | Days before the same tower pays the same player again. `0` means no cooldown. |
+| `rewards` | | Tickets for each **difficulty name**. A difficulty that's `0` or left out pays nothing. |
+| `perTower[acronym].multiplier` | `1` | Multiplies one tower's reward. |
+| `perTower[acronym].allowRebeats` | `false` | That tower pays every time it's beaten, ignoring the cooldown. |
 
-A tower can carry these itself, as the `TicketMultiplier` and `AllowRebeats` attributes, which win over `perTower`.
+You can also set these on the tower itself with the `TicketMultiplier` and
+`AllowRebeats` attributes. The attributes win over `perTower`.
 
-The shipped rewards:
+The kit ships with these rewards:
 
 | Easy | Medium | Hard | Difficult | Challenging | Intense | Remorseless | Insane | Extreme | Terrifying | Catastrophic |
 | --: | --: | --: | --: | --: | --: | --: | --: | --: | --: | --: |
@@ -43,26 +46,37 @@ Horrific, Unreal and Nil pay `0`.
 
 ### When a win pays
 
-A win pays when it is in Normal mode, on the tower's main winpad, with no boost item used, and the tower is not on cooldown. Practice, All Jumps and tower rush wins don't pay.
+A win pays tickets when **all** of these are true:
 
-### How much it pays
+- It's a Normal mode win.
+- It's on the tower's main winpad, not a side ending.
+- No boost item was used.
+- The tower's difficulty has a reward in `rewards`.
+- The tower isn't on cooldown for that player.
+
+Practice, All Jumps and tower rush wins never pay tickets.
+
+While a tower is on cooldown, its details in Completions show **Ticket Cooldown**
+with the time left, such as `5d 21h 1m 46s`. The words are `ticketCooldown` in
+the `completions` group of `Config > Messages`.
+
+### How much a win pays
 
 ```text
 rewards[difficulty]
-  x  tower type's ticketMultiplier      Citadel x2, Steeple x0.5
-  x  the tower's own multiplier
-  =  rounded down
-  x  the player's game pass multiplier
-  =  rounded down again
+  × the tower type's ticketMultiplier      (Citadel ×2, Steeple ×0.5)
+  × the tower's own multiplier
+  = rounded down
+  × the player's game pass multiplier      (such as VIP)
+  = rounded down again
 ```
 
-**The tower type is easy to forget**: an Insane Citadel pays 500, not 250.
+**Don't forget the tower type.** An Insane Citadel pays 500 tickets, not 250.
 
-Every ticket earned and spent shows up in the Creator Dashboard's economy analytics, tagged with the Area it happened in. Admin grants aren't counted.
+## Add a shop item
 
-## Add An Item
-
-Each shop item is one entry under `shop.items`, keyed by an ID that is saved when someone buys it, so never rename it after release:
+Each item is one entry in `shop.items`. Its key is an ID that's saved when someone
+buys the item, so don't rename it after release:
 
 ```luau
 GravityCoil = {
@@ -75,28 +89,31 @@ GravityCoil = {
 },
 ```
 
-| Field | Purpose |
+| Setting | What it does |
 | :-- | :-- |
-| `name` | What players see. |
-| `description` | The text in `InfoModal`. |
-| `price` | Whole-number ticket cost. |
-| `category` | `Items`, `Trails` or `Auras`. |
-| `rarity` | `Uncommon`, `Rare`, `Epic`, `Legendary` or `Mythic`. Picks its colour from `rarityColors`. |
-| `icon` | A Roblox image. An `Items` entry shows its Tool's own icon, so it only needs one if the Tool has none. Trails and Auras need one. |
-| `template` | For `Items`: the Tool's name in `ServerStorage > TicketShopItems > Tools`. Defaults to `name`. |
-| `featuredOnly` | For `Items`: listed only on the Featured page, never discounted. |
+| `name` | The item's name, which players see. |
+| `description` | The text shown when a player opens the item. |
+| `price` | What it costs, in whole tickets. |
+| `category` | `"Items"`, `"Trails"` or `"Auras"`. |
+| `rarity` | `"Uncommon"`, `"Rare"`, `"Epic"`, `"Legendary"` or `"Mythic"`. Its colour comes from `rarityColors`. |
+| `icon` | A Roblox image ID. An `Items` entry uses its Tool's own icon, so it only needs one if the Tool has none. Trails and auras always need one. |
+| `template` | For `Items`: the name of the Tool in `ServerStorage > TicketShopItems > Tools`. Defaults to `name`. |
+| `featuredOnly` | For `Items`: only sold on the Featured page, and never discounted. |
 
 What a purchase gives:
 
-- `Items`: the Tool, permanently.
-- `Trails` / `Auras`: unlocks the cosmetic **with the same ID** under `Economy > cosmetics`. It is equipped from the Cosmetics menu.
+- An `Items` purchase gives the Tool, forever.
+- A `Trails` or `Auras` purchase unlocks the cosmetic **with the same ID** in
+  `Economy > cosmetics`. The player equips it from the Cosmetics menu.
 
-A purchase is charged once, however many times it is clicked, and an owned item can't be bought again.
+A purchase is only charged once, however many times the button is clicked, and
+an item a player owns can't be bought again.
 
-## Featured Rotation
+## Daily items
 
 ```luau
 featured = {
+	enabled = false,
 	refreshMinutes = 60,
 	refreshWarning = 30,
 	itemCount = 4,
@@ -105,47 +122,18 @@ featured = {
 },
 ```
 
-Every server shows the same featured items and changes them at the same time. Featured items are `discountPercent` off (`0` for none, at most 90, never below 1 ticket). Players are warned `refreshWarning` seconds before the change (`0` for no warning); the words are in `Config > Messages.shopRotation`.
+Daily items ship off. Set `enabled = true` to add them to the top of the Featured
+page. Off, the Featured page shows only items marked `featuredOnly` and your game
+passes.
 
-## The Shop Menu
+The row shows `itemCount` items at `discountPercent` off (`0` for no
+discount, `90` at most). Every server shows the same items, and they change every
+`refreshMinutes`.
 
-```text
-ShopMenu
-  InfoModal
-    InfoName
-    InfoPrice
-    DescriptionFrame
-      Description
-      Rarity
-      Type
-    Options
-      Purchase
-      Preview          <- optional
-      Cancel
-  AllList
-    TrailsList
-      Template
-    AurasList
-      Template
-    ItemsList
-      Template
-  FeaturedList
-    CountdownFrame
-      Fill
-      CountdownLabel
-    FeatureList
-      Template
-    ItemsList
-      Template
-    GamepassList
-      Template         <- an ImageLabel
-        NameLabel
-        BuyButton
-```
+Players are warned `refreshWarning` seconds before the items change (`0` for no
+warning). The warning's text is the `shopRotation` group in `Config > Messages`.
 
-`FeaturedButton` and `AllButton`, anywhere in `ShopMenu`, switch between the two lists. `Preview` shows only for a trail or aura; see [Previewing a cosmetic](./cosmetics.md#previewing-a-cosmetic). `GamepassList` lists your [game passes](./game-passes.md).
-
-Assets:
+## Where items go
 
 ```text
 ServerStorage
@@ -157,11 +145,14 @@ ServerStorage
    └─ Auras
 ```
 
+The shop's **Preview** button only shows for a trail or aura. See
+[Previewing a cosmetic](./cosmetics.md#previewing-a-cosmetic).
+
 ## Troubleshooting
 
 | Problem | Fix |
 | :-- | :-- |
-| An item is missing | Check its `category` is spelled exactly. |
-| A Tool purchase fails | Match `template` to a Tool in `ServerStorage > TicketShopItems > Tools`. |
-| A cosmetic purchase fails | Give the shop item and the cosmetic the same ID. |
-| The last item in a list is cut off | Give the list a `UIListLayout` or `UIGridLayout` and set its `AutomaticCanvasSize`. |
+| An item doesn't show up | Check its `category` is spelled exactly right. |
+| Buying a tool fails | Make `template` match a Tool in `ServerStorage > TicketShopItems > Tools`. |
+| Buying a trail or aura fails | Give the shop item and the cosmetic the same ID. |
+| The last item in a list is cut off | Give the list a `UIListLayout` or `UIGridLayout`, and set its `AutomaticCanvasSize`. |

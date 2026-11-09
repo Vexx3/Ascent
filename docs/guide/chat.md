@@ -1,10 +1,15 @@
 # Chat
 
-`Config > Chat` holds chat tags (`tags`) and the win messages players read (`messages`).
+`Config > Chat` holds chat tags (`tags`) and the win messages players see in chat
+(`messages`).
 
-## Tags
+## Chat tags
 
-A coloured prefix before a player's name, like `[Owner]`. Define each in `tags.styles`; the key is the name you hand it out by, `text` is what players see:
+A chat tag is a coloured label in front of a player's name, like `[Owner]`.
+
+### 1. Make the tag
+
+Add it to `tags.styles`. The key is the tag's ID, and `text` is what players see:
 
 ```luau
 styles = {
@@ -13,9 +18,7 @@ styles = {
 },
 ```
 
-### Gradients
-
-Use `colors` instead of `color` and the tag fades across its letters:
+For a gradient, use `colors` instead of `color`:
 
 ```luau
 Legend = {
@@ -24,11 +27,21 @@ Legend = {
 },
 ```
 
-Add as many colours as you like; they spread evenly from the first letter to the last. Only the tag is coloured; the name keeps its usual colour. Keep a gradient tag's text plain (no `<b>` or other rich text). Tags show in the chat window, not in bubbles.
+You can list as many colours as you like. They're spread evenly from the first
+letter to the last. Only the tag is coloured. The player's name keeps its normal
+colour. Don't put rich text such as `<b>` in a gradient tag.
 
-### Hand them out
+Tags show in the chat window, not in chat bubbles.
 
-A player gets the **first** of these that applies:
+::: warning Roblox's new chat
+From February 2027, Roblox turns on its own platform chat in every game, and
+games can't add their own tags to it any more. Your tags stop showing then, and
+Roblox's role badges take their place.
+:::
+
+### 2. Give it to players
+
+A player gets the **first** of these that applies to them:
 
 1. **By user ID**, in `tags.byUser`:
 
@@ -36,7 +49,8 @@ A player gets the **first** of these that applies:
    byUser = { [123456789] = "Owner" },
    ```
 
-2. **By game pass**: a VIP pass's `chatTag` in `Config > GamePasses`. It appears as soon as the pass is bought.
+2. **By game pass**: the VIP pass's `chatTag` in `Config > GamePasses`. The tag
+   appears as soon as the pass is bought.
 3. **By group rank**, in `tags.byGroup`:
 
    ```luau
@@ -45,23 +59,32 @@ A player gets the **first** of these that applies:
    },
    ```
 
-A name that doesn't exist in `tags.styles` is reported in the Output.
+If you give out a tag that isn't in `tags.styles`, the Output says so.
 
 ## Win messages
 
-In `messages`:
+When a player beats a tower, a message is posted in chat. The messages are in
+`messages`:
 
-| Setting | Purpose |
+| Setting | What it does |
 | :-- | :-- |
-| `winMessage` | A Normal win. |
-| `allJumpsWinMessage` | An All Jumps win. |
-| `boostsUsedMessage` | An extra line when boosts were used. `""` turns it off. |
-| `channel` | The chat channel they appear in. Default `RBXSystem`. |
-| `fontFace`, `fontSize` | Their font. |
-| `fancyFontFace`, `fancyFontSize` | The font for difficulties with `fancyFont = true`. |
+| `winMessage` | The message for a Normal win. |
+| `allJumpsWinMessage` | The message for an All Jumps win. |
+| `boostsUsedMessage` | An extra line listing the boosts used. `""` turns it off. |
+| `modifiersMessage` | An extra line listing the run's [modifiers](./modifiers.md). `""` turns it off. |
+| `channel` | The chat channel the messages go in. Defaults to `RBXSystem`. |
+| `fontFace`, `fontSize` | The messages' font. |
+| `fancyFontFace`, `fancyFontSize` | The font used for difficulties with `fancyFont = true`. |
 
-Placeholders: `{PlayerName}`, `{EndingName}`, `{Time}`, and `{BoostList}` in `boostsUsedMessage`.
+You can use these in the messages, and the game fills them in: `{PlayerName}`,
+`{EndingName}` and `{Time}`, plus `{BoostList}` in `boostsUsedMessage` and
+`{ModifierList}` in `modifiersMessage`.
 
-Each message starts with `[SERVER]:`, or `[GLOBAL]:` for a win announced to every server. Those prefixes are in `Config > Messages` under `wins`. Which difficulties are announced to every server is set in `Config > Towers`; see [Announcements & Webhooks](./announcements-webhooks.md).
+Each message starts with `[SERVER]:`, or `[GLOBAL]:` when the win is announced to
+every server. You can change those in the `wins` group of `Config > Messages`.
+Which difficulties are announced to every server is set in `Config > Towers`. See
+[Announcements & Webhooks](./announcements-webhooks.md).
 
-[Far messages](./announcements-webhooks.md#far-messages) use the same channel and `[SERVER]:` prefix, so changing those changes them too. They always use `fontFace` and `fontSize`, never the fancy font.
+[Far messages](./announcements-webhooks.md#far-messages) use the same channel and
+`[SERVER]:` tag, so changing those changes them too. They always use `fontFace` and
+`fontSize`, never the fancy font.

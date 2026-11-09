@@ -1,81 +1,114 @@
-# Building A Tower
+# Building a Tower
 
-A tower is spread across three places, all using its acronym:
+A tower is made of three pieces in three places, all named with its acronym:
 
 ```text
 Workspace
 └─ Towers
-   └─ ToH           -- Folder or Model, named with the acronym
-      ├─ Spawn      -- BasePart where the run starts (or SpawnLocation)
-      ├─ WinPad     -- BasePart that finishes it
-      └─ Frames     -- your build, named anything
+   └─ ToH            -- a Folder or Model named with the acronym
+      ├─ Spawn       -- where the run starts (a part, or a SpawnLocation)
+      ├─ WinPad      -- the part that wins the tower
+      └─ Frames      -- your build, named however you like
 ServerStorage
 └─ TowerCheckpoints
    └─ ToH
-      ├─ 1          -- BaseParts, numbered up the climb
+      ├─ 1           -- parts, numbered from the bottom of the climb
       ├─ 2
       └─ 3
 Config > Towers
 └─ ToH = { name = "Tower of Hell", difficulty = 5.33, area = "Ring1" },
 ```
 
-**Checkpoints go in ServerStorage, not in the tower.** That's the step people miss.
+**Checkpoints go in ServerStorage, not inside the tower.** This is the step people
+miss most.
 
-The [Tower Setup plugin](./tower-setup-plugin.md) builds this for you and tells you what's missing.
+| A tower in `Workspace > Towers` | Its checkpoints in `ServerStorage > TowerCheckpoints` |
+| :-- | :-- |
+| ![A tower folder, with its Spawn and WinPad marked](/images/explorer-tower.png){width=300} | ![A checkpoint folder named after its tower, holding parts named 1, 2 and 3](/images/explorer-checkpoints.png){width=300} |
 
-## Checkpoints Are The Anti-Cheat
+The [Ascent Setup plugin](./tower-setup-plugin.md) can build all of this for you
+and tells you what's missing.
 
-Checkpoints aren't respawn points. They prove a player really climbed. The server watches for each player passing through the next checkpoint in order, and the winpad only counts if they passed every one:
+## Checkpoints are the anti-cheat
+
+In Ascent, checkpoints aren't respawn points. They're how the server knows a
+player really climbed. The winpad only counts if the player passed through every
+checkpoint, in order:
 
 ```text
-1  ->  2  ->  3  ->  4  ->  WinPad     accepted
+1  ->  2  ->  3  ->  4  ->  WinPad     the win counts
 1  ->  2  ->  ....  ->  WinPad         kicked: "Completed the tower out of order"
 ```
 
-- Number them `1`, `2`, `3` with no gaps, in the order players reach them. **Renumber by height** in Tower Setup does it for you.
-- Make them wide, thin, invisible parts across the whole path, with `CanCollide` off, so nobody can get past one without going through it.
-- **A tower with no checkpoints has no check at all.** Anyone who reaches the winpad wins.
-- **They check the order, not the speed.** The server looks every `checkpointInterval` (a quarter of a second) and counts a checkpoint the player's path crossed since its last look, so a fast fall still counts. That means an exploiter teleporting up the tower in short hops, up to 200 studs at a time, passes them too. The [minimum time](#minimum-time) is what stops that, so give every tower one.
-- **They also measure how far a run got**, for [far messages](./announcements-webhooks.md#far-messages). A `FarMessage` attribute on a checkpoint marks where a level of far starts.
+How to place them:
 
-In Practice and All Jumps, dying returns the player to the spot they saved, not to these checkpoints. All Jumps wins are still checked the same way.
+1. Make each one a wide, thin, invisible part that covers the whole path, with
+   `CanCollide` off. Nobody should be able to get past it without going through it.
+2. Number them `1`, `2`, `3` and so on, with no gaps, in the order players reach
+   them. The plugin's **Renumber by height** does this for you.
+3. Put them in `ServerStorage > TowerCheckpoints > <acronym>`.
 
-## Minimum Time
+Good to know:
 
-`MinimumTime` is the fastest believable run, in seconds. A faster win is refused ("Completed the tower too early"). Set it a little under the fastest honest run. `0` turns it off.
+- **A tower with no checkpoints has no protection.** Anyone who reaches the
+  winpad wins.
+- **Checkpoints check the order, not the speed.** Give every tower a
+  [minimum time](#minimum-time) to catch players who are too fast.
+- Checkpoints are also how the game measures how far a run got, for
+  [far messages](./announcements-webhooks.md#far-messages).
+- All Jumps wins are checked the same way.
 
-## Register The Tower
+## Minimum time
 
-A tower needs **both**:
+The minimum time is the fastest time, in seconds, a real player could beat the
+tower in. A faster win is refused with "Completed the tower too early".
 
-- **Attributes on its folder**, which this place uses. They take effect straight away.
-- **An entry in `Config > Towers`**, which every other place uses: the Completions chart, unlock requirements, and [`recount-badges`](./commands.md).
+Set it as the tower's `MinimumTime` attribute, or as `minimumTime` in its
+`Config > Towers` entry. Pick a little below the fastest honest run you've seen.
+`0` turns the check off.
 
-Without the entry, the tower plays fine in its own place but doesn't exist anywhere else. Tower Setup writes the entry from the attributes with one button.
+## Register the tower
 
-### On the tower (no code)
+A tower needs **both** of these:
 
-| Attribute | Kind | Purpose |
+- **Attributes on the tower** in `Workspace > Towers`. The place the tower is in
+  uses these, and they work as soon as you set them.
+- **An entry in `Config > Towers`**. Every other place uses this, for the
+  Completions menu, Area unlocks and the [`recount-badges`](./commands.md) command.
+
+Without the Config entry, the tower plays fine in its own place but doesn't exist
+anywhere else. The plugin writes the entry from the attributes with one button.
+
+### Attributes on the tower
+
+Select the tower and add these in the Properties window, under **Attributes**:
+
+| Attribute | Type | What it does |
 | :-- | :-- | :-- |
-| `TowerName` | String | The name players see. |
-| `Difficulty` | Number | The rating, such as `5.33`. |
-| `Area` | String | The Area `id` it stands in, such as `Ring1`. |
-| `BadgeID` | Number | Badge for beating it. |
-| `TowerPoints` | Number | Points for beating it. Defaults to `1`. |
-| `AllJumpsPoints` | Number | Points for an All Jumps win. Defaults to `TowerPoints`. |
-| `TowerType` | String | A tower type, such as `Citadel`. |
-| `MinimumTime` | Number | See [Minimum Time](#minimum-time). |
-| `AJBadgeID` | Number | Badge for an All Jumps win. |
-| `TicketMultiplier` | Number | Scales its ticket payout. |
-| `AllowRebeats` | Boolean | Pays tickets on every win, ignoring the cooldown. |
+| `TowerName` | string | The tower's full name, which players see. |
+| `Difficulty` | number | Its difficulty, such as `5.33`. See [Difficulties](./difficulties.md). |
+| `Area` | string | The `id` of the Area it's in, such as `Ring1`. |
+| `BadgeID` | number | A badge for beating it. |
+| `TowerPoints` | number | Points for beating it. Defaults to `1`. |
+| `AllJumpsPoints` | number | Points for beating it in All Jumps. Defaults to `TowerPoints`. |
+| `TowerType` | string | Its tower type, such as `Citadel`. |
+| `MinimumTime` | number | See [Minimum time](#minimum-time). |
+| `AJBadgeID` | number | A badge for beating it in All Jumps. |
+| `TicketMultiplier` | number | Multiplies the tickets it pays. |
+| `AllowRebeats` | boolean | Pays tickets every time it's beaten, ignoring the ticket cooldown. |
+| `Warning` | string or boolean | A warning shown before the climb. See [below](#a-warning-before-climbing). |
 
-The `NoBoosts` **tag** (CollectionService) bans boost items in the tower.
+To ban boost items in the tower, give it the `NoBoosts` **tag** (Properties >
+Tags).
 
 ::: warning Towers from an older kit
-Old towers describe themselves with `StringValue` and `NumberValue` children, which win over attributes. Their `Difficulty` is a name like `"Extreme"`, which reads as `9.00` and overrides the `9.26` in your Config. If a tower shows the wrong sub-difficulty, delete that value. Tower Setup flags it.
+Value objects from an older kit, such as a `Difficulty` StringValue, win over
+attributes. A `Difficulty` of `"Extreme"` reads as exactly `9.00` and overrides
+your Config, so delete it if the tower shows the wrong difficulty. The plugin
+points these out.
 :::
 
-### In `Config > Towers`
+### The entry in Config
 
 ```luau
 towers = {
@@ -83,19 +116,75 @@ towers = {
 },
 ```
 
-See the [Configuration Reference](./configuration.md#towers) for every field. The acronym is saved with every player who beats it, so **never rename it** after release.
+Every setting is listed in the [Configuration Reference](./configuration.md#towers).
+The acronym is saved with every player who beats the tower, so **don't rename it**
+after release.
 
-## What Goes In Code And What Goes On The Tower
+## A warning before climbing
+
+If a tower has flashing lights, loud sounds or anything else a player should know
+about first, you can warn them before they climb. Add `warning` to its entry in
+`Config > Towers`, or a `Warning` attribute on the tower:
+
+```luau
+towers = {
+	ToFL = { name = "Tower of Flashing Lights", difficulty = 6, area = "Ring1", warning = true },
+	ToLS = { name = "Tower of Loud Sounds", difficulty = 4, area = "Ring1", warning = "This tower gets very loud near the top." },
+},
+```
+
+- `true` shows the default warning, `towerWarning.default` in `Config > Messages`.
+  Text shows your own words instead, and `{TowerName}` is replaced with the
+  tower's name.
+- The warning shows every time the player enters the tower, but not when they
+  restart. The timer keeps running while it's up.
+- The player can press **Proceed**, **Exit Tower**, or tick **Don't show again
+  for this tower**, which is saved.
+- It's drawn by `MainMenu > PromptDialog`.
+
+## Signs that change colour
+
+A tower's signs change colour once a player beats it, such as its portal sign and
+its line on a lobby chart. A tower can have as many as you like, and a sign can
+be anything with a colour: a part, a whole model, a Highlight, a light, a text
+label, particles and so on.
+
+1. Select the tower and open **Signs** in the plugin's Towers window.
+2. Select everything that should change colour.
+3. Press **Add selected**.
+
+To do it by hand, put an ObjectValue named `Sign` anywhere in the tower and set
+its `Value` to the thing that should change colour.
+
+The colours are `towerSigns` in `Config > Visuals`. To change one sign, give its
+ObjectValue an attribute:
+
+| Attribute | What it does |
+| :-- | :-- |
+| `SignProperty` | Which colour changes, such as `OutlineColor` on a Highlight. Separate several with commas. |
+| `BeatenColor` | Its own colour once the tower is beaten. |
+| `AllJumpsColor` | Its own colour once the tower is beaten in All Jumps only. |
+
+Without `SignProperty`, the first of these the thing has changes: `Color`,
+`Color3`, `FillColor`, `TextColor3`, `ImageColor3`, then `BackgroundColor3`. A
+model or folder has every part in it changed.
+
+## What goes on the tower, and what goes in Config
 
 | On the tower | In `Config > Towers` |
 | :-- | :-- |
-| Its name, difficulty, area, badges, points, type | The difficulty list, names and colours |
-| Minimum time, ticket multiplier, rebeats | Tower types and what each pays |
-| The `NoBoosts` tag | Sub-difficulties and categories |
+| Its name, difficulty, Area, badges, points and type | The list of difficulties, with their names and colours |
+| Its minimum time, ticket multiplier and rebeats | Tower types and what each pays |
+| The `NoBoosts` tag | Sub-difficulties and difficulty categories |
 | Its winpads' endings | Tower rushes |
 
-One tower's facts go on the tower. Anything shared between towers goes in Config. And every tower still needs its Config entry, because other places can't see its attributes.
+Facts about one tower go on that tower. Anything shared by many towers goes in
+Config. Every tower still needs its own Config entry, because other places can't
+see its attributes.
 
-## Client Objects
+## Client objects
 
-Objects only the player's own client should run go in `Workspace > Towers > ToH > ClientSidedObjects` or `ServerStorage > TowerClientObjects > ToH`. See [Client-Sided Objects](./client-objects.md).
+Buttons, moving platforms and anything else each player should run on their own
+screen go in `Workspace > Towers > ToH > ClientSidedObjects`, or in
+`ServerStorage > TowerClientObjects > ToH`. See
+[Client-Sided Objects](./client-objects.md).

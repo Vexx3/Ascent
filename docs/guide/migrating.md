@@ -1,70 +1,84 @@
-# Moving An Old Kit Across
+# Moving an Old Kit Across
 
-If your game runs on an older Towers of Hell kit, most of it carries over as it is, and so do your players' completions.
+If your game runs on an older Towers of Hell kit, such as fanofpixels' Multi-Tower
+Kit, most of it carries over as it is, and so do your players' completions.
 
-## What carries over untouched
+## What works as it is
 
-The kit reads the old Value objects as well as attributes, so an old tower keeps working.
+Ascent reads the old kits' Value objects as well as its own attributes, so old
+towers keep working.
 
-| In your old tower | Read here as |
+| In your old tower | Ascent reads it as |
 | :-- | :-- |
-| `SpawnLocation` part | The tower's spawn |
-| `WinPad` part, anywhere inside | The winpad |
-| `MinimumTime` NumberValue | `MinimumTime` |
-| `BadgeID` IntValue | `BadgeID` |
-| `ProperName` StringValue | The tower's name |
-| `Difficulty` StringValue, like `Easy` | That difficulty's rating |
-| `ClientSidedObjects` folder | The same |
+| A `SpawnLocation` part | The tower's spawn |
+| A `WinPad` part, anywhere inside | The winpad |
+| A `MinimumTime` NumberValue | The minimum time |
+| A `BadgeID` IntValue | The tower's badge |
+| A `ProperName` StringValue | The tower's name |
+| A `Difficulty` StringValue, such as `Easy` | That difficulty |
+| A `ClientSidedObjects` folder | The tower's client objects |
 | Winpad attributes (`EndingID`, `EndingName`, `Difficulty`, `BadgeID`, `WinroomMarker`, `PreventTowerBadge`) | The same |
 | `ServerStorage > TowerCheckpoints > <acronym>` | The same |
-| `ServerStorage > WinpadParticles`, `Workspace > Portals`, `Workspace > Markers` | The same |
+| `ServerStorage > WinpadParticles`, `Workspace > Portals` and `Workspace > Markers` | The same |
 
-Copy `Workspace > Towers > YourTower` and its checkpoint folder into the new kit and it loads, times and awards.
+Copy `Workspace > Towers > YourTower` and its checkpoint folder into Ascent, and
+the tower loads, times runs and gives rewards.
 
-::: warning A named `Difficulty` loses the decimal
-`Difficulty = "Extreme"` reads as `9.00` and overrides `Config > Towers`. Once the tower has a number in Config, delete the old value.
+::: warning An old `Difficulty` value hides the decimal
+`Difficulty = "Extreme"` reads as exactly `9.00`, and it overrides `Config > Towers`.
+Once the tower has its difficulty in Config, delete the old value.
 :::
 
-## What you have to set
+## What you need to add
 
-**An entry in `Config > Towers`, naming its Area.** Old kits have no Areas, and without the entry a tower never appears on the Completions chart. Select the tower, pick its Area in the Towers window of [Tower Setup](./tower-setup-plugin.md), and press **Add to catalogue**.
+Each tower needs **an entry in `Config > Towers` with its Area**. Old kits don't
+have Areas, and without the entry a tower never shows in the Completions menu.
+To add it, select the tower and open the
+[Ascent Setup plugin](./tower-setup-plugin.md)'s Towers window. Pick its Area
+under **No Area**, then press **Add to Config** under **Not in Config > Towers**.
 
-Then read Tower Setup's Towers and Check windows. After a move, look for **Not in the catalogue**, **Nothing describes this tower**, and **Checkpoints with no tower** (usually a tower renamed on the way).
+Then look through the plugin's Towers and Check windows. After a move, watch for
+**Checkpoint folders with no tower**. It usually means a tower was renamed on the
+way across.
 
-## What has no equivalent
+## Where the old data folders went
 
-| Old | Here |
+| Old kit | Ascent |
 | :-- | :-- |
-| `GameData > Difficulties` | `Config > Towers`, `difficulties` |
+| `GameData > Difficulties` | `difficulties` in `Config > Towers` |
 | `RealmData > RealmInfo` | `Config > Worlds` |
-| `RealmData > TowerRushes` | `Config > Towers`, `rushes` |
-| `GameData > TowerBadges` | `BadgeID` on the tower, or `badgeId` in Config |
+| `RealmData > TowerRushes` | `rushes` in `Config > Towers` |
+| `GameData > TowerBadges` | `BadgeID` on the tower, or `badgeId` in `Config > Towers` |
 | `PlayerData` (ProfileService) | Scribe, in `Shared > Accounts` |
-| `GameData > KickMessages` | `Config > Chat`, `antiCheatKickMessages` |
+| `GameData > KickMessages` | `antiCheatKickMessages` in `Config > Chat` |
 
 ## Your players keep their progress
 
-The kit reads old saves where they are, and updates each one the first time that player joins. Nothing is copied.
+Ascent reads old saves where they already are, and updates each one the first
+time that player joins. Nothing has to be copied.
 
-Set `dataStoreKey` in `Config > Project` to your live game's store, the old kit's `PROFILE_STORE_KEY`. For the v4.22 kit:
+Set `dataStoreKey` in `Config > Project` to the store your live game uses, which is
+the old kit's `PROFILE_STORE_KEY`. For the v4.22 kit, that's:
 
 ```luau
 dataStoreKey = "[MTKv4.22 Mod]",
 ```
 
-### Do a dry run first
+### Do a test run first
 
-Before publishing, load your real save without writing to it:
+Before you publish, load your real save in Studio without writing to it:
 
 ```luau
 dataStoreKeyStudio = "[MTKv4.22 Mod]",
 dataStoreStudioMode = "NoSave",
 ```
 
-Play in Studio and check your towers and completions look right. Put both back before you publish.
+Press Play and check your towers and completions look right. Then put both
+settings back before you publish.
 
 ::: danger
-Never test with `dataStoreStudioMode = "Live"` pointed at your live store. That writes to it.
+Never test with `dataStoreStudioMode = "Live"` while it points at your live
+store. That writes to your players' real saves.
 :::
 
 ### What comes across
@@ -74,17 +88,20 @@ Never test with `dataStoreStudioMode = "Live"` pointed at your live store. That 
 | `Towers` | `towers`, the completion count |
 | `CompletedTowers` | `completedTowers` |
 
-Old completions are saved by tower **name**; the kit matches each one against `name` in `Config > Towers` (ignoring case) and turns it into the acronym. A name it can't match is kept, but counts for no tower on the chart.
+Old kits saved completions by tower **name**. Ascent matches each one to a `name`
+in `Config > Towers`, ignoring capitals.
 
-::: warning Match your names before release
-If a tower's `name` in Config differs from what the old kit called it, its completions won't match. Fixing the name later repairs them on the next load, but a player who beats that tower in between gets its points twice. Do the dry run and check a few players first.
+::: warning Match your tower names before release
+If a tower's `name` in Config is different from what the old kit called it, its
+completions won't be matched. Do the test run and check a few players first.
 :::
 
-Everything else starts fresh: settings, inventory, All Jumps, tickets, cosmetics, stats and rushes. Tell returning players in your update notes that their towers survived and the rest is new.
+Everything else starts fresh: settings, inventory, All Jumps, tickets, cosmetics,
+stats and rushes.
 
-## Moving your configuration
+## Moving your old settings
 
-| Old key | Now |
+| Old setting | Ascent setting |
 | :-- | :-- |
 | `PROFILE_STORE_KEY` | `Project.dataStoreKey` |
 | `TOWER_STAT_NAME` | `Project.towerWordPlural` |
@@ -102,4 +119,4 @@ Everything else starts fresh: settings, inventory, All Jumps, tickets, cosmetics
 | `REGULAR_WEBHOOK_URL`, `SC_WEBHOOK_URL`, `ALL_JUMP_MODE_URL`, `KICK_WEBHOOK_URL` | `Chat.webhooks` |
 | `WEBHOOK_MESSAGE` | `Chat.webhooks.normalMessage` |
 
-`QUIET` and `CHECKPOINTS_WORKSPACE_WARNING` aren't needed.
+You don't need `QUIET` or `CHECKPOINTS_WORKSPACE_WARNING` any more.

@@ -15,7 +15,7 @@ You set it up by editing values, not code.
 
 Ascent is a paid kit. Get it from the Ascent hub on Vendr, or as a member of the
 [Ascent Discord](https://discord.gg/TbqyC2hJRH), where the hub is linked and
-every update is announced. The Tower Setup plugin is also on the
+every update is announced. The Ascent Setup plugin is on the
 [Creator Store](https://create.roblox.com/store/asset/133971753175712/Ascent-Setup).
 
 This repository holds the guide and the issue tracker. The kit itself is not
@@ -30,9 +30,10 @@ here, and nothing in this repository is a way to get it.
 | Suggest a feature | [A feature request](https://github.com/Vexx3/Ascent/issues/new?template=feature_request.yml) |
 | Fix the guide | The *Suggest a change to this page* link at the bottom of any page |
 
-Before reporting a bug, open the **Setup** tab of the Tower Setup plugin. It
-finds most problems with a place — a renamed menu frame, a deleted folder, a
-tower with no spawn — and says how to fix them.
+Before reporting a bug, press **Check** in the Ascent Setup plugin. It finds most
+problems with a place, such as a renamed menu frame, a deleted folder or a tower
+with no spawn, and says how to fix them. If it doesn't, press **Print a report
+for support** in the same window and paste the report into your bug report.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to help, and what not to post.
 

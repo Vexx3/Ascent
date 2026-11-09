@@ -33,7 +33,7 @@ export default defineConfig({
       { text: 'Changelog', link: '/changelog' },
       { text: 'Get the kit', link: '/guide/getting-started#getting-the-kit' },
       {
-        text: 'Tower Plugin',
+        text: 'Plugin',
         link: 'https://create.roblox.com/store/asset/133971753175712/Ascent-Setup',
       },
     ],
@@ -43,25 +43,31 @@ export default defineConfig({
           text: 'Start Here',
           items: [
             { text: 'Getting Started', link: '/guide/getting-started' },
-            { text: 'Worlds & Personal Servers', link: '/guide/worlds-personal-servers' },
-            { text: 'The Hub (Ring Select)', link: '/guide/ring-select' },
             { text: 'Studio Structure', link: '/guide/studio-structure' },
-            { text: 'Updating Ascent', link: '/guide/updating' },
-            { text: 'Moving An Old Kit Across', link: '/guide/migrating' },
+            { text: 'Configuration Reference', link: '/guide/configuration' },
+            { text: 'Ascent Setup Plugin', link: '/guide/tower-setup-plugin' },
             { text: 'Troubleshooting', link: '/guide/troubleshooting' },
           ],
         },
         {
           text: 'Towers',
           items: [
-            { text: 'Building A Tower', link: '/guide/tower-setup' },
-            { text: 'Tower Setup Plugin', link: '/guide/tower-setup-plugin' },
+            { text: 'Building a Tower', link: '/guide/tower-setup' },
             { text: 'Winpads & Endings', link: '/guide/winpads-endings' },
             { text: 'Difficulties', link: '/guide/difficulties' },
             { text: 'Markers & Portals', link: '/guide/markers-portals' },
             { text: 'Client-Sided Objects', link: '/guide/client-objects' },
             { text: 'Tower Rushes', link: '/guide/tower-rushes' },
             { text: 'Practice & All Jumps', link: '/guide/practice-all-jumps' },
+            { text: 'Saved Runs', link: '/guide/saved-runs' },
+            { text: 'Modifiers', link: '/guide/modifiers' },
+          ],
+        },
+        {
+          text: 'Worlds & Hub',
+          items: [
+            { text: 'Worlds, Areas & Personal Servers', link: '/guide/worlds-personal-servers' },
+            { text: 'The Hub (Ring Select)', link: '/guide/ring-select' },
           ],
         },
         {
@@ -71,35 +77,42 @@ export default defineConfig({
             { text: 'Cosmetics', link: '/guide/cosmetics' },
             { text: 'Game Passes', link: '/guide/game-passes' },
             { text: 'Player Elo', link: '/guide/elo' },
+            { text: 'Badges', link: '/guide/badges' },
             { text: 'Tools', link: '/guide/boost-items' },
           ],
         },
         {
-          text: 'Players',
+          text: 'Menus & Settings',
           items: [
             { text: 'UI & HUD', link: '/guide/ui-and-hud' },
             { text: 'Styling the Menu & HUD', link: '/guide/styling' },
             { text: 'Settings', link: '/guide/settings' },
+          ],
+        },
+        {
+          text: 'Chat & Staff',
+          items: [
             { text: 'Chat', link: '/guide/chat' },
             { text: 'Announcements & Webhooks', link: '/guide/announcements-webhooks' },
             { text: 'Admin Commands', link: '/guide/commands' },
           ],
         },
         {
-          text: 'Reference',
-          items: [
-            { text: 'Configuration Reference', link: '/guide/configuration' },
-            { text: 'Player Data', link: '/guide/player-data' },
-            { text: 'Changelog', link: '/changelog' },
-          ],
-        },
-        {
           text: 'For Developers',
           items: [
             { text: 'Hooking Into the Kit', link: '/guide/hooks' },
-            { text: 'Adding A Saved Setting', link: '/guide/custom-settings' },
+            { text: 'Adding a Saved Setting', link: '/guide/custom-settings' },
             { text: 'Extending the Kit', link: '/guide/extending-gameplay' },
             { text: 'API Reference', link: '/guide/api' },
+            { text: 'Player Data', link: '/guide/player-data' },
+          ],
+        },
+        {
+          text: 'Updating',
+          items: [
+            { text: 'Updating Ascent', link: '/guide/updating' },
+            { text: 'Moving an Old Kit Across', link: '/guide/migrating' },
+            { text: 'Changelog', link: '/changelog' },
           ],
         },
       ],

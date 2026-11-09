@@ -1,250 +1,203 @@
-# Ring Select
+# The Hub (Ring Select)
 
-Ring Select is the hub: the place players join first. It shows your Worlds and Areas, how far through each the player is and what is locked, and sends them in with Play. It has no towers, HUD or timer. Return to Hub brings players back here.
+The hub is the place players join first. Its Ring Select screen shows your Worlds
+and Areas, how far each player has got, and what's still locked. Players pick an
+Area and press **Play** to go there.
 
-Everything it shows comes from `Config > Worlds` and `Config > Towers`.
+Everything it shows comes from `Config > Worlds` and `Config > Towers`, so there's
+nothing to fill in twice.
 
-## Setting Up The Hub
+## Setting up the hub
 
-1. **Make the hub a place in the same experience** as your tower places, and make it the **start place** in the Creator Hub. A place in another experience cannot read the player's save.
-2. **Put its Place ID in `hubPlaceId`** in `Config > Worlds`.
-3. **Start it from `Ascent Hub.rbxlx`.** Its `Server` and `Client` hold only what the hub runs. Its `Shared` is the same as every tower place's, so one `Shared`, or a package made from it, fits them all.
-4. **Set three things:**
-   - `StarterGui > RingSelect > ResetOnSpawn` to **false**.
-   - `Players > CharacterAutoLoads` to **false**.
-   - The place's **server size to 1**, on the Creator Dashboard.
-
-   The Output says so on startup if either of the last two is wrong.
-
-::: warning Hub and tower places are different files
-Start the hub from `Ascent Hub.rbxlx` and every tower place from `Ascent Area.rbxlx`. Their `Server` and `Client` are not interchangeable, and copying one into the other breaks both. `Shared` is the same in both files.
-:::
+1. Open `Ascent Hub.rbxlx`. Don't start the hub from a tower place: the two use
+   different code.
+2. Publish it into the same experience as your tower places, and make it the
+   experience's **start place** in the Creator Dashboard.
+3. Put its Place ID in `hubPlaceId` in `Config > Worlds`.
+4. Check these settings:
+   - `StarterGui > RingSelect`: `ResetOnSpawn` is off.
+   - `Players`: `CharacterAutoLoads` is off.
+   - In the Creator Dashboard, the hub's **server size** is `1`.
 
 ## Config > RingSelect
 
-| Field | Default | Purpose |
+| Setting | Default | What it does |
 | :-- | :-- | :-- |
-| `keys` | `Q E`, arrows, `WASD` | Key names per action, as `Enum.KeyCode` spells them. An empty list unbinds the action. |
-| `detailedProgress` | `false` | Whether a new player starts on the Detailed Progress Meter. |
-| `progressMeter` | `"Choice"` | `"Choice"` lets each player pick their progress view. `"Simple"` always shows the single bar and `"Detailed"` one bar per tower; both hide the switch. |
-| `saveSettings` | `true` | Whether the screen's Settings are saved. Off, the view starts on `detailedProgress` every visit, Music Volume starts where the tower places left it, and nothing picked here is saved. |
-| `beatenColor` | green | A beaten tower's strip, and a met requirement. A tower beaten only in All Jumps uses `Config > Visuals.completions.allJumpsBeaten`, the Completions menu's yellow. |
-| `notBeatenColor` | red | An unbeaten tower's strip. |
-| `hoverColor` | white | The outline on a tower in the ring while its bar is hovered. |
-| `selectedTransparency`, `unselectedTransparency` | `0`, `0.5` | How see-through the picked Area card is, and the rest. |
-| `unavailableDarken` | `0.5` | How far a server list button darkens while it can't be used, `0` to `1`. |
-| `cameraFolder` | `"Rings"` | The Workspace folder holding each Area's set. |
-| `cameraPartName` | `"Camera"` | The part in an Area's folder the camera flies to. |
-| `cameraTween` | 0.7s Quint Out | How the camera and lighting move between rings. |
-| `worldFade`, `worldHold` | `0.25`, `0.15` | The fade a World change hides behind. Both `0` for a hard cut. |
-| `scrollTween` | 0.35s Quad Out | How the Area list scrolls. |
-| `loadingScreen.minimumTime` | `1.5` | Least seconds the loading screen stays up. |
-| `loadingScreen.tipInterval` | `5` | Seconds between tips. `0` keeps one. |
+| `keys` | See [Controls](#controls) | The keys for each action, spelled the way `Enum.KeyCode` spells them. |
+| `detailedProgress` | `true` | Whether new players start on the detailed progress view. |
+| `progressMeter` | `"Choice"` | `"Choice"` lets players switch views. `"Simple"` or `"Detailed"` locks the view and hides the switch. |
+| `saveSettings` | `true` | Whether the hub's settings are saved. |
+| `beatenColor` | green | The colour of a beaten tower in the detailed progress view. |
+| `notBeatenColor` | red | The colour of a tower the player hasn't beaten. |
+| `hoverColor` | white | The outline on a tower while the player points at its bar. |
+| `cameraFolder` | `"Rings"` | The Workspace folder that holds each Area's scenery. |
+| `cameraPartName` | `"Camera"` | The name of the part the camera moves to. |
+| `cameraTween` | 0.7 seconds | How the camera and lighting move between Areas. |
+| `worldFade`, `worldHold` | `0.25`, `0.15` | The fade when switching Worlds. Set both to `0` for an instant cut. |
+| `scrollTween` | 0.35 seconds | How the Area list scrolls. |
+| `loadingScreen.minimumTime` | `1.5` | The shortest time, in seconds, the loading screen stays up. |
+| `loadingScreen.tipInterval` | `5` | Seconds between loading tips. `0` keeps one tip. |
 
-The screen's words are under `ringSelect` in `Config > Messages`, and its loading lines under `loading`. The loading dots' speed is `Config > Visuals.timing.loadingDots`, shared with the tower places.
+The hub's text is in the `ringSelect` and `loading` groups of `Config > Messages`.
 
 ### Controls
 
-| Input | Effect |
-| :-- | :-- |
-| `Q` / `E`, `LeftButton` / `RightButton` | Previous / next World |
-| `←` / `→`, `A` / `D` | Previous / next Area |
-| `↑` / `↓`, `W` / `S` | The Area / its subrealm |
-| Clicking `MainButton` or `SubButton` | Picks it |
-| `Enter`, `PlayButton` | Teleports, if unlocked |
+| Action | Default keys | Key setting |
+| :-- | :-- | :-- |
+| Previous or next World | `Q` and `E`, or `LeftButton` and `RightButton` | `worldBack`, `worldForward` |
+| Previous or next Area | `←` and `→`, or `A` and `D` | `areaBack`, `areaForward` |
+| Pick the Area or its subrealm | `↑` and `↓`, `W` and `S`, or `MainButton` and `SubButton` | `selectMain`, `selectSub` |
+| Go to the Area, if it's unlocked | `Enter`, or `PlayButton` | `play` |
 
-## The Camera
+## The camera
 
-Each Area gets a folder in Workspace, named after its `id`, with a part the camera flies to:
+Each Area gets a folder in the Workspace, named after its `id`, with a part the
+camera moves to:
 
-```
+```text
 Workspace
-  Rings                     <- cameraFolder
-    Ring1                   <- the Area id
-      Camera                <- cameraPartName, any BasePart
-      Lighting              <- optional, see below
-      ToNI                  <- optional: a tower's frame, named after its acronym
-      ...your scenery
-    Ring1Sub
-      Camera
+└─ Rings                  -- cameraFolder
+   ├─ Ring1               -- the Area's id
+   │  ├─ Camera           -- cameraPartName, any part
+   │  ├─ Lighting         -- optional, see below
+   │  ├─ ToNI             -- optional: a tower's frame, named after its acronym
+   │  └─ ...your scenery
+   └─ Ring1Sub
+      └─ Camera
 ```
 
-The player's camera takes the part's exact position and the way its front faces, at the default field of view. To call the folder something else, rename it and set `cameraFolder` to match. Without the folder, the camera stays where it is and the screen still works. The Output names any Area missing its camera part.
+The camera copies the part's position and faces the way the part's front faces.
+The Output names any Area that has no camera part.
 
 ### Aiming a camera
 
-With the [Tower Setup plugin](./tower-setup-plugin.md) installed, every camera part shows an arrow, the edges of its shot and its Area's id, in edit mode only. Its toolbar in the hub has:
+The [Ascent Setup plugin](./tower-setup-plugin.md) makes this easy:
 
-- **Look Through**: moves Studio's camera to the selected camera, so the viewport shows the shot. With none selected it starts at the first; press it again for the next Area's.
-- **Aim Here**: moves the selected camera to where Studio's camera is. Look through, fly until the shot is right, then press it. Ctrl+Z undoes it.
-- **Cameras**: turns the arrows off and on.
+1. Select a camera part and press **Look Through** to see what it sees. With
+   nothing selected, it starts at the first Area's camera. Press it again to move
+   to the next one.
+2. Fly the Studio camera until the shot looks right.
+3. Press **Aim Here** to move the camera part to your view.
 
-The frame drawn in front of each camera is what a 16:9 screen shows. The plugin's **Check** window lists any Area without a camera.
+**Cameras** shows or hides an arrow on each camera part. The frame drawn in front
+of each camera is what a 16:9 screen shows.
 
-## Lighting Per Ring
+## Lighting for each Area
 
-Put a folder called `Lighting` in an Area's folder and give it **attributes named after Lighting properties**:
+Put a folder named `Lighting` in an Area's folder, and give it **attributes named
+after Lighting properties**:
 
-```
+```text
 Rings > Ring3 > Lighting
   ClockTime    2.5
   Ambient      Color3 30, 30, 50
   FogEnd       400
 ```
 
-Anything an Area leaves out goes back to the place's own lighting. The change moves with the camera. The Output names an attribute that is not a Lighting property.
+When the camera moves to that Area, the lighting changes to match. Anything you
+leave out goes back to the place's own lighting.
 
-## The Screen
+## The screen
 
-`StarterGui > RingSelect` is yours to lay out. The kit only looks for these names:
+`StarterGui > RingSelect` is drawn by `ReplicatedStorage > Design`, the same
+stylesheet as your tower places' menus. To change its colours or fonts, follow
+[Styling](./styling.md) in any place, then copy `Design` into the others so they
+match.
 
-```
-RingSelect                       ScreenGui
-  LeftBar                        Frame
-    AreaList                     ScrollingFrame
-      AreaFrame                  Frame       <- the row template
-        MainButton               ImageButton <- its Image is the place picture
-          AreaName               TextLabel
-          AreaEmblem             ImageLabel
-        SubButton                ImageButton
-          AreaName               TextLabel
-          AreaEmblem             ImageLabel
-    WorldLabel                   TextLabel
-    LeftButton                   GuiButton   <- previous World
-    RightButton                  GuiButton   <- next World
-    PlayButton                   GuiButton
-  TopRightBar                    Frame
-    AreaProgress                 Frame
-      Fill                       Frame
-      CurrentProgress            TextLabel
-    DetailedProgress             Frame       <- horizontal UIListLayout
-      DifficultyBar              Frame       <- the bar template
-        Status                   Frame
-        HoverTower               TextLabel
-    FriendButton                 GuiButton   <- optional, with the two below
-    ServerButton                 GuiButton
-    Lists                        GuiObject
-      FriendList                 ScrollingFrame
-        FriendFrame              GuiObject   <- the row template
-          PlayerImage            ImageLabel
-          PlayerDisplayName      TextLabel
-          JoinButton             GuiButton
-        Warning                  TextLabel
-      RefreshButton              GuiButton
-      ServerList                 Frame
-        CreateServer             TextButton
-        EnterServerCode          GuiButton
-        JoinLast                 GuiButton
-      JoinServerFrame            Frame
-        CodeBox                  TextBox
-          Join                   GuiButton
-          Cancel                 GuiButton
-        Warning                  TextLabel
-  Requirements                   Frame
-    RequirementsList             GuiObject   <- a UIListLayout inside
-      AreaReqLabel               TextLabel   <- the line template
-  TotalBeaten                    TextLabel
-  SettingsButton                 GuiButton
-  Settings                       Frame
-    OptionList                   ScrollingFrame
-      MusicVolume                Frame       <- optional
-        SliderFrame              Frame
-          Thumb                  TextButton
-          Fill                   Frame
-        ValueLabel               TextLabel
-      DetailedProgress           Frame
-        ToggleButton             TextButton
-          Circle                 Frame
-  LoadingScreen                  Frame       <- optional
-    LoadingLabel                 TextLabel
-    TipLabel                     TextLabel
-```
+Each Area in the list is a card showing:
 
-Templates (`AreaFrame`, `DifficultyBar`, `FriendFrame`, `AreaReqLabel`) stay visible in Studio so you can style them. The screen hides them and clones one per entry.
+- the Area's `image`, or its place's thumbnail if it has none;
+- its `emblem`;
+- a padlock while it's locked.
 
-A button's `Image` is the Area's `image` from `Config > Worlds`, or the place's own thumbnail. `AreaEmblem` is the Area's `emblem`, hidden when it has none. `SubButton` hides on an Area with no subrealm after it.
+A subrealm's card sits under its Area's, a little shorter. The arrows beside the
+World's name go round: left from the first World goes to the last.
+
+To show your game's logo above the list, set the `Image` of `LeftColumn > Logo`.
+Without one, the list moves up to fill the space.
+
+You can move, resize or restyle anything on the screen, but keep each part's
+name. If the screen can't find a part it needs, the Output names it.
 
 ### Progress
 
-One of the two shows, by the player's **Detailed Progress Meter** setting, or always the same one if `progressMeter` is `"Simple"` or `"Detailed"`:
+There are two views. `progressMeter` in `Config > RingSelect` decides which one
+players see, or lets them choose.
 
-- **`AreaProgress`**: one bar reading `7/12`. Hover it for the percentage, to one decimal place: `7/12 (58.3%)`.
-- **`DetailedProgress`**: one bar per tower, easiest first, in its difficulty colour, with `Status` green when beaten, yellow when beaten only in All Jumps, and red otherwise. Hovering a bar shows `HoverTower` and outlines the tower's frame in white: the Model or part named after its acronym in the Area's folder under `Rings`.
+| View | Shows |
+| :-- | :-- |
+| **Simple** | One bar, such as `7/12`. Point at it to see the percentage. |
+| **Detailed** | One strip with an outlined block per tower, easiest first, in its difficulty's colour. The thin bar under each block is red until the tower is beaten, green once it is, and yellow when it's beaten only in All Jumps. Pointing at a block shows its acronym above it and outlines the tower's frame in the scenery. |
 
-A crowded ring narrows its bars to fit. Only normal wins count, as in the Completions menu and the Area locks: an All Jumps win shows yellow but adds nothing. Tower rushes and [extended](./ui-and-hud.md#extended-completions) towers don't count. `TotalBeaten` counts every Area except extended ones; an extended Area's own card still counts its towers.
+- Only Normal wins count.
+- Rushes and [extended](./ui-and-hud.md#extended-completions) towers don't count.
+- When every tower in an Area is beaten, the bars under the blocks run through
+  the rainbow, at `rainbowSpeed` in `Config > Visuals.completions`.
 
-Once an Area is fully beaten its bar turns rainbow, as the Completions menu's do: `Fill`, or every `Status` in the detailed view. `rainbowSpeed` in `Config > Visuals.completions` sets how fast it cycles.
+### Settings
 
-`SettingsButton` opens `Settings`. Its rows can sit anywhere inside it; the shipped screen keeps them in `OptionList`. The panel, its button and each row are optional: delete what you don't want, and a panel left with nothing to change hides its button.
+The hub's settings button opens two settings:
 
-- **`DetailedProgress`**: the Detailed Progress Meter switch.
-- **`MusicVolume`**: the same Music Volume setting as the tower places' Audio settings, from 0% to 200%, so a player who turns the music down in one place hears it down in all of them.
-
-Both choices are saved, unless `saveSettings` is off.
+- **Detailed Progress Meter** switches between the two progress views.
+- **Music Volume** is the same setting as in your tower places.
 
 ### Sounds
 
-The screen's sounds are Sound instances in `SoundService > RingSelect`, set up in Studio rather than in Config, so change the `SoundId` or `Volume` on the Sound itself:
+The hub's sounds are Sounds in `SoundService > RingSelect`. Change a Sound's
+`SoundId` or `Volume` to change it, or delete it for silence.
 
 | Sound | Plays |
 | :-- | :-- |
-| `Button` | When any button on the screen is pressed, or the play key. |
-| `Hover` | When the pointer moves onto a button. Optional: the shipped hub has none, so hovering is silent. |
-| `Switch` | When the camera moves to another ring or subrealm, or the World changes. |
-| `Music` | On loop. Set it to `Looped` and `Playing` in Studio: nothing else starts it. Its `Volume` is multiplied by each player's Music Volume. |
+| `Button` | When a button is pressed. |
+| `Hover` | When the pointer moves onto a button. The shipped hub doesn't have one. |
+| `Switch` | When the camera moves to another Area, or the World changes. |
+| `Music` | On a loop. Turn on `Looped` and `Playing` on it in Studio. |
 
-Any of them can be deleted for silence. Clicking a ring's row plays both `Button` and `Switch`. The Tower Setup plugin's **Check** window says if the folder is missing or the music won't play.
+### Loading screen
 
-### Loading Screen
+A loading screen covers the hub until the player's data loads, and again whenever
+they teleport out. It shows a random tip from `ringSelect.tips`.
 
-`LoadingScreen` covers the screen until the player's data has loaded, for at least `minimumTime`. `LoadingLabel` reads `loading.playerData` ("Loading data") with animated dots (leave the dots off your own wording). `TipLabel` shows a random tip from `ringSelect.tips` every `tipInterval` seconds.
-
-It comes back for every teleport out of the hub, saying where to: `loading.teleportingTo` with the Area's name, or `loading.teleporting` when the server cannot tell which Area a place is. A copy of it stays on screen during the teleport itself. If the teleport fails, it goes away and the reason is shown.
-
-Without a `LoadingScreen`, the hub shows the screen straight away. Tower places do the same with the loading screen in `TowerGUI`.
+Its text is `loading.playerData`, `loading.teleportingTo` and `loading.teleporting`.
+Don't put dots at the end of them, because the screen adds its own.
 
 ### Locked Areas
 
-When the picked Area is locked, `Requirements` lists each of its rules as a line cloned from `AreaReqLabel`:
+When the picked Area is locked, **Play** shows a padlock, and the screen lists what
+the player still needs, one line per requirement:
 
-```
+```text
 Beat ToDNE (1/1)
 Beat 12 Towers (3/12)
 Beat 2 Extreme+ Towers (1/2)
 ```
 
-Met rules are drawn in `beatenColor`, and a difficulty in its own colour. A difficulty rule counts that difficulty **or harder**. The wording is `locks` in `Config > Messages`.
+Lines the player has already met turn green. The wording is in the `locks` group
+of `Config > Messages`.
 
-`RequirementsList` and `AreaReqLabel` are sized as a share of `Requirements` rather than in pixels, so the lines are the same size against the panel on every device. The line's height sets how big its text is: make `AreaReqLabel` taller for bigger lines. A line too long for its width shrinks to fit. Avoid a `UITextSizeConstraint` here: its limit is in pixels, so it only takes effect on big screens and the lines stop matching across devices.
+### Friends and servers
 
-Messages from the server, such as a refusal or a cooldown, replace the lines for a few seconds. While a [list](#friends-and-servers) is open, they go to that list's `Warning` instead.
+**Friends** lists every friend who's playing, with a button showing their Area.
+A friend in an Area the player hasn't unlocked is still listed, and pressing their
+button says what's missing. The refresh button checks again, at most once every
+five seconds. The text is the `friends` group in `Config > Messages`.
 
-### Friends And Servers
+**Servers** has the [personal servers](./worlds-personal-servers.md#personal-servers)
+for the Area on screen:
 
-`FriendButton` and `ServerButton` open `Lists` on one list or the other. Pressing the same button again closes it. All of it is optional.
-
-**Friend list.** One row per friend playing your game, cloned from `FriendFrame`: headshot, display name, and a `JoinButton` named after their Area. Clicking it joins their server. A friend in a locked Area is listed, and joining says what is missing. `RefreshButton` reads the list again, at most every five seconds.
-
-`Warning` shows when there are no friends playing (`friends.nonePlaying`), the list could not load, or a join went wrong. Its `LayoutOrder` places it among the rows; `0` puts it on top.
-
-**Server list.** [Personal servers](./worlds-personal-servers.md#personal-servers) for the Area on screen:
-
-- **`CreateServer`** makes one and sends the player there. Without the Personal Servers pass it reads `(Requires Gamepass)`, draws darker, and opens the purchase prompt. It is hidden while the pass has `id = 0`.
-- **`EnterServerCode`** opens `JoinServerFrame`. Type a code into `CodeBox` and press `Join` or Enter. `Cancel` goes back.
-- **`JoinLast`** returns an owner to the personal server they left, while it is still open (`ownerLeaveGracePeriod`, ten minutes by default).
-
-`Warning` under the code box says why a code did not work.
-
-The server checks every requirement again before any teleport, codes included.
+| Button | What it does |
+| :-- | :-- |
+| **Make Personal Server** | Makes one. Without the game pass, it opens the purchase prompt. Hidden while the pass has `id = 0`, unless personal servers are free. |
+| **Enter Server Code** | Joins a personal server by its code. |
+| **Join Last Server** | Takes an owner back to the personal server they left, if it's still open. |
 
 ## Troubleshooting
 
-**The Output says there is no `StarterGui > RingSelect`.** The hub needs its own `RingSelect` ScreenGui.
-
-**The screen is empty and the Output says there is no playable World.** Every Area in `Config > Worlds` is disabled or has `placeId = 0`.
-
-**Tower menus appear in the hub, or the ring screen in a tower place.** The place was started from the wrong file. See [Setting Up The Hub](#setting-up-the-hub).
-
-**Rings past the bottom of the list are missing.** Set `AreaList`'s `AutomaticCanvasSize` to `Y`.
-
-**The client never finishes starting.** `Server > HubServer` is missing from the hub.
+| Problem | Fix |
+| :-- | :-- |
+| The Output says there's no `StarterGui > RingSelect`. | The hub needs its own `RingSelect` ScreenGui. |
+| The screen has no colours and the wrong font. | Copy `ReplicatedStorage > Design` in from one of your tower places. |
+| The screen is empty. | Every Area in `Config > Worlds` is disabled or has `placeId = 0`. |
+| The tower menus show up in the hub, or Ring Select shows up in a tower place. | The place was started from the wrong file. |
+| Areas at the bottom of the list are cut off. | Set `AreaList`'s `AutomaticCanvasSize` to `Y`. |
+| The screen never finishes loading. | `ServerScriptService > Server > HubServer` is missing. |

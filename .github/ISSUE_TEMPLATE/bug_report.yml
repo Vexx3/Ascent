@@ -13,7 +13,7 @@ body:
     attributes:
       label: Before you report
       options:
-        - label: I opened the Tower Setup plugin's **Setup** tab, and it does not explain this.
+        - label: I pressed **Check** in the Ascent Setup plugin, and it does not explain this.
           required: true
         - label: I searched the existing issues for this.
           required: true
@@ -23,8 +23,8 @@ body:
     id: version
     attributes:
       label: Kit version
-      description: Run `kit-info` in the admin console (F4 by default), or press Play and read the `AscentVersion` attribute on `game` in the Properties window.
-      placeholder: 1.0.0
+      description: Press Play and read the `Ascent` line in the Output, such as `Ascent 1.2.0 (stable)`, or run `kit-info` in the admin console (F4 by default).
+      placeholder: 1.2.0
     validations:
       required: true
   - type: dropdown
@@ -35,7 +35,7 @@ body:
       options:
         - A tower place
         - The hub (ring select)
-        - The Tower Setup plugin
+        - The Ascent Setup plugin
         - Studio only
         - The live game only
     validations:
@@ -59,8 +59,8 @@ body:
   - type: textarea
     id: output
     attributes:
-      label: Output window
-      description: What the Output window printed, server and client, pasted as text. Check it for webhook URLs first.
+      label: Support report or Output
+      description: In Studio, press Play and make the bug happen, then stop and press **Print a report for support** in the plugin's Check window. Paste the report here. Without the plugin, paste what the Output printed. Check it for webhook URLs first.
       render: text
   - type: textarea
     id: changes

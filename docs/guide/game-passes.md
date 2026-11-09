@@ -1,8 +1,10 @@
 # Game Passes
 
-Passes are set up in `Config > GamePasses`, one entry per pass. Roblox supplies each pass's name, description, picture, price and sale status, so only what the pass *does* goes in Config.
+Game passes are set up in `Config > GamePasses`, one entry per pass. Roblox already
+knows each pass's name, description, picture and price, so Config only says what
+the pass gives.
 
-## Included Passes
+## The passes the kit comes with
 
 ```luau
 VIP = {
@@ -20,23 +22,34 @@ PersonalServers = {
 },
 ```
 
-Both ship with `id = 0`, which means **off**. Create the pass under **Monetization → Passes** in the Creator Dashboard and put its ID in. For a pass you won't sell, set `disabled = true`.
+Both start with `id = 0`, which means they're **off**. To turn one on:
 
-| Field | For | Purpose |
+1. Create the pass in the Creator Dashboard, under **Monetization > Passes**.
+2. Copy its ID into `id`.
+
+If you won't sell a pass, set `disabled = true` on it.
+
+| Setting | For | What it does |
 | :-- | :-- | :-- |
-| `id` | all | The Roblox pass ID. `0` is off. |
-| `kind` | all | `"Tool"`, `"VIP"` or `"PersonalServers"`. |
-| `disabled` | all | Turns the pass off. |
-| `giftProductId` | all | A developer product that gifts the pass. See [Gifting A Pass](#gifting-a-pass). |
-| `tool` | `Tool` | The Tool to give. |
-| `ticketMultiplier` | `VIP` | Multiplies ticket rewards. |
-| `trail` | `VIP` | A trail it unlocks. |
-| `chatTag` | `VIP` | A chat tag from `Config > Chat > tags > styles`. |
-| `tickets` | `VIP` | Tickets given once. |
+| `id` | All passes | The pass's Roblox ID. `0` means off. |
+| `kind` | All passes | What the pass is: `"Tool"`, `"VIP"`, `"PersonalServers"` or `"SaveSlots"`. |
+| `disabled` | All passes | Turns the pass off. |
+| `giftProductId` | All passes | A developer product that gifts the pass. See [Gifting a pass](#gifting-a-pass). |
+| `tool` | `Tool` | The Tool the pass gives. |
+| `ticketMultiplier` | `VIP` | Multiplies the tickets the owner earns. |
+| `trail` | `VIP` | A trail the pass unlocks. |
+| `chatTag` | `VIP` | A chat tag from `tags.styles` in `Config > Chat`. |
+| `tickets` | `VIP` | Tickets given once, when the player first has the pass. |
 
-The key on the left (`VIP`) is saved with owners, so never rename it after release. `PersonalServers` lets its owners create personal servers; anyone can join one with a code.
+The key (`VIP`) is saved with everyone who owns the pass, so don't rename it after
+release.
 
-## Add A Tool Pass
+- A `PersonalServers` pass lets its owners make
+  [personal servers](./worlds-personal-servers.md#personal-servers).
+- A `SaveSlots` pass unlocks the [saved run slots](./saved-runs.md#set-it-up) that
+  ask for it.
+
+## Add a Tool pass
 
 ```luau
 MyToolPass = {
@@ -46,58 +59,45 @@ MyToolPass = {
 },
 ```
 
-Put a Tool with exactly that name in `ServerStorage > TicketShopItems > Tools`. Owners get one permanent copy, back after every respawn. Add as many Tool passes as you like.
+Put a Tool with exactly that name in `ServerStorage > TicketShopItems > Tools`.
+Owners always have one copy, which comes back every time they respawn. You can add
+as many Tool passes as you like.
 
-## In The Shop
+## In the shop
 
-Passes are listed in the shop's `FeaturedList > GamepassList`:
+Every pass that's on sale is listed on the shop's Featured page. Its **Purchase**
+button opens Roblox's purchase prompt, and reads `OWNED` once the player has the
+pass. What the pass gives arrives straight away.
 
-```text
-ShopMenu
-├─ FeaturedList
-│  └─ GamepassList
-│     └─ Template      -- an ImageLabel, copied per pass
-│        ├─ NameLabel
-│        └─ BuyButton  -- opens InfoModal
-└─ InfoModal
-   ├─ InfoName
-   ├─ InfoPrice
-   ├─ DescriptionFrame
-   │  ├─ Description
-   │  ├─ Rarity        -- hidden for a pass
-   │  └─ Type
-   ├─ Options
-   │  ├─ Purchase
-   │  ├─ Gift          -- optional
-   │  └─ Cancel
-   └─ GiftingFrame     -- optional
-      ├─ RecipientBox
-      └─ MessageBox
-```
+A pass that's no longer for sale on Roblox is hidden from the shop, but people who
+own it keep everything it gives.
 
-`Purchase` opens Roblox's purchase prompt, and reads `OWNED` for a pass the player has. The benefit applies straight away. A pass Roblox says isn't for sale is hidden, but its owners keep their benefits.
+## Gifting a pass
 
-## Gifting A Pass
+Roblox doesn't let players buy a game pass for someone else, so a gift is a
+**developer product** that gives the pass:
 
-Roblox can't buy a game pass for someone else, so a gift is a **developer product** that grants the pass:
+1. In the Creator Dashboard, create a developer product with the same price as the
+   pass.
+2. Put the product's ID in the pass's `giftProductId`.
 
-1. In the Creator Dashboard, create a developer product priced the same as the pass.
-2. Put its ID in the pass's `giftProductId`.
-
-The pass's shop panel then shows **Gift**. The first click opens `GiftingFrame` for a username and an optional note; the second sends it. The recipient gets the pass the next time they play, on any server. Gifting to someone who already owns it is refused before any payment. The note is text-filtered. The words are under `gifts` in `Config > Messages`.
+The pass's shop panel now has a **Gift** button. It asks for a username, and the
+other player gets the pass the next time they play. The gift messages are in the
+`gifts` group of `Config > Messages`.
 
 ::: warning Test with a real product
-In Studio, a made-up product ID makes Roblox refuse the prompt, which shows as a cancelled gift.
+In Studio, a made-up product ID makes Roblox refuse the purchase prompt, which
+shows up as a cancelled gift.
 :::
 
 ## Troubleshooting
 
 | Problem | Check |
 | :-- | :-- |
-| The pass isn't in the shop | It isn't disabled, and it's for sale in this experience. |
+| The pass isn't in the shop | It isn't `disabled`, and it's on sale in this experience. |
 | No Tool is given | `tool` matches a Tool in `ServerStorage > TicketShopItems > Tools`. |
-| No VIP trail | `trail` matches a cosmetic and its model. |
+| No VIP trail | `trail` matches a trail in `Config > Economy` and its model. |
 | No VIP chat tag | `chatTag` matches a tag in `Config > Chat`. |
-| One-time tickets given again | The pass's key was renamed. |
-| No Gift button | Set `giftProductId`, and add `Gift` and `GiftingFrame` to `InfoModal`. |
-| Every gift says cancelled | `giftProductId` isn't a product of this experience. |
+| The one-time tickets were given again | The pass's key was renamed. |
+| There's no Gift button | Set `giftProductId`. If it's set, the plugin's **Check** window names any missing part of the shop panel. |
+| Every gift says cancelled | `giftProductId` isn't a developer product of this experience. |

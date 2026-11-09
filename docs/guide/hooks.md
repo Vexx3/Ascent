@@ -1,27 +1,24 @@
 # Hooking Into the Kit
 
-Some things are not a setting: a sound when someone beats a tower, a badge of
-your own for ten wins, a currency the kit knows nothing about, an admin command
-for your own game. This page is how to add them **without editing the kit's
-scripts**, so that [updating Ascent](./updating.md) never overwrites your work.
+You can add your own features **without editing the kit's scripts**. Write them in
+your own scripts using the hooks on this page, and [updating Ascent](./updating.md)
+will never overwrite them.
 
-Everything on this page is the kit's stable surface. Its names and what they
-pass stay the same for every 1.x release; anything that changes is listed under
-**Breaking** in the [changelog](../changelog.md) first. The rest of the kit's
-modules are free to change between releases.
+These hooks are kept the same from one version to the next. If one ever changes,
+the [changelog](../changelog.md) marks it as **Breaking**.
 
 | You want to | Use |
 | :-- | :-- |
-| React when a player wins, loads a tower, buys something | [Server events](#server-events) |
+| Do something when a player wins, loads a tower or buys something | [Server events](#server-events) |
 | Show something on the player's screen when that happens | [Client events](#client-events) |
-| Save values of your own with each player | [CustomData](#saving-values-of-your-own) |
+| Save values of your own for each player | [CustomData](#saving-values-of-your-own) |
 | Add admin commands | [CustomCommands](#admin-commands-of-your-own) |
 
 ## Server events
 
-`ServerScriptService > Server > Events` announces what happens in the game. Put a
-Script of your own in `ServerScriptService`, beside `Server` rather than inside
-it, and connect to what you need:
+`ServerScriptService > Server > Events` fires an event when something happens in
+the game. Make a Script in `ServerScriptService`, next to the `Server` folder (not
+inside it), and connect to the events you need:
 
 ```luau
 local ServerScriptService = game:GetService("ServerScriptService")
@@ -34,20 +31,20 @@ Events.towerWon:Connect(function(player, win)
 end)
 ```
 
-Each event fires **after** the kit has finished with what it describes — a win
-is already saved when `towerWon` fires — and every listener runs on its own, so
-one that waits or errors holds nothing up.
+Each event fires **after** the kit has finished with it. For example, a win is
+already saved by the time `towerWon` fires. If your code waits or errors, it doesn't
+hold the kit up.
 
-| Event | Passes | When |
+| Event | Gives you | Fires when |
 | :-- | :-- | :-- |
-| `towerWon` | `player, win` | A tower is beaten and saved, including each tower of a rush. |
+| `towerWon` | `player, win` | A tower is beaten and saved. Also fires for each tower in a rush. |
 | `rushWon` | `player, rush` | The last tower of a rush is beaten. |
-| `towerLoaded` | `player, acronym, mode` | An attempt at a tower has loaded: entering it, restarting it, or reaching the next tower of a rush. |
-| `towerLeft` | `player, acronym` | A player leaves a tower without winning: the exit button, dying in Normal mode with Restart on Death off, or leaving the game. |
-| `runEnded` | `player, run` | A run ends without a win, whatever ended it: restarts and switching mode included. |
+| `towerLoaded` | `player, acronym, mode` | A tower loads for a player: entering it, restarting it, or reaching the next tower of a rush. |
+| `towerLeft` | `player, acronym` | A player leaves a tower without winning: Exit Tower, dying in Normal mode with Restart on Death off, or leaving the game. |
+| `runEnded` | `player, run` | A run ends without a win, for any reason, including restarts and mode switches. |
 | `shopPurchased` | `player, itemId, price` | A ticket shop purchase is saved. |
-| `gamePassApplied` | `player, passName` | The kit applies what a game pass gives: joining with it, buying it, or being gifted it. `passName` is its key in `Config > GamePasses`. |
-| `ticketsAwarded` | `player, amount, source` | Tickets are added. `source` is `"Tower"` or `"GamePass"`. |
+| `gamePassApplied` | `player, passName` | The kit gives a player what a game pass gives: when they join with it, buy it or are gifted it. `passName` is its key in `Config > GamePasses`. |
+| `ticketsAwarded` | `player, amount, source` | A player is given tickets. `source` is `"Tower"` or `"GamePass"`. |
 | `playerDataReady` | `player` | A player's saved data has loaded. |
 
 A `win` has these fields:
@@ -55,71 +52,77 @@ A `win` has these fields:
 | Field | What it is |
 | :-- | :-- |
 | `tower` | The tower's acronym. |
-| `ending` | The winpad's `EndingID`, which is the acronym itself for the main ending. |
-| `time` | Seconds, the same number the save holds. |
+| `ending` | The winpad's `EndingID`. For the main ending, that's the acronym. |
+| `time` | The time in seconds, the same number that's saved. |
 | `mode` | `"Normal"` or `"AllJumps"`. Practice never wins. |
 | `boosted` | Whether a boost item was used. |
-| `firstWin` | Whether this was the first win of that tower in that mode. |
-| `personalBest` | Whether this time is now the player's best for that tower in that mode. |
+| `firstWin` | Whether this is the player's first win of this tower in this mode. |
+| `personalBest` | Whether this time is now the player's best for this tower in this mode. |
 | `rush` | The rush it was part of, or `nil`. |
+| `modifiers` | The keys of the [modifiers](./modifiers.md) used. Empty if there were none. |
 
-A `rush` has `rush` (its name), `time`, `mode`, `boosted` and `personalBest`.
+A `rush` has `rush` (its name), `time`, `mode`, `boosted`, `personalBest` and
+`modifiers`.
 
 A `run` has these fields:
 
 | Field | What it is |
 | :-- | :-- |
 | `tower` | The tower's acronym. |
-| `reason` | `"died"`, `"restarted"`, `"exited"` or `"quit"`, or `"practice"`, `"allJumps"` or `"normal"` for switching to that mode. |
-| `time` | Seconds in this tower. |
+| `reason` | Why the run ended: `"died"`, `"restarted"`, `"exited"` (Exit Tower, or starting a run from the Modifiers menu), `"quit"`, `"practice"`, `"allJumps"` or `"normal"` (switching to that mode), or `"savedRun"` (loading a [saved run](./saved-runs.md)). |
+| `time` | Seconds spent in the tower. |
 | `mode` | `"Normal"`, `"AllJumps"` or `"Practice"`. |
-| `checkpoints` | How many of the tower's checkpoints the run had passed. |
+| `checkpoints` | How many of the tower's checkpoints the player had passed. |
 | `checkpointCount` | How many checkpoints the tower has. |
 | `boosted` | Whether a boost item was used. |
 | `rush` | The rush it was part of, or `nil`. |
+| `modifiers` | The keys of the modifiers used. |
 
-[Far messages](./announcements-webhooks.md#far-messages) are built on it.
+The kit's own [far messages](./announcements-webhooks.md#far-messages) are built on
+`runEnded`.
 
-::: tip Waiting for the kit
-Your Script may start before the kit's does. Connecting to an event needs no
-wait, but before calling into the kit — reading a tower, checking data — call
-`Events.waitForStartAsync()`, which returns once everything has started.
+::: tip Waiting for the kit to start
+Your Script might start before the kit does. Connecting to an event is always fine,
+but before you call anything else in the kit, such as reading a tower or a player's
+data, call `Events.waitForStartAsync()`. It returns once the kit has started.
 :::
 
-A run that used a Studio test tool from `ServerStorage > StarterPackStudio` is
-not a win and fires nothing.
+Runs that used a Studio test tool from `ServerStorage > StarterPackStudio` aren't
+wins and don't fire anything. Neither do wins with a modifier that doesn't count.
 
 ## Client events
 
-For what the player sees, `StarterPlayerScripts > Client > Events` fires on
-their own client. Put a LocalScript in `StarterPlayerScripts`:
+For things the player sees, `StarterPlayerScripts > Client > Events` fires events on
+that player's own client. Make a LocalScript in `StarterPlayer > StarterPlayerScripts`:
 
 ```luau
 local Client = script.Parent:WaitForChild("Client")
 local Events = require(Client:WaitForChild("Events"))
 
 Events.towerWon:Connect(function()
-	-- play a sound, show a screen of your own
+	-- play a sound, or show a screen of your own
 end)
 ```
 
-| Event | Passes | When |
+| Event | Gives you | Fires when |
 | :-- | :-- | :-- |
-| `towerLoaded` | `acronym` | A tower loads for this player, restarts included. |
-| `towerLeft` | nothing | The tower they were in is put away: they left it, died out of it, or won it. |
-| `towerWon` | nothing | They win, as the victory sound plays. |
-| `dataReady` | nothing | Their saved data has arrived. |
+| `towerLoaded` | `acronym` | A tower loads for this player, including restarts. |
+| `towerLeft` | nothing | The player is out of the tower they were in: they left, died out of it, or won. |
+| `towerWon` | nothing | The player wins, as the victory sound plays. |
+| `dataReady` | nothing | The player's saved data has arrived. |
+| `modifierStarted` | `key, modifier` | One of the run's [modifiers](./modifiers.md#a-modifier-of-your-own) starts: each time an attempt starts, including restarts, and when the player stops spectating. `modifier` is its entry in Config. |
+| `modifierEnded` | `key` | A modifier stops: the attempt ended, or the player started spectating. Undo whatever `modifierStarted` changed. |
 
-::: warning Anything that counts goes on the server
-A client can fire its own events whenever it likes. Rewards, saved values and
-badges belong on the server's `Events`.
+::: warning Rewards belong on the server
+Exploiters can fire client events whenever they like. Give rewards, save values and
+award badges from the server's `Events`, never the client's.
 :::
 
 ## Saving values of your own
 
-`ServerScriptService > Server > CustomData` keeps numbers, text and true/false
-values with each player's save, under names you choose. There is nothing to
-declare first.
+`ServerScriptService > Server > CustomData` saves numbers, text and true/false values
+with each player, under any names you choose. You don't need to set anything up
+first.
 
 ```luau
 local ServerScriptService = game:GetService("ServerScriptService")
@@ -129,24 +132,25 @@ local Events = require(ServerScriptService.Server.Events)
 Events.towerWon:Connect(function(player, win)
 	local wins = CustomData.increment(player, "TotalWins", 1)
 	if wins == 10 then
-		-- award a badge of your own
+		-- give a badge of your own
 	end
 end)
 ```
 
 | Function | What it does |
 | :-- | :-- |
-| `get(player, name)` | The value saved under `name`, or `nil`. |
-| `set(player, name, value)` | Saves a number, string or boolean, replacing what was there. `nil` removes it. `false` if it could not be saved. |
+| `get(player, name)` | Returns the value saved under `name`, or `nil`. |
+| `set(player, name, value)` | Saves a number, string or boolean, replacing what was there. `nil` deletes it. Returns `false` if it couldn't be saved. |
 | `increment(player, name, by)` | Adds to a number, starting from 0, and returns the new total. |
 
-Everything returns `nil` or `false` while the player's data is still loading, so
-read from `Events.playerDataReady` onward. A save holds up to 200 names of each
-kind; a name is up to 64 characters and a string up to 1000.
+Every function returns `nil` or `false` while the player's data is still loading, so
+start reading from `Events.playerDataReady`. Each player can have up to 200 names of
+each type. A name can be up to 64 characters, and a string up to 1000.
 
-The client can read these but never write them:
+The client can read these values, but never change them:
 
 ```luau
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local AccountData = require(ReplicatedStorage.Shared.Accounts.AccountData)
 
 AccountData.Client.custom.numbers.Observe(function(numbers)
@@ -154,16 +158,16 @@ AccountData.Client.custom.numbers.Observe(function(numbers)
 end)
 ```
 
-::: danger A name is saved with every player
-Like a tower acronym, a name you save under is written into player data. Keep it
-once your game is out; renaming it starts everyone from nothing.
+::: danger Names are saved with every player
+Like a tower acronym, a name you save under is written into player data. Once your
+game is out, keep it. Renaming it starts everyone from nothing.
 :::
 
 ## Admin commands of your own
 
-Make a Folder named `CustomCommands` in `ServerScriptService` and put commands in
-it the way the kit's own are written: a ModuleScript defining the command, and
-one beside it with `Server` on the end of its name that runs it.
+Make a Folder named `CustomCommands` in `ServerScriptService`. Each command in it is
+two ModuleScripts: one that describes the command, and one with `Server` at the end
+of its name that runs it.
 
 ```luau
 -- CustomCommands > Hello
@@ -183,15 +187,16 @@ return function(context)
 end
 ```
 
-They are checked against `Config > Admin` like every other command: add their
-`Group` to `permissions` with the lowest role that may run them, such as
-`["My Game"] = "Moderator"`, or only the top role can. An argument
-type of your own goes in a Folder named `Types` inside `CustomCommands`. The
-[Cmdr documentation](https://eryn.io/Cmdr/guide/Commands.html) covers what a
-command can declare.
+Your commands use the same roles as the kit's. Add their `Group` to `permissions` in
+`Config > Admin`, with the lowest role that may use them, such as
+`["My Game"] = "Moderator"`. Until you do, only the top role can use them.
 
-::: warning "Server" in a command's name
+To add an argument type of your own, put it in a Folder named `Types` inside
+`CustomCommands`. The [Cmdr documentation](https://eryn.io/Cmdr/guide/Commands.html)
+explains everything a command can have.
+
+::: warning Don't put "Server" in a command's file name
 Cmdr treats any ModuleScript with `Server` anywhere in its name as the half that
-runs a command. A command called `ServerTime` is taken for one and never
-registers; name the file something else and keep `Name = "server-time"` inside.
+runs a command. A command file called `ServerTime` is mistaken for one and never
+loads. Name the file something else and set `Name = "server-time"` inside it.
 :::

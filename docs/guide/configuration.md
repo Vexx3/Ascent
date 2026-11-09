@@ -1,50 +1,82 @@
 # Configuration Reference
 
-All settings are ModuleScripts in `ReplicatedStorage > Shared > Config`. Each one is a table of values, each with a comment explaining it. You shouldn't need to touch kit code to make a fangame.
+All of the kit's settings are ModuleScripts in `ReplicatedStorage > Config`.
+Open one, change a value, and press Play. Every setting has a comment above it
+saying what it does, so this page is a map of where things are rather than a copy
+of those comments.
 
-| Module | What it controls | Details |
+| Module | What it controls | More detail |
 | :-- | :-- | :-- |
-| [`Project`](#project) | Save keys, words, timings, modes, build warnings | this page |
-| `Towers` | Towers, types, difficulties, rushes | [below](#towers) |
-| `Worlds` | Worlds, Areas, unlock rules, personal servers | [Worlds & Personal Servers](./worlds-personal-servers.md) |
-| `RingSelect` | The hub screen | [Ring Select](./ring-select.md#config-ringselect) |
-| [`Economy`](#economy) | Tickets, shop, cosmetics | [Tickets & Shop](./ticket-shop.md), [Cosmetics](./cosmetics.md) |
-| `Elo` | What each tower is worth | [Player Elo](./elo.md) |
-| [`GamePasses`](#gamepasses) | Your game passes | [Game Passes](./game-passes.md) |
-| [`Settings`](#settings) | New players' settings and keys | this page, [Settings](./settings.md) |
-| `CustomSettings` | Settings you add | [Adding A Saved Setting](./custom-settings.md) |
-| [`Chat`](#chat) | Chat tags, win messages, webhooks | [Chat](./chat.md) |
-| [`Admin`](#admin) | Staff roles, and which commands each can use | [Admin Commands](./commands.md) |
-| [`Visuals`](#visuals) | The kit's UI colours, sounds, timings | this page |
-| [`Messages`](#messages) | Every other line of text players read | this page |
+| `Project` | Save keys, words, timings, game modes, build warnings | [Below](#project) |
+| `Towers` | Your towers, tower types, difficulties and rushes | [Below](#towers) |
+| `Worlds` | Worlds, Areas, unlock rules and personal servers | [Worlds & Personal Servers](./worlds-personal-servers.md) |
+| `RingSelect` | The hub's screen | [Ring Select](./ring-select.md#config-ringselect) |
+| `Economy` | Tickets, the shop and cosmetics | [Below](#economy) |
+| `Elo` | How much each tower is worth | [Player Elo](./elo.md) |
+| `Modifiers` | The modifiers players can pick, and what they pay | [Modifiers](./modifiers.md#config) |
+| `GamePasses` | Your game passes | [Game Passes](./game-passes.md) |
+| `Settings` | The settings and keys new players start with | [Settings](./settings.md) |
+| `CustomSettings` | Settings you add yourself | [Adding a Saved Setting](./custom-settings.md) |
+| `Chat` | Chat tags, win messages and Discord webhooks | [Chat](./chat.md) |
+| `Credits` | The Credits page, opened from the ⓘ button | [UI & HUD](./ui-and-hud.md#credits) |
+| `Admin` | Staff roles and which commands each one can use | [Admin Commands](./commands.md) |
+| `Visuals` | Colours, sounds and timings for the kit's UI | [Below](#visuals) |
+| `Messages` | Every other line of text players read | [Below](#messages) |
 
 ::: tip Config is checked when a server starts
-Mistakes, like a tower naming an Area that doesn't exist or a pass with no ID, are listed in the Output under **Ascent Config**, naming the line to fix.
+If something in Config doesn't add up, such as a tower in an Area that doesn't
+exist, the Output lists it under **Ascent Config** and names the line to fix.
 :::
 
-::: warning Names that are saved forever
-Tower acronyms, shop item keys, cosmetic keys, game pass keys, custom setting keys, and World and Area IDs are written into player saves. Renaming one after release loses what players earned under it.
+## Turning features on and off
+
+The kit ships with the simpler features on. To add more, or keep your game
+simple, change these:
+
+| Feature | Setting | Ships |
+| :-- | :-- | :-- |
+| [Elo](./elo.md) | `enabled` in `Config > Elo` | Off |
+| [Modifiers](./modifiers.md) | `enabled` in `Config > Modifiers` | Off |
+| [Saved runs](./saved-runs.md) | `savedRuns.enabled` in `Config > Project` | Off |
+| [The shop's daily items](./ticket-shop.md#daily-items) | `shop.featured.enabled` in `Config > Economy` | Off |
+| [All Jumps, Practice](./practice-all-jumps.md) | `allJumpsEnabled`, `practiceEnabled` in `Config > Project` | On |
+| [Leaderboards](./ui-and-hud.md#leaderboards-menu) | `leaderboardsEnabled` in `Config > Project` | On |
+| [Personal servers](./worlds-personal-servers.md#personal-servers) | `personalServers.enabled` in `Config > Worlds` | On |
+| [Tickets, the shop, cosmetics](#economy) | `enabled` in `Config > Economy` | On |
+| [Admin console](./commands.md) | `enabled` in `Config > Admin` | On |
+
+Turning a feature off removes its menu, and the server stops accepting it.
+Players keep what they earned, and get it back if you turn it on again.
+
+::: warning Some names are saved forever
+Tower acronyms, shop item IDs, cosmetic IDs, game pass keys, custom setting keys,
+and World and Area IDs are all saved with players. If you rename one after
+release, players lose whatever they earned under the old name.
 :::
 
 ## Project
 
-| Field | Default | Purpose |
+| Setting | Default | What it does |
 | :-- | :-- | :-- |
-| `configVersion` | `1` | Which version of Config this is. Raise it only after following a release's Updating steps. See [Updating Ascent](./updating.md). |
-| `towerWord`, `towerWordPlural` | `"Tower"`, `"Towers"` | What players read your towers called. Renames nothing saved. |
-| `currencyWord`, `currencyWordPlural` | `"ticket"`, `"tickets"` | What players read your currency called. |
-| `teamNames.start`, `teamNames.winners` | `"Start"`, `"Winners"` | Your two `Team`s. They must exist in the place. |
-| `emotes` | `{ "dance2", "laugh", "cheer" }` | Emotes players can play. |
-| `fpsCaps` | `{ 60, 75, 90, 144, 165, 240 }` | Rates the [FPS Cap](./settings.md#fps-cap) setting offers. |
-| `allJumpsEnabled`, `practiceEnabled` | `true` | Turns a mode off everywhere: its buttons, keys and server side. |
+| `configVersion` | `2` | Which version of Config this is. Only change it when [Updating Ascent](./updating.md) tells you to. |
+| `towerWord`, `towerWordPlural` | `"Tower"`, `"Towers"` | What your game calls a tower, in the menus. |
+| `currencyWord`, `currencyWordPlural` | `"ticket"`, `"tickets"` | What your game calls its currency. |
+| `teamNames.start`, `teamNames.winners` | `"Start"`, `"Winners"` | The names of your two teams. Both teams must exist in `Teams`. |
+| `emotes` | `{ "dance2", "laugh", "cheer" }` | The emotes players can use. See [Adding an emote key](./settings.md#adding-an-emote-key). |
+| `fpsCaps` | `{ 60, 75, 90, 144, 165, 240 }` | The frame rates the [FPS Cap](./settings.md#fps-cap) setting offers. |
+| `allJumpsEnabled`, `practiceEnabled` | `true` | Set to `false` to remove that mode from the whole game. |
+| `leaderboardsEnabled` | `true` | Set to `false` to remove the Leaderboards menu. |
+
+The emotes you can list are Roblox's built-in ones: `dance`, `dance2`, `dance3`,
+`laugh`, `cheer`, `point` and `wave`.
 
 ### Saved data
 
-| Field | Default | Purpose |
+| Setting | Default | What it does |
 | :-- | :-- | :-- |
-| `dataStoreKey` | `"BETA_RC_3_SCRIBE"` | Where progress is saved in the published game. |
-| `dataStoreKeyStudio` | `"STUDIO_KEY_1_SCRIBE"` | A separate save used only in Studio. |
-| `dataStoreStudioMode` | `"Mock"` | `Mock` forgets everything when you stop. `Live` saves to the Studio key. `NoSave` loads the Studio key but never saves. |
+| `dataStoreKey` | `"ASCENT_STABLE"` | Where player progress is saved in the published game. Change this to your own. |
+| `dataStoreKeyStudio` | `"STUDIO_KEY_1_SCRIBE"` | A separate save that's only used in Studio. |
+| `dataStoreStudioMode` | `"Mock"` | How Studio saves. `"Mock"` forgets everything when you stop. `"Live"` saves to the Studio key. `"NoSave"` loads the Studio key but never saves to it. |
 
 ::: danger
 Changing a save key starts everyone on an empty save.
@@ -52,44 +84,43 @@ Changing a save key starts everyone on an empty save.
 
 ### Timings
 
-| Field | Default | Purpose |
+| Setting | Default | What it does |
 | :-- | :-- | :-- |
-| `timings.touchDebounce` | `0.1` | Seconds a part ignores the same player after a touch. |
-| `timings.teleportCooldown` | `1.5` | Least seconds between one player's teleports. |
-| `timings.teleportTimeout` | `30` | Seconds before a stuck teleport is reported as failed. |
-| `timings.maximumQuickResetDelay` | `3` | The highest Quick Reset setting. |
-| `timings.shutdownWarnings` | `{ 300, 120, 60, 30, 15 }` | Seconds before a shutdown that everyone is warned. |
-| `timings.shutdownNotice` | `8` | Seconds each shutdown warning stays up. |
-| `timerSyncInterval` | `2` | Seconds between timer corrections. |
-| `checkpointInterval` | `0.25` | How often checkpoints are checked. |
-| `restartCooldown` | `0.1` | Least seconds between restarts. |
-| `restartResetsTowerRush` | `true` | Restarting in a rush goes back to its first tower. |
+| `timings.touchDebounce` | `0.1` | Seconds before a part reacts to the same player touching it again. |
+| `timings.teleportCooldown` | `1.5` | The shortest time, in seconds, between two teleports by one player. |
+| `timings.teleportTimeout` | `30` | Seconds to wait before a teleport counts as failed. |
+| `timings.maximumQuickResetDelay` | `3` | The longest Hold Time a player can pick for restarting. |
+| `timings.doubleTapRestartWindow` | `0.4` | How quickly, in seconds, the two presses of a double-tap restart must come. |
+| `timings.shutdownWarnings` | `{ 300, 120, 60, 30, 15 }` | How many seconds before a shutdown players get warned. |
+| `timings.shutdownNotice` | `8` | Seconds each shutdown warning stays on screen. |
+| `timerSyncInterval` | `2` | Seconds between the server correcting each player's timer. |
+| `checkpointInterval` | `0.25` | Seconds between checks of which checkpoint a player has reached. |
+| `restartCooldown` | `0.1` | The shortest time, in seconds, between two restarts. |
+| `restartResetsTowerRush` | `true` | Restarting during a rush goes back to its first tower. `false` restarts just the current tower. |
 
-### Winpads and other
+### Winpads and other settings
 
-| Field | Default | Purpose |
+| Setting | Default | What it does |
 | :-- | :-- | :-- |
-| `winpadInterval` | `0.25` | Seconds between winpad flashes. |
-| `winpadsChangeColor`, `winpadsChangeMaterial` | `true` | Winpads flash while someone is in the tower. |
-| `useDisplayName` | `false` | Display names instead of usernames in win messages. |
-| `teleportHeight` | `3` | Studs above a checkpoint or marker a player lands. |
-| `allJumpsMarkerSize` | `2, 2, 1` | Size of the All Jumps checkpoint block. |
-| `hidePlayersNearDistance` | `10` | Studs for Hide Players' "Near" option. |
+| `winpadInterval` | `0.25` | Seconds between winpad colour changes. |
+| `winpadsChangeColor`, `winpadsChangeMaterial` | `true` | Whether winpads flash while someone is in the tower. |
+| `useDisplayName` | `false` | Use display names instead of usernames in win messages. |
+| `teleportHeight` | `3` | How many studs above a checkpoint or marker a player lands. |
+| `allJumpsMarkerSize` | `2, 2, 1` | The size of the block an All Jumps checkpoint shows as. |
+| `savedRuns` | Off, 7 slots | See [Saved Runs](./saved-runs.md#set-it-up). |
+| `hidePlayersNearDistance` | `10` | How close, in studs, another player must be to be hidden by the **Near** option of Hide Players. |
 
 ### Build warnings
 
-Turn these off once your game is finished, so live servers' Output stays quiet.
+These print a warning in the Output while you build. Once your game is finished,
+set them to `false` so live servers stay quiet.
 
-| Field | Warns when |
+| Setting | Warns when |
 | :-- | :-- |
 | `checkpointsMissingWarning` | A tower has no checkpoints. |
 | `noMinimumTimeWarning` | A tower has no `minimumTime`. |
 | `r15Warning` | The game isn't set to R6. |
-| `uncataloguedTowerWarning` | A tower in the place isn't in `Config > Towers`. |
-
-### Emotes
-
-The emotes are Roblox's built-in ones: `dance`, `dance2`, `dance3`, `laugh`, `cheer`, `point`, `wave`. To add one, copy an `InputAction` in `ReplicatedStorage > AscentInputs > Gameplay` and name it `Emote_<name>`, then give it a key in `keybinds.emotes` in [Settings](#settings). A Controls row named after it (`Dance2` for `dance2`) lets players rebind it.
+| `uncataloguedTowerWarning` | A tower in this place isn't listed in `Config > Towers`. |
 
 ## Towers
 
@@ -99,160 +130,175 @@ towers = {
 },
 ```
 
-The key is the acronym, which must match the tower's model name in `Workspace > Towers`. **Every tower needs an entry**, or it is missing from every other place. The [Tower Setup plugin](./tower-setup-plugin.md#adding-a-tower-to-the-catalogue) writes it for you.
+The key (`ToH`) is the tower's acronym, and it must match the tower's name in
+`Workspace > Towers`. **Every tower needs an entry here**, or no other place knows
+it exists. The [Ascent Setup plugin](./tower-setup-plugin.md#making-a-tower)
+can write the line for you.
 
-| Field | Required | Purpose |
+| Setting | Required | What it does |
 | :-- | :-- | :-- |
-| `name` | yes | What players see. |
-| `difficulty` | yes | `rating.sub`: `5.33` is Low Challenging. See [Difficulties](./difficulties.md). |
-| `area` | yes | The Area `id` it's in. |
-| `badgeId` | no | Badge for beating it. |
-| `ajBadgeId` | no | Badge for beating it in All Jumps. |
-| `minimumTime` | no | Fastest believable time, in seconds. Faster wins are refused. |
-| `towerPoints` | no | Points it's worth. Defaults to `1`. |
-| `allJumpsPoints` | no | Points for an All Jumps win. |
-| `type` | no | A tower type. See [Tower Types](./difficulties.md#tower-types). |
-| `noBoosts` | no | Overrides its type's boost rule. |
-| `extended` | no | An event tower. The Completions chart shows and counts it only under [Extended Completions](./ui-and-hud.md#extended-completions). |
+| `name` | Yes | The tower's full name, which players see. |
+| `difficulty` | Yes | `5.33` is a Low Challenging. See [Difficulties](./difficulties.md). |
+| `area` | Yes | The `id` of the Area the tower is in. |
+| `badgeId` | No | A badge for beating the tower. |
+| `ajBadgeId` | No | A badge for beating it in All Jumps. |
+| `minimumTime` | No | The fastest time, in seconds, that a real player could beat it in. Faster wins are refused. |
+| `towerPoints` | No | How many points beating it is worth. Defaults to `1`. |
+| `allJumpsPoints` | No | Points for beating it in All Jumps. |
+| `type` | No | Its tower type, such as `"Citadel"`. See [Tower types](./difficulties.md#tower-types). |
+| `noBoosts` | No | `true` bans boost items in this tower, and `false` allows them, whatever its type says. |
+| `extended` | No | Marks an event tower. See [Extended Completions](./ui-and-hud.md#extended-completions). |
+| `warning` | No | Warns players before they climb. See [A warning before climbing](./tower-setup.md#a-warning-before-climbing). |
 
-Most of these can also be set as attributes on the tower model, and the attribute wins in that place. See [Building A Tower](./tower-setup.md). Endings are only attributes; see [Winpads & Endings](./winpads-endings.md).
+You can also set most of these as attributes on the tower itself. See
+[Building a Tower](./tower-setup.md). Endings are set on the winpads. See
+[Winpads & Endings](./winpads-endings.md).
 
-Types, difficulties, sub-difficulties and categories are on [Difficulties](./difficulties.md). Rushes are on [Tower Rushes](./tower-rushes.md).
+Tower types, difficulties and difficulty categories are on
+[Difficulties](./difficulties.md). Rushes are on [Tower Rushes](./tower-rushes.md), and
+badges for goals, such as beating 10 towers, are on [Badges](./badges.md).
 
 ## Economy
 
-| Field | Default | Turns off |
+| Setting | Default | Set to `false` to turn off |
 | :-- | :-- | :-- |
 | `enabled.tickets` | `true` | Tickets, and the shop with them. |
-| `enabled.shop` | `true` | The Ticket Shop. |
+| `enabled.shop` | `true` | The ticket shop. Players still earn tickets. |
 | `enabled.cosmetics` | `true` | The Cosmetics menu and every trail and aura. |
-| `enabled.cosmeticCategories.Trails` / `.Auras` | `true` | Just one kind. |
+| `enabled.cosmeticCategories.Trails`, `.Auras` | `true` | Just trails, or just auras. |
 
-Turning a feature off removes its menu and stops the server accepting it. Saves keep everything.
+Turning something off removes its menu and the server stops accepting it.
+Players keep what they have, and get it back if you turn it on again.
 
-`tickets` and `shop` are on [Tickets & Shop](./ticket-shop.md), `cosmetics` on [Cosmetics](./cosmetics.md). `rarityColors` gives each of the five rarities its colour.
+Tickets and the shop are explained on [Tickets & Shop](./ticket-shop.md), and
+cosmetics on [Cosmetics](./cosmetics.md). `rarityColors` sets the colour of each
+of the five rarities.
 
 ## GamePasses
 
-One entry per pass. Roblox supplies its name, price and picture; see [Game Passes](./game-passes.md) for the fields.
+One entry per game pass. Roblox supplies each pass's name, price and picture, so
+Config only says what the pass does. See [Game Passes](./game-passes.md).
 
 ## Settings
 
-What a **new** player's settings start as. Players' own choices are saved, so this doesn't change existing players.
-
-| Field | Default |
-| :-- | :-- |
-| `quickResetDelay` | `1` |
-| `restartOnDeath` | `false` |
-| `highFPSPhysicsFix` | `false` |
-| `fpsCap` | `"Off"` |
-| `alignmentButtons` | `false` |
-| `emoteButtons` | `false` |
-| `transparentAccessories` | `false` |
-| `towerLoadingBehavior` | `"Unload Towers"` |
-| `fpsDisplay` | `false` |
-| `hideTimer` | `false` |
-| `hideUI` | `false` |
-| `flipIndication` | `true` |
-| `extendedCompletions` | `false` |
-| `disableProgress` | `false` |
-| `hideDisabledItems` | `false` |
-| `invisiblePlayers` | `"Off"` |
-| `mobileDPad` | `"Off"` |
-| `hideCosmetics` | `"Off"` |
-| `keyDisplayLimit` | `5` |
-| `hideBubbleChat` | `false` |
-| `alignmentDot` | `false` |
-| `audioVisualizer` | `"Off"` |
-| `reduceMotion` | `false` |
-| `uiScale` | `1` |
-| `musicVolume` | `0.5` |
-| `musicVolumeSteps` | `{ 0, 25, 50, 75, 100, 125, 150, 170, 200 }` |
-| `checkpointCamera` | `true` |
-| `checkpointTransparency` | `0.5` |
-| `keybinds` | see [Settings](./settings.md) |
-
-What each does, and the allowed values, are on [Settings](./settings.md).
+The settings and keys a **new** player starts with. Players who have already
+changed a setting keep their own choice. Every setting and key is listed on
+[Settings](./settings.md).
 
 ## Chat
 
-`tags` gives players chat tags, `messages` holds the win messages, `webhooks` the Discord ones, and `farMessages` the lines in chat (and optionally Discord) when a run ends far up a hard tower. See [Chat](./chat.md), [Announcements & Webhooks](./announcements-webhooks.md) and [Far Messages](./announcements-webhooks.md#far-messages).
+| Part | What it holds | Page |
+| :-- | :-- | :-- |
+| `tags` | Chat tags, such as `[Owner]` | [Chat](./chat.md) |
+| `messages` | The win messages in chat | [Chat](./chat.md#win-messages) |
+| `webhooks` | Discord posts for wins | [Announcements & Webhooks](./announcements-webhooks.md) |
+| `farMessages` | Messages when a run ends far up a hard tower | [Far messages](./announcements-webhooks.md#far-messages) |
+| `antiCheatKickMessages` | The chat line when the anti-cheat kicks someone | [Announcements & Webhooks](./announcements-webhooks.md) |
 
 ## Admin
 
-Your staff roles (by user ID or group rank), the lowest role each group of commands needs, and per-command exceptions. The owner of the experience always has the top role. See [Roles and permissions](./commands.md#roles-and-permissions).
+Your staff roles, given by user ID or group rank, and which roles can use which
+commands. The experience's owner always has the top role. See
+[Roles and permissions](./commands.md#roles-and-permissions).
 
 ## Visuals
 
-Colours, sounds and timings for the kit's own UI. The menu's and the HUD's own colours, fonts and sizes are in `ReplicatedStorage > Design` instead: see [Styling the Menu & HUD](./styling.md).
+Colours, sounds and timings for the kit's own UI. The menu's and HUD's colours,
+fonts and sizes are in `ReplicatedStorage > Design` instead. See
+[Styling the Menu & HUD](./styling.md).
 
-| Section | Controls |
+| Setting | What it controls |
 | :-- | :-- |
-| `completions` | Completions menu colours, and how fast a 100% bar cycles. |
-| `towerSigns` | Portal signs and chart lines on the towers. |
-| `towerRush` | The tower list during a rush. |
-| `menu` | The hub's sliding toggles, on (`toggleOn`) and off (`toggleOff`). |
-| `allJumpsMarker` | The All Jumps checkpoint block's colour and material. |
-| `timing` | Animation lengths, how long notifications stay up, how fast the loading dots move (`loadingDots`), and Hide UI's fades (`hideUIFadeIn`, `hideUIFadeOut`, `hideUILinger`, `hideUITapLinger`). |
-| `audioVisualizerStrength` | How hard each Audio Visualiser option shakes the camera. |
-| `flipIndication` | The Flip Indication copy's `body` and `edges`. |
-| `cosmeticPreview` | How far behind (`distance`) and above (`height`) the cosmetics preview camera sits. |
-| `layoutEditor` | The Edit UI Layout screen's colours. |
+| `completions` | The Completions chart's colours, and how fast a 100% bar cycles through the rainbow (`rainbowSpeed`). |
+| `towerSigns` | The colours a tower's signs change to once it's beaten. See [Signs that change colour](./tower-setup.md#signs-that-change-colour). |
+| `towerRush` | The tower list shown during a rush. |
+| `allJumpsMarker` | The colour and material of All Jumps checkpoint blocks. |
+| `timing` | How long animations take, how long notifications stay up, how fast the loading dots move, Hide UI's fades, and how long the FPS key notice stays up. |
+| `audioVisualizerStrength` | How hard each Audio Visualizer option shakes the camera. |
+| `flipIndication` | The colours of the Flip Indication preview. |
+| `screenScaling` | Makes the menu, HUD, backpack and music button bigger on screens above 1080p, up to twice the size on 4K. Remove it to keep them at their built size. |
+| `cosmeticPreview` | How far behind (`distance`) and above (`height`) the cosmetic preview camera sits. |
+| `layoutEditor` | The colours of Edit UI Layout's backdrop, guides and outlines. Its buttons are `HUD > EditLayoutBar`, and its backdrop, guides, grip and outline are in `HUD > EditLayoutParts`. |
 
-Difficulty colours are in `Towers`, rarity colours in `Economy`.
+Difficulty colours are in `Towers`, and rarity colours in `Economy`.
 
 ## Messages
 
-Every line of text players read, apart from win messages and chat tags (those are in `Chat`). Reword or translate them freely. Text in `{Braces}` is filled in for you; each message's comment says which it takes. Notifications draw rich text, so write `&amp;` for a plain `&`.
+Every line of text players read is here, except win messages and chat tags,
+which are in `Chat`. Reword or translate anything you like.
+
+- Words in `{Braces}` are filled in by the game. Each message's comment lists the
+  ones it can use.
+- Notifications use [rich text](https://create.roblox.com/docs/ui/rich-text), so
+  `<b>bold</b>` works, and a plain `&` must be written as `&amp;`.
 
 | Group | Holds |
 | :-- | :-- |
-| `loading` | Every loading screen's line: loading data, and teleporting to where. |
-| `ringSelect` | The hub screen. |
-| `dataKicks` | Kicks for unusable saves. |
-| `wins` | The `[GLOBAL]` and `[SERVER]` prefixes. |
+| `loading` | Every loading screen's text. |
+| `ringSelect` | The hub's screen. |
+| `dataKicks` | What a player is told if their save can't be used. |
+| `wins` | The `[GLOBAL]` and `[SERVER]` tags in front of win messages. |
 | `rewards` | Ticket payouts. |
-| `personalBests` | A new personal best, and the `BestTime` label. |
-| `teleports` | Teleport refusals. |
+| `personalBests` | New personal bests, and the best time shown on the HUD. |
+| `leaderboards` | The Leaderboards menu. |
+| `savedRuns` | The Saved Runs menu. |
+| `modifiers` | The Modifiers menu and the HUD's modifier line. |
+| `teleports` | Teleports that fail or are refused. |
 | `friends` | Joining friends. |
 | `personalServers` | Personal servers. |
-| `durations` | "a week", "10 minutes". |
+| `lagFree` | [Lag free servers](./worlds-personal-servers.md#lag-free-servers). Remove the group to turn them off. |
+| `durations` | Lengths of time, such as "a week" and "10 minutes". |
+| `towerWarning` | The warning before a tower. |
+| `confirmations` | The "Are you sure?" questions. |
 | `towers` | Entering, testing and leaving towers. |
-| `antiCheat` | Anti-cheat kick reasons. |
-| `locks` | Area requirements, such as `Beat 12 Towers (3/12)`. |
-| `teleportMenu` | The Teleport menu's buttons. |
+| `antiCheat` | Why a player was kicked by the anti-cheat. |
+| `locks` | Area unlock rules, such as `Beat 12 Towers (3/12)`. |
+| `teleportMenu` | The Teleport menu. |
 | `shop` | The ticket shop. |
-| `cosmetics` | Equipping cosmetics. |
-| `completions` | The Completions chart. |
-| `spectate` | The spectate panel. |
+| `cosmetics` | The Cosmetics menu. |
+| `completions` | The Completions menu. |
+| `spectate` | The spectate bar. |
 | `checkpoints` | The All Jumps checkpoint panel. |
-| `settingsMenu` | Keybind rows, music, place version, the FPS counter. |
+| `settingsMenu` | The Settings menu, including key names and the Controls tab's hints. |
 | `editLayout` | Edit UI Layout's buttons. |
-| `allJumpsLeaderstat` | The All Jumps player list column. |
-| `shopRotation` | The featured row changing. |
-| `gifts` | Gifting passes. |
+| `allJumpsLeaderstat` | The All Jumps column in the player list. |
+| `shopRotation` | The shop's featured items changing. |
+| `gifts` | Gifting game passes. |
 | `shutdown`, `shutdownKick` | Server shutdowns. |
-| `kickedByAdmin` | An admin kick with no reason. |
-| `commands` | Admin console refusals. |
+| `kickedByAdmin` | An admin kick with no reason given. |
+| `commands` | The admin console refusing a command. |
 
 ::: warning After an update
-A new release can add groups. The Output names any your `Messages` is missing; copy them from the new release.
+A new version of Ascent can add message groups. If your `Messages` is missing
+one, the Output names it when the server starts. Copy that group in from the new
+version's `Messages`.
 :::
 
 ## Sharing Config between your places
 
-Every place in your game needs the same `Config`. Make it a Roblox [package](https://create.roblox.com/docs/projects/assets/packages) so one change reaches them all:
+Every place in your game needs the same `Config`. The easiest way to keep them
+the same is to turn `Config` into a Roblox
+[package](https://create.roblox.com/docs/projects/assets/packages), so one change
+reaches every place.
 
-1. In one place, right-click `ReplicatedStorage > Shared > Config` and choose **Convert to Package**. Package only `Config`.
-2. In each other place, delete its `Config`, insert the package in the same spot, and tick **AutoUpdate** on the `PackageLink` inside it.
-3. To change a setting, unlock the package (the link at the top of any Config script), edit, then right-click `Config` and **Publish to Package**.
+1. In one place, right-click `ReplicatedStorage > Config` and choose
+   **Convert to Package**.
+2. In every other place, delete its `Config`, insert the package in the same
+   spot, and turn on **AutoUpdate** on the `PackageLink` inside it.
+3. To change a setting later, unlock the package (the link at the top of any
+   Config script), make your change, then right-click `Config` and choose
+   **Publish to Package**.
 
 ::: warning Things that catch people out
-- An unlocked, edited copy stops auto-updating until you publish it.
-- Auto-update happens in Studio. **Publish every place** after a change, or live servers keep the old settings.
+- A copy you've unlocked and edited stops updating until you publish it.
+- Packages only update in Studio. After a change, **publish every place**, or
+  live servers keep the old settings.
 - Don't delete the `PackageLink`.
-- Package the whole `Config`. Tower Setup's **Check** window warns about a package missing modules or behind the latest version.
-- If you use Rojo, don't package `Config`; Rojo already keeps every place in step.
+- Package the whole `Config` folder. The plugin's **Check** window warns if a
+  package is missing modules or is out of date.
+- If you use Rojo, don't package `Config`. Rojo already keeps every place the same.
 :::
 
-The types behind each module are in `ReplicatedStorage > Shared > ConfigTypes`, which is what gives you autocomplete. You never need to edit it.
+You'll also see `ReplicatedStorage > Shared > ConfigTypes`. It describes what each
+Config setting can be, which is what gives you autocomplete. You never need to
+edit it.

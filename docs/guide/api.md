@@ -1,41 +1,50 @@
 # API Reference
 
-For writing your own scripts on top of the kit. Most changes belong in `Config` instead.
+This page is for writing your own scripts on top of the kit. If you just want to
+change how something works, check `Config` first.
 
-::: tip Build on the stable part
-[Hooking Into the Kit](./hooks.md) (`Server > Events`, `Client > Events`, `Server > CustomData`, the `CustomCommands` folder) keeps working across 1.x updates. Everything else on this page is the kit's own code: useful to call, but a release may change it, and the [changelog](../changelog.md) lists any change under **Breaking**.
+::: tip Build on the hooks where you can
+[Hooking Into the Kit](./hooks.md) is kept the same from one version to the next.
+Everything else on this page is the kit's own code. You can call it, but a new version might
+change it. When that happens, the [changelog](../changelog.md) marks it as
+**Breaking**.
 :::
 
-## Where the code lives
+## Where the code is
 
-The file path is the Studio path, so an error in the Output names the file to open.
+Each script's path in the code is its place in the Explorer, so when the Output
+names a file, you know where to find it.
 
-| Tree | Runs on | Studio location |
+| Folder | Runs on | Explorer path |
 | :-- | :-- | :-- |
-| `Server` | Server | `ServerScriptService > Server` |
+| `Server` | The server | `ServerScriptService > Server` |
 | `Shared` | Both | `ReplicatedStorage > Shared` |
-| `Client` | Client | `StarterPlayer > StarterPlayerScripts > Client` |
+| `Client` | The client | `StarterPlayer > StarterPlayerScripts > Client` |
 
 ## Saved data
 
-`Shared > Accounts > AccountData` is the kit's [Scribe](https://scribe.ericplane.dev/) bundle. **Don't add another datastore wrapper beside it.**
+`Shared > Accounts > AccountData` saves and loads player data, using
+[Scribe](https://scribe.ericplane.dev/). **Don't add another DataStore library
+next to it.**
 
 ```luau
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local AccountData = require(ReplicatedStorage.Shared.Accounts.AccountData)
 local Data = AccountData.Server
 ```
 
-| Call | Purpose |
+| Call | What it does |
 | :-- | :-- |
-| `Data.GetState(player)` | `"Ready"` once the save has loaded. |
-| `AccountData.waitForDataAsync(player)` | Waits for the save, including a slow load. Use it on join. |
-| `Data.Get(player)` | The save. `Data.Get(player).tickets.Get()` reads; `.Set(n)` writes. |
-| `Data.Transaction(player, fn)` | Several writes that land together or not at all. |
-| `Data.Purchase(...)` | A charge that bills once even if requested twice. |
-| `Data.OwnsAsync(player, passName)` | Game pass ownership. |
-| `Data.Flush(player)` | Saves now. `false` means not confirmed *yet*, not failed. |
+| `Data.GetState(player)` | Returns `"Ready"` once the player's save has loaded. |
+| `AccountData.waitForDataAsync(player)` | Waits until the save has loaded, even if it's slow. Use it when a player joins. |
+| `Data.Get(player)` | The player's save. `Data.Get(player).tickets.Get()` reads a value, and `.Set(n)` changes it. |
+| `AccountData.read(player)` | The whole save as a plain table you can read, or `nil` if it hasn't loaded yet. |
+| `Data.Transaction(player, fn)` | Makes several changes that all save together, or not at all. |
+| `Data.Purchase(...)` | Charges a player only once, even if the request arrives twice. |
+| `Data.OwnsAsync(player, passName)` | Whether the player owns a game pass. |
+| `Data.Flush(player)` | Saves now. `false` means it isn't confirmed *yet*, not that it failed. |
 
-On the client, observe the field you read:
+On the client, watch just the part of the save you need:
 
 ```luau
 AccountData.Client.tickets.Observe(function(amount)
@@ -43,7 +52,8 @@ AccountData.Client.tickets.Observe(function(amount)
 end)
 ```
 
-Show Robux prices with `Data.GetPrice` / `Data.GetProductInfo`, which include regional pricing. See [Player Data](./player-data.md) for the saved fields.
+To show Robux prices, use `Data.GetPrice` or `Data.GetProductInfo`, which include
+regional pricing. Every saved field is listed on [Player Data](./player-data.md).
 
 ## Towers
 
@@ -54,22 +64,23 @@ Show Robux prices with `Data.GetPrice` / `Data.GetProductInfo`, which include re
 | `get` | `(acronym) -> TowerInfo?` |
 | `forEach` | `(callback: (string, TowerInfo) -> ()) -> ()` |
 | `loadForPlayerAsync` | `(player, acronym, request: LoadRequest?) -> boolean` |
-| `resetClientObjectsAsync` | `(player) -> boolean`, rebuilds client objects without restarting the run |
+| `resetClientObjectsAsync` | `(player) -> boolean`. Rebuilds the tower's client objects without restarting the run. |
 
-`LoadRequest` fields, all optional:
+A `LoadRequest` can have these fields, all optional:
 
-| Field | Default | Meaning |
+| Field | Default | What it does |
 | :-- | :-- | :-- |
-| `resetTimer` | `true` | Start the timer at zero and clear checkpoints. |
-| `reuseCharacter` | `false` | Move the current character instead of respawning. |
-| `keepClientObjects` | `false` | Keep the tower if it's already loaded. |
-| `newAttempt` | `true` | Count an attempt. |
+| `resetTimer` | `true` | Starts the timer from zero and clears checkpoints. |
+| `reuseCharacter` | `false` | Moves the current character instead of respawning it. |
+| `keepClientObjects` | `false` | Keeps the tower's objects if they're already loaded. |
+| `newAttempt` | `true` | Counts as a new attempt. |
 
 ::: danger
-`loadForPlayerAsync` doesn't check unlock requirements. Check them yourself first.
+`loadForPlayerAsync` doesn't check whether the player has unlocked the tower's Area.
+Check that yourself first.
 :::
 
-## Progression and rewards
+## Progress and rewards
 
 | Module | Functions |
 | :-- | :-- |
@@ -78,20 +89,23 @@ Show Robux prices with `Data.GetPrice` / `Data.GetProductInfo`, which include re
 | `Server > Towers > Badges` | `award(player, badgeId)`, `awardAsync(player, badgeId) -> boolean` |
 | `Server > Shop > PermanentTools` | `grant(player, template, grantId, source) -> boolean`, `findToolTemplate(name) -> Tool?` |
 
-`grantId` is saved, so never change it. Badge awards and webhook posts retry a failed request twice.
+`grantId` is saved, so never change it once players have the tool. Badge awards and
+webhook posts try again twice if a request fails.
 
 ## Custom settings
 
-`Shared > Settings > CustomSettings` reads a player's choice for a setting declared in `Config > CustomSettings`, on either side:
+`Shared > Settings > CustomSettings` reads a player's choice for a setting from
+`Config > CustomSettings`. It works on the server and the client:
 
 | Function | Returns |
 | :-- | :-- |
 | `toggle(settings, key)` | `boolean` |
 | `number(settings, key)` | `number` |
 | `choice(settings, key)` | `string` |
-| `key(settings, key)` | a `KeyCode` name |
+| `key(settings, key)` | A `KeyCode` name |
 
-Each returns the declared default if the player hasn't chosen. See [Adding A Saved Setting](./custom-settings.md).
+If the player hasn't changed the setting, each returns its default. See
+[Adding a Saved Setting](./custom-settings.md).
 
 ## Cosmetics
 
@@ -101,7 +115,7 @@ Each returns the declared default if the player hasn't chosen. See [Adding A Sav
 | :-- | :-- |
 | `unlockPlayerCosmetic` | `(player, category, cosmeticId) -> boolean` |
 | `revokePlayerCosmetic` | `(player, category, cosmeticId) -> boolean` |
-| `setPlayerCosmetic` | `(player, category, cosmeticId?) -> CosmeticsResult` (`nil` unequips) |
+| `setPlayerCosmetic` | `(player, category, cosmeticId?) -> CosmeticsResult`. Pass `nil` to take it off. |
 | `applyEquipped` | `(player) -> ()` |
 
 `category` is `"Trails"` or `"Auras"`.
@@ -114,14 +128,16 @@ Each returns the declared default if the player hasn't chosen. See [Adding A Sav
 | `Server > Announcements > Webhook` | `postAsync(secretName, payload) -> boolean` |
 
 ```luau
-Webhook.postAsync("NORMAL_WEBHOOK", { content = "Hello from my fangame" })
+Webhook.postAsync("NORMAL_WEBHOOK", { content = "Hello from my game" })
 ```
 
-The URL comes from the named secret (**Creator Dashboard → Experience → Secrets**). Posts never ping anyone.
+The URL comes from the secret with that name, on your experience's **Secrets** page
+in the Creator Dashboard. Posts never ping anyone.
 
-## Shutdown
+## Shutdowns
 
-`Server > Shutdown > ShutdownService` shows players a countdown before a server closes:
+`Server > Shutdown > ShutdownService` shows players a countdown before the server
+closes:
 
 | Function | Signature |
 | :-- | :-- |
@@ -129,31 +145,43 @@ The URL comes from the named secret (**Creator Dashboard → Experience → Secr
 | `cancel` | `(closeAt: number) -> ()` |
 | `pending` | `() -> boolean` |
 
-`closeAt` is an `os.time()`. It only announces; closing the server is up to you.
+`closeAt` is an `os.time()`. This only shows the countdown. Closing the server is up
+to you.
 
-## Session state
+## A player's current run
 
-`PlayerLifecycle.getSession(player)` returns a player's current run: tower, timer, mode, checkpoint, rush. Read it, but **don't write to it**. `Shared > PlayerAttributes` is the copy clients see.
+`Server > Accounts > PlayerLifecycle` has `getSession(player)`, which returns the
+player's current run: their tower, timer, mode, checkpoint and rush. You can read it, but **don't change it**. The
+client sees a copy of it through the attributes in `Shared > PlayerAttributes`.
 
 ## Packages
 
-| Package | Used for |
+| Package | What the kit uses it for |
 | :-- | :-- |
-| [Scribe](https://scribe.ericplane.dev/) | Saves, pass ownership, prices |
+| [Scribe](https://scribe.ericplane.dev/) | Saving, game pass ownership and prices |
 | [Trove](https://sleitnick.github.io/RbxUtil/api/Trove) | Cleaning up connections and instances |
 | [Signal](https://sleitnick.github.io/RbxUtil/api/Signal) | The kit's events |
-| [TopbarPlus](https://1foreverhd.github.io/TopbarPlus/) | Topbar buttons |
+| [TopbarPlus](https://1foreverhd.github.io/TopbarPlus/) | Buttons in the top bar |
 | [Cmdr](https://eryn.io/Cmdr/docs/intro/) | The admin console |
 | [Purse](https://github.com/ryanlua/purse) | The backpack |
 
-They ship inside the place.
+They're all already in the place.
 
 ## Networking
 
-Every remote is generated by [Blink](https://github.com/1Axen/blink) from one schema, shipped as `ServerScriptService > Server > Network > NetworkSchema`. **Never create a RemoteEvent**; add a message to the schema and regenerate.
+The kit's network messages are all made by [Blink](https://github.com/1Axen/blink)
+from one schema, which is in the place at
+`ServerScriptService > Server > Network > NetworkSchema`. **Don't make your own
+RemoteEvents for the kit.** Add a message to the schema and generate it again.
 
-To regenerate in Studio, use Blink's Studio plugin: paste in `NetworkSchema`, edit, and **Generate**. Put the results at `ReplicatedStorage > Shared > Network > BlinkClient` and `ServerScriptService > Server > Network > BlinkServer`, where the kit looks for them.
+To do that in Studio, use Blink's Studio plugin:
 
-::: warning Always regenerate both
-A client and server generated from different schemas silently don't talk to each other.
+1. Paste in the contents of `NetworkSchema`.
+2. Add your message, and press **Generate**.
+3. Put the results at `ReplicatedStorage > Shared > Network > BlinkClient` and
+   `ServerScriptService > Server > Network > BlinkServer`.
+
+::: warning Always replace both
+If the client and server are generated from different schemas, they stop
+understanding each other, and nothing tells you why.
 :::

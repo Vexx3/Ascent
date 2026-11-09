@@ -1,63 +1,98 @@
 # Practice & All Jumps
 
-| Mode | For |
-| :-- | :-- |
-| `Normal` | Real attempts. Earns everything. |
-| `Practice` | Learning a tower, with tools and your own checkpoints. Can't win. |
-| `AllJumps` | Beating a tower with your own checkpoints. Earns an All Jumps win. |
+Every tower can be played in three modes. Players switch between them from the
+menu's run buttons.
 
-Switching mode inside a tower restarts it (a rush restarts from its first tower). `allJumpsEnabled` and `practiceEnabled` in `Config > Project` turn a mode off entirely.
+| Mode | What it's for | What it earns |
+| :-- | :-- | :-- |
+| **Normal** | A real attempt, from the bottom to the top in one go. | Everything: the win, tickets, badges, tools and [Elo](./elo.md). |
+| **Practice** | Learning a tower, with practice tools and your own checkpoints. | Nothing. A Practice run can't win. |
+| **All Jumps** | Beating a tower with your own checkpoints. | An All Jumps win, the tower's All Jumps badge and less Elo. No tickets or tools. |
 
-## Placing Checkpoints
+- To turn a mode off for the whole game, set `allJumpsEnabled` or `practiceEnabled`
+  to `false` in `Config > Project`.
+- Switching mode while in a tower restarts it.
+- [Tower rushes](./tower-rushes.md) have no Practice mode, so the button hides
+  during one.
 
-In both modes, players place their own checkpoints:
+## Placing checkpoints
+
+In Practice and All Jumps, players place their own checkpoints as they climb:
 
 | Action | Default key |
 | :-- | :-- |
-| Place checkpoint | `E` |
-| Go to checkpoint | `Q` |
-| Remove checkpoint | `V` |
+| Place a checkpoint | `E` |
+| Go back to it | `Q` |
+| Delete it | `V` |
 
-Checkpoints stack: Remove takes off the newest, and Go and dying both return to the newest. With no checkpoint, dying returns to the tower's spawn. With **Restart on Death** on, dying restarts the tower instead and clears the checkpoints. Players can rebind the keys in Settings.
+- Checkpoints stack up. Delete removes the newest one, and going back (or dying)
+  takes you to the newest one.
+- With no checkpoints placed, dying sends you back to the tower's spawn.
+- Restarting, or dying with **Restart on Death** turned on, clears every
+  checkpoint.
+- Going back to a checkpoint puts you exactly where you were: the same spot, the
+  same speed and the same pose.
 
-Going back to a checkpoint, by Go or by dying, puts the player back as they were when they placed it: where they stood and faced, how fast they were moving, what they were doing, and their pose. One placed while climbing a truss comes back climbing.
+Restarting in these modes is quick: the tower isn't rebuilt, you just go back to
+its spawn.
 
-A restart in these modes is instant: only the player moves back to the spawn, and the tower isn't rebuilt. **ResetCOs** in `MainMenu > Main > ButtonsContainer` rebuilds the tower's moving parts without restarting the run: the player's checkpoints, and the tower's checkpoints already reached, stay, so going back to a checkpoint afterwards still counts toward the win.
+**Reset Objects** (its button in the menu, or `G`) rebuilds the tower's buttons and
+moving parts without restarting the run. Your checkpoints stay.
 
-## Practice Mode
+## Practice tools
 
-- The player gets the [practice tools](./boost-items.md#practice-tools): noclip, heal and godmode.
-- They can place checkpoints (if All Jumps is on).
-- They can't win the tower.
+In Practice mode, players get three [practice tools](./boost-items.md#practice-tools):
+`Noclip`, `Heal` and `Godmode`.
 
 ### Godmode
 
-`PracticeGodmode` switches damage off and on with a click; its name shows `Godmode [ON]` or `[OFF]`. It lasts through deaths and switches off on restart, leaving the tower, or leaving Practice. The server only allows it in Practice.
+Click Godmode to turn damage off, and click again to turn it back on. The tool's
+name shows `Godmode [ON]` or `Godmode [OFF]`. It stays on when you die, and turns
+off when you restart, leave the tower or leave Practice.
 
-## All Jumps Mode
+## The checkpoint panel
 
-A win records an All Jumps completion and can give the tower's `AJBadgeID`. It's checked like a Normal win, but gives no tickets or completion tools, and counts for less [Elo](./elo.md).
+The **Checkpoints** button, or the `C` key, opens the checkpoint panel. Its
+switches start the way `Config > Settings` says:
 
-## The Checkpoint Panel
-
-In both modes, `ButtonsHolder > AJMenuButton` opens `MainMenu > AJSettings`:
-
-| Part | Does |
+| Switch | Config > Settings |
 | :-- | :-- |
-| `CheckpointPlaced` | How many checkpoints are placed. |
-| `CPLoadCam > ToggleButton` | Whether going to a checkpoint also turns the camera to where it faced. |
-| `CPTransparency > InputBox`, `Button` | How see-through the markers are, 0 to 1. |
-| `TPCheckpoint > InputBox`, `Button` | Go to a checkpoint by number. |
-| `CPLoadButtons > ToggleButton` | Whether going to a checkpoint also puts the tower's buttons back as they were. Optional. |
-| `CPLoadLighting > ToggleButton` | Whether going to a checkpoint also puts back the lighting its lighting changers had set. Optional. |
+| Marker see-through | `checkpointTransparency` |
+| Turn the camera back | `checkpointCamera` |
+| Put buttons back | `checkpointButtons` |
+| Put lighting back | `checkpointLighting` |
+| Put boosts back | `checkpointBoosts` |
+| Put keys and objects back | `checkpointObjects` |
 
-Enter in a box does the same as its button. The choices are saved, starting from `checkpointCamera`, `checkpointTransparency`, `checkpointButtons` and `checkpointLighting` in `Config > Settings`. The panel is optional.
+## What a checkpoint puts back
 
-### Buttons and lighting at a checkpoint
+Going back to a checkpoint, or dying, puts the tower back the way it was when you
+placed the checkpoint:
 
-A checkpoint remembers the tower's buttons and lighting when it's placed, and puts them back when it's loaded, whether by teleporting to it or by dying:
+| What | How |
+| :-- | :-- |
+| **Buttons** | Pressed or not pressed, and a timed button with the time it had left. Works with v5 and v6 buttons. |
+| **Lighting** | Whatever lighting changers had set. v5 and v6. |
+| **Boosts** | Each one with the time it had left. A boost you picked up after the checkpoint ends. v5 and v6. |
+| **Keys** | You're holding them again, and a timed key has its time back. v6 only. |
+| **Morphers** | Back to the morph you had. v6 only. |
+| **Pushboxes** | Back where they were. A box spawned after the checkpoint is removed. |
 
-- **Buttons**: every button goes back to pressed or not. A timed one comes back with the time it had left, so a button pressed 3 seconds into a 10-second timer lets go 7 seconds after the checkpoint loads, counting down on the button and in the timer list as if it had just been touched. This works for v5 and v6 buttons alike.
-- **Lighting**: whatever the lighting changers had set, of either version: the time of day, fog, sky and effects.
+Before moving you, the game lets go of anything holding you: a v6 zipline,
+balloon, swing, vine, seat or attacher, a Roblox seat, and any weld or rope
+attached to something outside your character.
 
-Each is taken whether its switch is on or not, so turning one on later still works with checkpoints already placed.
+**What doesn't come back:**
+
+- A key you used on a door, and the door it opened.
+- A v6 morph without a timer, if you pressed it after the checkpoint.
+- v5 keys, morphers and mounts, which keep track of themselves.
+- A v5 pushbox spawned after the checkpoint.
+- Objects that move or reset on their own, such as vanishing platforms, conveyors,
+  elevators, beat blocks and spinners.
+- Property changers, sequencers, music zones and dialogs.
+
+## Saving a run
+
+Players can save an All Jumps run to a slot and finish it later. See
+[Saved Runs](./saved-runs.md).

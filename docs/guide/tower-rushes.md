@@ -1,10 +1,16 @@
 # Tower Rushes
 
-A tower rush runs an ordered list of normal towers back-to-back.
+A tower rush is a list of towers played back to back as one run. When a player
+beats one tower, they're sent straight into the next.
 
-## Configure The Rush
+## Set up a rush
 
-Open `ReplicatedStorage > Shared > Config > Towers` and add an entry under `rushes`:
+A rush needs three things: its tower list, an entry so it shows in the menus, and
+a portal.
+
+### 1. List its towers
+
+Open `ReplicatedStorage > Config > Towers` and add the rush to `rushes`:
 
 ```luau
 rushes = {
@@ -16,22 +22,20 @@ rushes = {
 }
 ```
 
-| Field | Type | Default | Purpose |
-| :-- | :-- | :-- | :-- |
-| `towers` | `{ string }` | — | Ordered acronyms. Every acronym must also be a registered normal tower. |
-| `winroomMarker` | `string` | `"WinroomSpawn"` | Marker used after the final tower. |
-| `noBoosts` | `boolean` | `false` | Optional. Kills a player who equips a boost during this rush. |
+| Setting | Default | What it does |
+| :-- | :-- | :-- |
+| `towers` | | The towers' acronyms, in the order they're played. Each one must also be in `towers`. |
+| `winroomMarker` | `"WinroomSpawn"` | The [marker](./markers-portals.md) the player is sent to after the last tower. |
+| `noBoosts` | `false` | Kills a player who equips a boost item during the rush. |
 
-**Every tower in a rush has to stand in the same Area.** A rush plays its towers
-in the server the player is already in, and each Area is its own place, so a
-rush that reaches into another one could never finish. The kit refuses to start
-it, tells the player with `towers.rushUnavailable` from `Config > Messages`, and
-names the missing towers in the Output window.
+**Every tower in a rush must be in the same Area.** If one isn't, the rush won't
+start, the player sees `towers.rushUnavailable` from `Config > Messages`, and the
+Output names the towers that are missing.
 
-## Add Its Display Entry
+### 2. Add it to `towers`
 
-A rush also needs an entry in `towers`, beside the real towers, so it shows up
-on the Completions chart. Rushes show there only under
+The rush also needs an entry in `towers`, under the same key. This gives it a name
+and a difficulty, and puts it on the Completions chart under
 [Extended Completions](./ui-and-hud.md#extended-completions):
 
 ```luau
@@ -40,21 +44,26 @@ towers = {
 },
 ```
 
-The same shape as a tower, `area` included. No `rush = true` flag: the matching
-key in `rushes` is what makes it a rush. The kit ships two you can copy — `ETR`
-and `TSR`.
+You can give it a `badgeId` here too, for beating the whole rush.
 
-## Create A Portal
+The kit comes with two example rushes to copy: `ETR` and `TSR`.
 
-A `BasePart` under `Workspace > Portals` holding a `StringValue` named
-`TowerRush` whose value is the rush acronym. See
+### 3. Make a portal
+
+Put a part in `Workspace > Portals` with a StringValue named `TowerRush` inside
+it. Set the StringValue's `Value` to the rush's key (`MyRush`). See
 [Markers & Portals](./markers-portals.md).
 
-## Completion Behavior
+## What a rush gives
 
-- Individual towers record their normal or All Jumps completion as the rush advances.
-- The finished rush records separate stats and awards the `badgeId` on its `towers` entry.
-- Tower tickets are not awarded during the rush flow.
-- The player is sent to `winroomMarker` after the final tower.
+- Each tower in the rush counts as beaten, in Normal or All Jumps, as the player
+  gets through it.
+- Beating the whole rush saves its own stats, and gives the `badgeId` from its
+  `towers` entry.
+- Towers don't pay tickets during a rush.
+- After the last tower, the player is sent to `winroomMarker`.
+- Rushes have no Practice mode.
 
-`Config > Project > restartResetsTowerRush` decides whether Restart returns to the first tower or reloads the current tower.
+By default, restarting during a rush goes back to its first tower. Set
+`restartResetsTowerRush = false` in `Config > Project` to restart only the current
+tower.

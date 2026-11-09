@@ -1,64 +1,81 @@
 # Extending the Kit
 
-Try these first, in order:
+Before you edit the kit's own scripts, check whether you need to:
 
-1. **Config**: most changes are a value in `Shared > Config`.
-2. **Hooks**: reacting to wins, saving your own values, and adding admin commands need no edit to the kit. See [Hooking Into the Kit](./hooks.md). Code written that way survives [updates](./updating.md).
-3. **Editing the kit**: this page. Edits inside the kit's scripts are overwritten by the next update, so keep a note of them.
+1. **Config.** Most changes are just a setting in `ReplicatedStorage > Config`.
+2. **Hooks.** Reacting to wins, saving your own values and adding admin commands
+   all work from your own scripts. See [Hooking Into the Kit](./hooks.md). Code
+   written this way keeps working after [updates](./updating.md).
+3. **Editing the kit.** This page. The next update replaces the kit's scripts, so
+   keep a list of what you changed.
 
 ## Where code goes
 
-Code is grouped by feature, and each feature has the same name in every tree:
+The kit's code is grouped by feature, and each feature has the same name on the
+server and the client:
 
-| Feature | Studio location |
+| Feature | Where it is |
 | :-- | :-- |
-| Towers, winpads, Practice, All Jumps | `Server > Towers`, `Client > Towers` |
-| Ticket shop, game passes | `Server > Shop`, `Client > Shop` |
+| Towers, winpads, Practice and All Jumps | `Server > Towers`, `Client > Towers` |
+| The ticket shop and game passes | `Server > Shop`, `Client > Shop` |
 | Cosmetics | `Server > Cosmetics`, `Client > Cosmetics` |
 | Teleports and personal servers | `Server > Teleport`, `Client > Teleport` |
 | Settings | `Server > Settings`, `Client > Settings` |
-| Saved progress | `Server > Accounts` |
-| Admin console | `Server > Commands`, `Client > Commands` |
+| Saving | `Server > Accounts` |
+| The admin console | `Server > Commands`, `Client > Commands` |
 
-`Server` is `ServerScriptService > Server`, `Client` is `StarterPlayer > StarterPlayerScripts > Client`, `Shared` is `ReplicatedStorage > Shared`. An error in the Output names the script to open.
+`Server` is `ServerScriptService > Server`, `Client` is
+`StarterPlayer > StarterPlayerScripts > Client`, and `Shared` is
+`ReplicatedStorage > Shared`.
 
-A feature's first module to open is `<Feature>Service` on the server and `<Feature>Controller` on the client.
+In each feature folder, start with the module named `<Feature>Service` on the
+server, or `<Feature>Controller` on the client. When something errors, the Output
+names the script, and its name is the same as its place in the Explorer.
 
-## Requires
+## Requiring modules
 
-Use Roblox's require-by-string:
+The kit uses Roblox's require-by-string:
 
 ```luau
 local Difficulty = require("@game/ReplicatedStorage/Shared/Towers/Difficulty")
 local TowerHud = require("./TowerHud")
 ```
 
-| Form | Reaches |
+| Path | Finds |
 | :-- | :-- |
-| `@self/Child` | a module inside this one |
-| `./Sibling` | a module beside it |
-| `../Up/And/Over` | out of the parent and back down |
-| `@game/Service/...` | anything, from the top |
+| `@self/Child` | A module inside this one. |
+| `./Sibling` | A module next to this one. |
+| `../Up/And/Over` | A module up one level, then back down. |
+| `@game/Service/...` | Anything, starting from the service. |
 
-::: warning Stay relative inside your own tree
-Reach `Shared` with `@game`, but reach one client module from another with `./` or `../`, **never** `@game/StarterPlayer/...`. Client scripts run from a copy in `PlayerScripts`, so the `@game` path finds the copy that isn't running, and its state exists twice.
+::: warning Use relative paths inside the client
+Use `@game` to reach `Shared`, but reach one client module from another with `./`
+or `../`, **never** with `@game/StarterPlayer/...`. Client scripts run from a copy
+in `PlayerScripts`, so the `@game` path finds the copy that isn't running, and you
+end up with two of everything.
 :::
 
-Server code can require `Server` and `Shared`, client code `Client` and `Shared`, shared code only `Shared`.
+Server code can require `Server` and `Shared`. Client code can require `Client` and
+`Shared`. Shared code can only require `Shared`.
 
 ## Adding a server feature
 
-If it only reacts to the kit, use a Script of your own listening to [`Events`](./hooks.md#server-events). If it has to start with the kit:
+If your feature only reacts to things the kit does, write a Script of your own that
+listens to [the kit's events](./hooks.md#server-events). If it has to start with the
+kit:
 
-1. Create `Server > <Feature>` with a ModuleScript `<Feature>Service` returning a table with a `start()` function.
-2. Guard `start()` with a `started` flag.
-3. Add one line calling it to the `Server` script, where the order says what must run first.
+1. Make a folder `Server > <Feature>`, with a ModuleScript named
+   `<Feature>Service` that returns a table with a `start()` function.
+2. Inside `start()`, check a `started` flag so it can only run once.
+3. Add a line that calls it to the `Server` script, in the right spot in the
+   startup order.
 
-## Keep it safe
+## Keeping it safe
 
-- Rewards, purchases, wins, teleports and saves happen on the server.
-- Use the existing network messages; add one only when the client needs it. See [Networking](./api.md#networking).
-- Use the Scribe bundle for saving; never add a second datastore.
-- Reuse the Studio UI rather than building UI in code.
+- Give rewards, handle purchases, count wins, teleport and save on the server only.
+- Use the kit's existing network messages where you can. Only add one when the
+  client really needs it. See [Networking](./api.md#networking).
+- Save through the kit's Scribe setup. Don't add a second DataStore.
+- Build UI in Studio and hook it up from code, rather than making UI in code.
 
-Found a bug in the kit? Send it as a [bug report](https://github.com/Vexx3/Ascent/issues/new?template=bug_report.yml).
+Found a bug in the kit? Send a [bug report](https://github.com/Vexx3/Ascent/issues/new?template=bug_report.yml).

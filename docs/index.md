@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "Ascent"
   text: "A tower game template for Roblox Studio"
-  tagline: "Eternal Towers of Hell-style progression, set up by editing values rather than writing code."
+  tagline: "Make an Eternal Towers of Hell-style game by changing settings, not writing code."
   image:
     src: /logo.svg
     alt: Ascent
@@ -17,23 +17,23 @@ hero:
       link: /guide/getting-started#getting-the-kit
 
 features:
-  - title: Configuration
-    details: Thirteen ModuleScripts hold your towers, rewards, passes and messages. Every value is commented and typed.
+  - title: One Config folder
+    details: Your towers, rewards, game passes and every line of text live in one folder of ModuleScripts, with a comment on each setting.
     link: /guide/configuration
-    linkText: All settings
+    linkText: See every setting
 
-  - title: Building towers
-    details: A Studio window creates the parts a tower needs and reports what is still missing.
+  - title: A plugin for building towers
+    details: The Ascent Setup plugin adds the parts a tower needs and tells you what's still missing.
     link: /guide/tower-setup
     linkText: Build a tower
 
-  - title: Server-authoritative
-    details: Wins, checkpoints, minimum times, purchases and rewards are checked on the server.
+  - title: Checked on the server
+    details: Wins, checkpoints, minimum times, purchases and rewards are all checked by the server, so exploiters can't fake them.
     link: /guide/player-data
-    linkText: How data is saved
+    linkText: How saving works
 
-  - title: Extending it
-    details: A documented Luau surface for the things configuration cannot express.
-    link: /guide/api
-    linkText: API reference
+  - title: Room to grow
+    details: Listen for wins, save your own values and add admin commands from your own scripts, without touching the kit's.
+    link: /guide/hooks
+    linkText: Hook into the kit
 ---

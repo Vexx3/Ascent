@@ -1,12 +1,18 @@
 # Worlds, Areas & Personal Servers
 
-`Config > Worlds` is the map of your game. A **World** is a group of Areas, shown as a tab. An **Area** is one published Roblox place: a Ring, a Zone, a subrealm. Towers say which Area they are in by naming its `id`.
+`Config > Worlds` is the map of your game.
 
-::: tip Everything below Ring 1 is an example
-The kit ships two Worlds and eight Areas to show each unlock rule. Only Ring 1 is real; the others point at Ring 1's place until you put in your own Place IDs. Delete or rewrite them.
+- An **Area** is one place in your game, such as a Ring, a Zone or a subrealm.
+- A **World** is a group of Areas. Each World is a tab in the Teleport menu.
+
+Each tower says which Area it's in with `area` in `Config > Towers`.
+
+::: tip The shipped Areas are examples
+The kit comes with two Worlds and eight Areas to show off every unlock rule.
+Delete or rewrite everything after Ring 1.
 :::
 
-## Add Worlds And Areas
+## Add Worlds and Areas
 
 ```luau
 hubPlaceId = 1234567890,
@@ -27,31 +33,35 @@ worlds = {
 },
 ```
 
-The order you write them in is the order players see them.
+Players see Worlds and Areas in the order you write them. Every place must be in
+the **same Roblox experience**.
 
-| Field | Default | Purpose |
+| Setting | Default | What it does |
 | :-- | :-- | :-- |
-| `id` | — | Stable key. Saved with players, so never rename it after release. |
-| `name` | — | What players see. |
-| `placeId` | — | The place to send players to. `0` hides the Area. |
-| `emblem` | none | Small icon beside this Area's towers on the Completions chart. |
-| `image` | the place's thumbnail | Picture on the Area's card. |
-| `requirements` | none | Unlock rules, below. |
-| `sub` | `false` | Draws it as a subrealm, on the narrower card under the Area above it. |
-| `disabled` | `false` | Hides the Area, or a whole World. |
-| `extended` | `false` | An event place, or one that has closed. Its towers are shown and counted only under [Extended Completions](./ui-and-hud.md#extended-completions), and the hub's total leaves it out. |
+| `id` | | The Area's ID. It's saved with players, so don't rename it after release. |
+| `name` | | The name players see. |
+| `placeId` | | The Place ID players are sent to. `0` hides the Area. |
+| `emblem` | none | A small icon next to this Area's towers in the Completions menu. |
+| `image` | the place's thumbnail | The picture on the Area's card. |
+| `requirements` | none | What a player needs to unlock the Area. See [below](#access-requirements). |
+| `sub` | `false` | Shows the Area as a subrealm, under the Area before it. |
+| `disabled` | `false` | Hides the Area. Also works on a whole World. |
+| `extended` | `false` | Marks an event or closed place. See [Extended Completions](./ui-and-hud.md#extended-completions). |
 
-At the top of the file:
+These go at the top of the file:
 
-| Field | Default | Purpose |
+| Setting | Default | What it does |
 | :-- | :-- | :-- |
-| `hubPlaceId` | — | Where **Return to Hub** sends players. |
-| `personalServers.codeLength` | `16` | Characters in a share code, 8–30. |
+| `hubPlaceId` | | The hub's Place ID. **Return to Hub** sends players here. |
+| `personalServers.enabled` | `true` | Set to `false` to turn [personal servers](#personal-servers) off. |
+| `personalServers.codeLength` | `16` | How many characters a personal server's share code has, from 8 to 30. |
 | `personalServers.ownerLeaveGracePeriod` | `600` | Seconds a personal server stays open after its owner leaves. |
+| `personalServers.free` | `false` | Lets every player make personal servers, without the game pass. |
+| `personalServers.lagFree` | `true` | Lets owners make [lag free servers](#lag-free-servers). |
 
-Every place must be in the **same Roblox experience**, so they share player saves, passes and personal server codes.
+## Access requirements
 
-## Access Requirements
+Add `requirements` to an Area to lock it until a player has earned it:
 
 ```luau
 requirements = {
@@ -61,28 +71,31 @@ requirements = {
 },
 ```
 
-| Field | The player needs |
+| Requirement | The player needs |
 | :-- | :-- |
 | `towerCompletions` | This many different towers beaten. |
-| `difficulties` | This many at each difficulty **or harder**. A harder tower counts toward every easier line. |
+| `difficulties` | This many towers beaten at each difficulty **or harder**. |
 | `requiredTowers` | These exact towers beaten. |
 | `requiredBadges` | These Roblox badges. |
 | `elo` | At least this much [Elo](./elo.md). |
-| `scope` | Leave out to count only this World's towers; `"All"` counts every World. Does not affect `elo`. |
+| `scope` | Leave it out to count only this World's towers. Set it to `"All"` to count towers from every World. |
 
-Players see each rule with their progress, such as `Beat 12 Towers (3/12)`. The Teleport menu shows the first one not met; the hub lists them all (see [Ring Select](./ring-select.md#locked-areas)). The wording is `locks` in `Config > Messages`.
+A player needs every requirement listed. The menu shows each one with their
+progress, such as `Beat 12 Towers (3/12)`. You can change the wording in the
+`locks` group of `Config > Messages`.
 
-A refusal shows the rule as a notification, with its difficulty in colour. The server checks again before every teleport. A tower place also checks each player who arrives and sends anyone locked out back to the hub, except in Studio and for admins, so you can still build a locked Area.
-
-::: tip Lock the places themselves
-The arrival check only acts once a player has joined, and by then the Area has loaded for them. To stop them getting in at all, set **Access Control for Places** to **Secure within universe only** (Creator Dashboard → Audience → Access Settings). An Area place can then only be reached by a teleport the server makes, and every kit teleport is one. A player who follows a friend into an Area from the Roblox app lands in the hub instead, where the [friend list](./ring-select.md#friends-and-servers) still takes them there.
+::: warning A World with no towers needs `scope`
+Without `scope = "All"`, a World with no towers of its own counts nothing, so its
+`towerCompletions` and `difficulties` requirements can never be met.
 :::
 
-::: warning `scope` catches people out
-A World with no towers of its own can never meet a `towerCompletions` or `difficulties` rule without `scope = "All"`. The count stays at zero and the Area never opens.
+::: tip Lock the places too
+In the Creator Dashboard, set **Access Control for Places** to **Secure within
+universe only**. Then players can only reach an Area through the kit's teleports,
+which check its requirements. See [Place settings](./getting-started.md#place-settings).
 :::
 
-### Locking an Area behind a badge
+### Behind a badge
 
 ```luau
 requiredBadges = {
@@ -90,102 +103,94 @@ requiredBadges = {
 },
 ```
 
-`name` is what players are told; without it they see the badge's number. A badge a tower awards (its `badgeId`) opens the Area straight away. A badge given outside the kit is noticed on the next join.
+`name` is what the player is told they need. A badge a tower gives unlocks the Area
+straight away. A badge given some other way is noticed the next time the player
+joins.
 
-For "beat this tower", `requiredTowers` is simpler. Use a badge for things the kit cannot see, like an event.
-
-### Locking an Area behind Elo
+### Behind Elo
 
 ```luau
 requirements = { elo = 2500 },
 ```
 
-Elo counts every tower in every World, in both modes, and harder towers are worth far more. So an Elo rule asks for **depth**: a hundred Easy towers don't add up to one Catastrophic. It also works in a World with no towers of its own.
+Elo counts every tower in every World, in both Normal and All Jumps. While Elo is
+off in `Config > Elo`, an Area doesn't ask for it, and the Output says so.
 
-### The order rules are asked in
+### Examples
 
-A player told one reason hears, in order: badges, named towers, the tower count, each difficulty from easiest up, then Elo.
+These are the Areas the kit ships with:
 
-### Worked examples
-
-The shipped Areas each show one rule:
-
-| Area | Rule |
+| Area | Requirements |
 | :-- | :-- |
-| `Ring1` | none |
+| `Ring1` | None |
 | `Ring1Sub` | `towerCompletions = 1` |
 | `Ring2` | `towerCompletions = 6`, `difficulties = { Medium = 1 }` |
 | `Ring2Sub` | `difficulties = { Remorseless = 2, Insane = 1 }` |
 | `Ring3` | `requiredTowers = { "ToDNE" }`, `towerCompletions = 12` |
 | `Zone1` | `towerCompletions = 10`, `scope = "All"` |
-| `Zone1Sub` | `elo = 500` |
-| `Zone2` | named towers, a count, a difficulty and Elo together, with `scope = "All"` |
+| `Zone1Sub` | `towerCompletions = 7`, `scope = "All"`. With Elo on, try `elo = 500`. |
 
-For comparison, EToH's World 1 asks Ring 2 for 6 towers and 1 Medium+, Ring 5 for 22 and 3 Difficult+ and 1 Challenging+, Ring 9 for 60 and 4 Intense+ and 1 Remorseless+. See the [EToH wiki](https://jtoh.fandom.com/wiki/Realm).
+## Personal servers
 
-## Teleport Menu UI
+A personal server is a private copy of an Area that only the owner and people
+they share a code with can join. To offer them, do one of these:
 
-The Teleport menu uses these instances in `MainMenu`:
+- **Sell them:** set the `PersonalServers` pass's `id` in `Config > GamePasses`.
+- **Give them away:** set `personalServers.free = true` in `Config > Worlds`.
 
-```text
-MenusContainer
-  TeleportMenu
-    OptionsHolder
-      World1Button
-      World2Button
-      Friend
-      PS
-    World1Menu
-      Place
-        PlaceName
-        EnterButton
-        PSButton
-      SubPlace
-    World2Menu
-    PSMenu
-      InputCode
-      JoinCode
-    JoinFriendMenu
-      Friend
-        EnterButton
-        PlayerInfo
-        PlayerThumb
-      InfoLabel
-  SettingsMenu
-    SettingsTabs
-      PSButton
-    PSFrame
-      ToggleServerCode
-        ToggleButton
-      ServerCodeFrame
-        CodeBox
-        RegenButton
-```
+To turn personal servers off altogether, set `personalServers.enabled = false`.
+Their switch, the join box and the hub's **Servers** button go too.
 
-`World1Button`, `World1Menu`, and `World1Menu`'s `Place` and `SubPlace` cards are the templates for every World. Style them in Studio, but keep the names. An Area with `sub = true` uses `SubPlace`.
+How players use them:
 
-## Join Friend
+| To | Do this |
+| :-- | :-- |
+| Make one | Turn on **Personal Server** at the bottom of the Teleport menu, then press an Area's **Enter**. |
+| Share it | Inside the server, the owner opens **Your Server** on the Servers tab and turns on the share code. **Regenerate** makes a new code. |
+| Join one | Type the code at the top of the Servers tab. Anyone can join with a code, pass or not. |
+| Get back in | **Rejoin** returns a player to the same server. |
 
-The `Friend` tab lists friends playing in Areas the player has unlocked, one row cloned from `JoinFriendMenu > Friend` each: the Area's picture, the friend's headshot (`PlayerThumb`), `PlayerInfo` reading `Name (Area)`, and `EnterButton` to join them. It refreshes when opened, at most every ten seconds. `InfoLabel` explains an empty list. The words are under `friends` in `Config > Messages`.
+- When the owner leaves, the server closes after `ownerLeaveGracePeriod` seconds
+  and guests are sent to the hub. If the owner comes back first, it stays open.
+- A personal server is for one Area only.
+- Personal servers don't work in Studio.
+- Players can also make, join and return to personal servers from the hub. See
+  [Friends and servers](./ring-select.md#friends-and-servers).
+- The switch's text is `personalServerOn` and `personalServerOff` in the
+  `teleportMenu` group of `Config > Messages`.
 
-Roblox can't tell whether a friend is in a personal server. Joining one sends the player to a new public server of that Area instead, and they're told they could not join.
+## Lag free servers
 
-## Personal Servers
+A lag free server is a personal server with only the towers its owner picks, so
+the place has less to run.
 
-Set the `PersonalServers` pass's `id` in `Config > GamePasses` to sell them.
+1. Turn on **Personal Server**. A box appears next to it.
+2. Type the acronyms of the towers you want, separated by commas, such as
+   `ToAST, ToEM`.
+3. Press the Area's **Enter**.
 
-- A pass owner presses an Area's `PSButton` to make a personal server there and go to it. It starts private.
-- In it, the owner's `SettingsMenu > SettingsTabs > PSButton` opens the controls. `ToggleServerCode` creates a share code, shown in `CodeBox`. `RegenButton` replaces it. Turning the toggle off cancels it.
-- Anyone can join with the code through `PSMenu`, pass or not.
-- When the owner leaves, the server closes after `ownerLeaveGracePeriod` and guests go to the hub. They're warned when the owner leaves, and told if the owner comes back in time, which cancels the closing.
-- **Rejoin** in settings returns a player to the same personal server.
-- In the hub, the [server list](./ring-select.md#friends-and-servers) makes, joins and returns to personal servers.
+- Every tower you type must be in that Area. If one isn't, the server isn't made
+  and you're told why.
+- Leave the box empty to make a normal personal server.
+- Every other tower is removed from the server, along with its portal. A rush
+  keeps its portal only if you typed all of its towers.
+- Nobody can change the list once the server exists.
+- If the list can't be read, the server keeps every tower and says so in the Output.
 
-A personal server belongs to one Area. Going to another Area leaves it, and the player is warned first.
+The text is the `lagFree` group in `Config > Messages`. Set
+`personalServers.lagFree = false` to turn lag free servers off. The hub can only
+make normal personal servers.
 
-Teleports and personal servers don't work in Studio playtests. Test them in the published game.
+## The Teleport menu
 
-## See Also
+The kit copies `World1Button`, `World1Menu`, `Place` and `SubPlace` for every World
+and Area, so style those and every copy follows.
+
+The friends list shows friends who are in Areas the player has unlocked. Roblox
+can't tell the kit whether a friend is in a personal server, so joining one sends
+the player to a public server of the same Area.
+
+## See also
 
 - [Ring Select](./ring-select.md), the hub
 - [Game Passes](./game-passes.md)

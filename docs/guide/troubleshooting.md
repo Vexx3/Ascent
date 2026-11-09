@@ -1,145 +1,215 @@
 # Troubleshooting
 
-Check the **Output** window first. The kit names the tower, item or setting behind nearly every problem, and when a server starts it lists anything in `Config` that the place is missing.
+Start with the **Output** window (**View > Output** in Studio). The kit names the
+tower, item or setting behind almost every problem, and when a server starts it
+lists anything in Config that the place is missing.
 
-In a published game, open the Developer Console with `F9`. Something that fails during play, like a save, a teleport or a purchase, names the player and the reason. Expand the line for the rest, including the player's user ID.
+In the published game, press `F9` to open the Developer Console. When something
+fails during play, such as a save, a teleport or a purchase, it names the player
+and the reason. Click the line to see more, including the player's user ID.
 
-## Saved Data
+## Asking for help
 
-### Progress does not save in Studio
+1. In Studio, press **Play** and do whatever goes wrong. Then stop the playtest.
+2. Open the [Ascent Setup plugin](./tower-setup-plugin.md)'s **Check** window and
+   press **Print a report for support**.
+3. In the Output, copy everything from `Ascent report` to `end of the Ascent
+   report`.
+4. Send it with a sentence on what you expected and what happened instead.
 
-Turn on **Game Settings → Security → Enable Studio Access to API Services**. Then check `dataStoreStudioMode` in `Config > Project`: `Mock` (the default) forgets everything when you stop, `Live` really saves, `NoSave` never saves.
+The report says which version you run, any kit scripts you've edited, what the
+plugin found, and the errors from that playtest. If it lists edited scripts, say
+what you changed, or move it into your own script with
+[Hooking Into the Kit](./hooks.md) first.
 
-### Progress does not save in the published game
+## Setup
 
-The place must be published, and `dataStoreKey` in `Config > Project` set.
+### The Output says "Ascent Config: ... need a look"
 
-### Everyone lost their progress
-
-A save key changed, which points at a new, empty save. Change it back and the old saves are still there.
+The server found mistakes in Config when it started. Each line underneath says
+what to fix. None of them stop the game from running.
 
 ### The loading screen never goes away
 
-The Output says why. Usually Studio API access is off, or `MainMenu` is missing `ButtonsHolder`, `Main`, `Main > ButtonsContainer` or `Main > MenusContainer`. The [Tower Setup plugin](./tower-setup-plugin.md#the-check-window)'s Check window lists missing menu parts.
+The Output says why. It's usually one of these:
+
+- Studio API access is off. Turn on **Game Settings > Security > Enable Studio
+  Access to API Services**.
+- `StarterGui > HUD` is missing `ButtonsHolder`.
+- `StarterGui > MainMenu` is missing `Main`, `Main > ButtonsContainer` or
+  `Main > MenusContainer`.
+
+The [Ascent Setup plugin](./tower-setup-plugin.md#the-check-window)'s Check window
+lists every missing menu part.
+
+## Saved data
+
+### Progress doesn't save in Studio
+
+1. Turn on **Game Settings > Security > Enable Studio Access to API Services**.
+2. Check `dataStoreStudioMode` in `Config > Project`. The default, `"Mock"`,
+   forgets everything when you stop, on purpose. Set it to `"Live"` to really save.
+
+### Progress doesn't save in the published game
+
+Check that the place is published and `dataStoreKey` in `Config > Project` is
+set. Then open the Developer Console (`F9`) and look for a save warning.
+
+### Everyone lost their progress
+
+A save key was changed, so the game is reading a new, empty save. Change the key
+back and the old saves are still there.
 
 ## Towers
 
 ### "\<Tower\> has no checkpoints"
 
-It has no folder in `ServerStorage > TowerCheckpoints`, or the folder is empty. Fix it rather than silencing it: without checkpoints anyone can win the tower. See [Checkpoints Are The Anti-Cheat](./tower-setup.md#checkpoints-are-the-anti-cheat).
+The tower has no folder in `ServerStorage > TowerCheckpoints`, or its folder is
+empty. Fix it rather than turning the warning off: without checkpoints, anyone
+can win the tower. See
+[Checkpoints are the anti-cheat](./tower-setup.md#checkpoints-are-the-anti-cheat).
 
-### A player says their win was not counted
+### A player says their win didn't count
 
-The server kicks a player for one of three reasons:
+If the player was kicked, the kick message says why:
 
-- **"Completed the tower out of order"**: they missed a checkpoint. Usually a checkpoint too small to walk through; make it wide and thin across the whole path. If it happens to everyone, a checkpoint may be nowhere near the tower: the Output and the plugin's Check window name one that is.
-- **"Completed the tower too early"**: faster than `MinimumTime`. If honest players hit it, lower it.
-- **"Touched the winpad of a tower you're not in"**: the winpad is in another tower's folder.
+| Kick message | What happened | Fix |
+| :-- | :-- | :-- |
+| "Completed the tower out of order" | They missed a checkpoint. | Make the checkpoint wide and thin, across the whole path. If it happens to everyone, a checkpoint may be far from the tower. The Output and the plugin's Towers window name it. |
+| "Completed the tower too early" | They were faster than the tower's [minimum time](./tower-setup.md#minimum-time). | If honest players hit it, lower the minimum time. |
+| "Touched the winpad of a tower you're not in" | The winpad is inside another tower's folder. | Move the winpad into the right tower. |
 
-Some wins don't count without a kick:
+Some wins don't count, but don't kick either:
 
-- **Practice mode** never completes a tower.
-- **A boost item** in a tower or rush that bans them.
-- **A side ending** (a winpad with its own `EndingID`) announces the win but doesn't count as beating the tower. See [Winpads & Endings](./winpads-endings.md).
+- **Practice mode** never wins a tower.
+- **A boost item** was used in a tower or rush that bans them.
+- **A side ending** (a winpad with its own `EndingID`) is announced but doesn't
+  count as beating the tower. See [Winpads & Endings](./winpads-endings.md).
 
-### A tower does not appear in the Completions menu
+### A tower isn't in the Completions menu
 
-It needs an entry in `Config > Towers` with an `area`, and its model name must match the acronym exactly. [Tower Setup](./tower-setup-plugin.md#adding-a-tower-to-the-catalogue) adds the entry.
+It needs an entry in `Config > Towers` with an `area`, and its name in
+`Workspace > Towers` must match the acronym exactly. The
+[Ascent Setup plugin](./tower-setup-plugin.md#making-a-tower) can
+add the entry.
 
 ### A tower shows the wrong difficulty
 
-Look for a `Difficulty` StringValue or NumberValue inside the tower folder, left from an older kit. It overrides Config. Delete it.
+Look inside the tower for a `Difficulty` StringValue or NumberValue left over from
+an older kit. It overrides Config. Delete it.
 
-### A portal to a tower does nothing
+### A portal doesn't do anything
 
-Look for **`Skipping <Tower>`** in the Output: the tower has no spawn, or its checkpoints aren't numbered `1`, `2`, `3` without gaps. A portal also does nothing while the player is in another tower or a rush.
+Look for **`Skipping <Tower>`** in the Output. It means the tower has no spawn, or
+its checkpoints aren't numbered `1`, `2`, `3` without gaps.
 
-### The timer does not show
+A portal also does nothing while the player is in a different tower or a rush.
 
-Check the player's **Hide Timer** setting, then that `TowerGUI` has a `Timer` label.
+### The timer doesn't show
 
-### Beating the tower does nothing
+Check the player's **Hide Timer** setting, then check that `TowerGUI` has a
+`Timer` label.
 
-The winpad must be a `BasePart` named exactly `WinPad`. `Winpad` doesn't work. Tower Setup renames it for you.
+### Touching the winpad does nothing
 
-### Wins are rejected as too fast while testing
+The winpad must be a part named exactly `WinPad`, with a capital P. `Winpad`
+doesn't work. The Ascent Setup plugin can rename it for you.
 
-Set the tower's `MinimumTime` to `0` while testing, and put it back before release.
+### Wins are refused as too fast while testing
 
-## Tickets And The Shop
+Set the tower's [minimum time](./tower-setup.md#minimum-time) to `0` while you
+test, and put it back before release.
 
-### Beating a tower awards no tickets
+## Tickets and the shop
 
-A win pays only in Normal mode, on the main winpad, with no boost used, when the difficulty has a reward, and when the tower is off cooldown. See [Tickets & Shop](./ticket-shop.md#when-a-win-pays).
+### Beating a tower gives no tickets
 
-### A shop item does not grant its tool
+A win only pays tickets if it's in Normal mode, on the tower's main winpad, with
+no boost used, the tower's difficulty has a reward, and the player hasn't been
+paid for that tower recently. See
+[When a win pays](./ticket-shop.md#when-a-win-pays).
 
-Its `template` (or `name`) must match a Tool in `ServerStorage > TicketShopItems > Tools`.
+### A shop item doesn't give its tool
+
+Its `template` (or `name`, if there's no `template`) must match a Tool in
+`ServerStorage > TicketShopItems > Tools` exactly.
 
 ### A shop item says the cosmetic is missing
 
-A Trail or Aura item is matched to its cosmetic by **key**: shop item `Fallen` sells `cosmetics.Auras.Fallen`.
+A trail or aura in the shop is matched to its cosmetic by **ID**. A shop item
+called `Fallen` unlocks the cosmetic called `Fallen`.
 
-### A cosmetic unlocks but nothing appears
+### A cosmetic unlocks but nothing shows on the player
 
-It needs a model with its name in `ServerStorage > Cosmetics > Trails` or `> Auras`.
+There must be a model with the same name in `ServerStorage > Cosmetics > Trails`
+or `ServerStorage > Cosmetics > Auras`.
 
-### Beating a tower awards no completion tool
+### Beating a tower gives no completion tool
 
-The folder in `ServerStorage > CompletionTools` must be named exactly like the acronym and hold a `Tool`.
+The folder in `ServerStorage > CompletionTools` must be named exactly like the
+tower's acronym and hold a Tool.
 
-### An item never appears in the shop
+### An item never shows up in the shop
 
-`featuredOnly` items only show on the Featured page. An item with a misspelled `category` or `rarity`, or whose cosmetic kind is turned off, is left out, and the Output names it.
+Items with `featuredOnly` only appear on the Featured page. An item with a
+misspelled `category` or `rarity`, or one whose cosmetic kind is turned off, is
+left out, and the Output names it.
 
-## Game Passes
+## Game passes
 
 ### Owning the pass does nothing
 
-Check that `id` is the **pass** ID and `disabled` isn't set. Rejoin after buying, or run `gamepass-refresh`.
+Check that `id` is the **game pass** ID (not a badge or product ID) and that
+`disabled` isn't set. Then rejoin, or run the `gamepass-refresh` command.
 
-## Teleports And Personal Servers
+## Teleports and personal servers
 
-### Teleporting does nothing in Studio
+### Teleporting does nothing while testing
 
-Teleports and personal servers don't work in Studio. Test in the published game.
+A teleport needs the place it goes to published in the same experience, and
+personal servers only work in the published game. Test them there.
 
 ### An Area is missing from the Teleport menu
 
-Its `placeId` is `0` or it's `disabled`.
+Its `placeId` is `0`, or it has `disabled = true`.
 
-### An Area is locked when it should not be
+### An Area is locked when it shouldn't be
 
-Each tower's `area` in `Config > Towers` must be an Area `id`, or it counts for no World. A World with no towers of its own needs `scope = "All"`.
+Check that each tower's `area` in `Config > Towers` is a real Area `id`. A tower
+with a wrong `area` counts for no World.
 
-### A player was sent back to the hub on arrival
+A World with no towers of its own needs `scope = "All"` in its requirements. See
+[Access requirements](./worlds-personal-servers.md#access-requirements).
 
-They reached a locked Area without the menu, usually by following a friend. The Output says who and why.
+### A player was sent back to the hub as they arrived
 
-### "The shop just rotated and that price changed"
+They reached a locked Area without using the menu, usually by joining a friend.
+The Output says who and why.
 
-The featured row changed as they bought. Buying again at the new price works.
+### A player saw "The shop just rotated and that price changed"
 
-### Personal server codes do not work
+The featured items changed while they were buying. Buying again at the new price
+works.
 
-Every place must be in the same experience and published.
+### Personal server codes don't work
+
+Every place must be published, and in the same experience.
 
 ## Settings
 
-### A setting I added does not appear
+### A setting I added doesn't show up
 
-See [Adding A Saved Setting](./custom-settings.md#if-it-does-not-work). The Output names what's missing.
+See [If it doesn't work](./custom-settings.md#if-it-does-not-work). The Output
+names what's missing.
 
-## Admin Console
+## Admin console
 
-### F4 does nothing
+### F4 doesn't open the console
 
-In `Config > Admin`, `enabled` must be `true` and your user ID in `userIds`. The experience's owner is always allowed.
-
-### "Ascent Config: ... need a look"
-
-The server found mistakes in Config. Each line names what to fix. None stop the game.
+In `Config > Admin`, `enabled` must be `true` and your user ID must be in a
+role's `userIds`. The experience's owner can always open it.
 
 ### A command exists but does nothing
 
-Its `<Name>Server` module is missing from `ServerScriptService > Server > Commands > Catalog`. The Output says so.
+Its `<Name>Server` module is missing from
+`ServerScriptService > Server > Commands > Catalog`. The Output says which one.

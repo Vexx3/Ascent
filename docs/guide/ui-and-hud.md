@@ -1,102 +1,128 @@
 # UI & HUD
 
-The screens are in `StarterGui` and are yours to lay out. See [The Menus](./studio-structure.md#the-menus) for the names the kit looks for, and [Styling the Menu & HUD](./styling.md) for their colours, fonts and sizes.
+The kit's screens are ScreenGuis in `StarterGui`: `MainMenu` (the menu),
+`HUD` (the buttons while playing) and `TowerGUI` (the timer and loading screen).
+Open them in Studio to see what each part is.
 
-## HUD
+You can move, resize and restyle anything, as long as you **keep the names**. The
+kit finds every part by its name. The plugin's
+[Check window](./tower-setup-plugin.md#the-check-window) lists any name that's
+missing.
 
-`TowerGUI` shows the tower's acronym, the timer, the restart hold, boost use, rush progress, the Practice and All Jumps labels, and the loading screen (while data loads and during a teleport). The **Hide Timer** setting hides the timer, and so does clicking or tapping the timer; clicking the same spot again brings it back, and the setting follows either way. The kit raises its `DisplayOrder` to at least 12, above the topbar icons, so on a narrow screen those icons never cover the timer.
-
-A TextLabel named `BestTime` anywhere in `TowerGUI` shows the player's best time while the pointer is over the timer: the tower's, or the whole rush's during one, in Normal or All Jumps. It stays hidden when there is no best yet, in Practice, and with **Hide Timer** on. The shipped place has one at the top of `TimerPanel > CurrentStatus`. Its words are `hud` in the `personalBests` group of `Config > Messages`.
-
-`LoadingScreen` can be a Frame or a CanvasGroup. Either fades in and out; a CanvasGroup fades as one image, a Frame fades each part inside it. It covers the screen at once when a player joins.
-
-Its `LoadingLabel` says what is loading, with dots that count up: "Loading data" as a player joins, and "Teleporting to Ring 2" during a teleport, naming the Area (or the hub) whenever the server knows it. The words are the `loading` group of `Config > Messages`; leave the dots off them. `Config > Visuals.timing.loadingDots` sets how fast the dots move, and `0` shows all three, still. Nothing else in `LoadingScreen` is read, so an `Attention` label from an older kit can go.
-
-## Notifications
-
-The toasts in `MainMenu > NotificationHolder` draw rich text. A locked Area's requirement shows its difficulty in colour, as the hub does. In your own `Config > Messages`, `<b>` works, and a plain `&` has to be written `&amp;`.
-
-A message that is already showing isn't added again: the toast on screen keeps its place and starts its time over. At most five toasts show at once, and a sixth sends the oldest away.
-
-A win that beats the player's best sends one saying by how much. A first time or a slower run sends nothing. The words are `newBest` in the `personalBests` group of `Config > Messages`; set it to `""` to send none.
-
-## Menu Sounds
-
-The menus' sounds are Sound instances in `SoundService > Menu`, in every place, the hub too. Change the `SoundId`, `Volume` or anything else on the Sound itself:
-
-| Sound | Plays |
+| To change | Go to |
 | :-- | :-- |
-| `Click` | When a button is pressed. |
-| `Tab` | When a menu opens or a tab switches. Without it, `Click` plays. |
-| `Hover` | When the pointer moves onto a button. The shipped place has none, so hovering is silent. |
-| `Notification` | With a notification. |
-| `Award` | With a notification that gives the player something: tickets, a gift, or a new best time. Without it, `Notification` plays. |
-| `Purchase` | When a purchase goes through: a shop item, a gift sent, or a game pass. Without it, `Notification` plays, and a game pass plays nothing. |
-| `Error` | For a refusal or a failure: a locked Area, a teleport that failed, not enough tickets, or equipping a switched-off backpack item. Without it, `Notification` plays. |
-| `Victory` | To the player who beat a tower. |
-| `Death` | When an All Jumps death puts the player back on their checkpoint. |
+| Colours, fonts and sizes | [Styling the Menu & HUD](./styling.md) |
+| Any words players see | `Config > Messages` |
+| Sounds | [Menu sounds](#menu-sounds) below |
 
-Every one is optional. The Check window of the [Tower Setup plugin](./tower-setup-plugin.md) warns when the folder is missing.
+## When you redesign a menu
+
+- Give every scrolling list a `UIListLayout` or `UIGridLayout`, and set its
+  `AutomaticCanvasSize`, or the bottom of the list gets cut off.
+- Parts named `Template`, `Place`, `World1Button` and so on are copied to build
+  lists. Style the template and every copy follows.
+- To put something on a button's corner, like the ON label on Practice, put it in a
+  Folder. Otherwise the button's `UIListLayout` moves it.
+- Tab icons should be white outline images, so the stylesheet can colour them.
+- `TowerGUI > TimerPanel` must be an ImageButton, or players can't click the
+  timer to hide it.
+- Messages use rich text, so write a plain `&` as `&amp;`.
+- Don't end loading-screen text with dots. The screen adds its own.
+
+## Menu sounds
+
+The menu's sounds are in `SoundService > Menu`, in every place, including the hub.
+To change one, change the Sound's `SoundId` or `Volume`. Every sound is optional.
+
+| Sound | Plays | If it's missing, plays |
+| :-- | :-- | :-- |
+| `Click` | When a button is pressed. | Nothing |
+| `Tab` | When a menu opens or a tab changes. | `Click` |
+| `Hover` | When the pointer moves onto a button. The kit doesn't ship one. | Nothing |
+| `Notification` | With a message. | Nothing |
+| `Award` | With a reward: tickets, a gift or a new best time. | `Notification` |
+| `Purchase` | When something is bought. | `Notification` |
+| `Error` | When something is refused or fails. | `Notification` |
+| `Victory` | For the player who beat a tower. | Nothing |
+| `Death` | When a death in All Jumps sends the player back. | Nothing |
 
 ## Hide UI
 
-**Hide UI**, in the Visual settings, fades what a climb doesn't need, and brings it back while the pointer is over it:
+The **Hide UI** setting fades the menu buttons while a player climbs. They come
+back when the pointer moves over them.
 
-- `MainMenu > ButtonsHolder`: the Menu and Spectate buttons.
-- `MainMenu > PlaceVersionLabel`.
-- The music system's `LegacyMusicGui > Button`.
+To fade something of your own too, give it the `HideUI` tag. The fade timings are
+in `Config > Visuals.timing`.
 
-Faded buttons still work. On a phone, a tap presses the button and shows it for three seconds. The fades and both waits are in `Config > Visuals.timing`. The timer, health, keys, backpack and touch controls never fade.
+## Keyboard Overlay
 
-**To fade an element of your own**, give it the tag `HideUI` (**Properties → Tags**). Everything inside a tagged frame fades with it.
-
-The settings row is `SettingsMenu > VisualFrame > HideUI`. Without it the setting isn't offered.
+The **Keyboard Overlay** setting shows the keys a player is pressing, for
+recording runs. It only shows on a keyboard and mouse.
 
 ## Flip Indication
 
-**Flip Indication**, in the Visual settings, shows where a corner flip would put you while you stand in a flip part: a black copy of your body with white edges, moving as you do, and a white cone on its head pointing where you'll face. It lands exactly where pressing flip would, `TeleToObject` included, and faces the way you'll really end up: towards the camera with shift lock on or in first person, the way you're walking if you're moving, and turned round if you're standing still.
+The **Flip Indication** setting shows where a corner flip would put the player. It
+only shows on a part tagged `CanFlip` (or with a `CanFlip` inside it) that isn't
+switched off with `Activated = false` or tagged `DoNotFlipPlayer`, and it needs an
+R6 avatar. Its colours are in `Config > Visuals.flipIndication`.
 
-It follows the flip's own rules, so it shows only on a part the flip would move you off: one tagged `CanFlip` or holding a `CanFlip`, not switched off (`Activated = false`) and not tagged `DoNotFlipPlayer`. Like the flip, it needs an R6 body.
+## Confirmations
 
-It's on to start (`flipIndication` in `Config > Settings`), and its colours are `Config > Visuals.flipIndication`. The settings row is `SettingsMenu > VisualFrame > FlipIndication`. Without it the setting isn't offered, and players get the default.
+Restart Run, Exit Tower, Rejoin, Return to Hub, switching mode and Reset UI
+Layout ask "Are you sure?" first.
 
-## Main Menu
+- The questions are the `confirmations` group of `Config > Messages`. Remove the
+  group and the buttons act straight away.
+- Players can turn the questions off with the **Confirmations** setting.
 
-The menu restarts or exits the current tower, resets its client objects, switches Practice and All Jumps, opens Settings, Completions and Spectate, shows tickets and notifications, and offers Rejoin and Return to Hub. Tower buttons hide outside a tower.
+## Credits
 
-::: tip Keep the caption boxes short
-The text inside each sidebar button is deliberately shorter than the button, so that every caption scales to the same height. If you rename a button to something longer than `Completions`, shorten its text box a little until the captions match again. Leave `TextWrapped` on; turning it off also turns off `TextScaled`.
-:::
+The ⓘ button next to the menu's X opens the Credits page. Fill it in
+`Config > Credits`:
 
-## Completions Menu
+```luau
+groups = {
+	{ title = "Created by", people = { 123456789 } },
+	{ title = "Builders", people = { 123456789, "A builder's name" } },
+},
+```
 
-Shows the player's (or any looked-up player's) completed towers, All Jumps towers and rushes, attempts and wins, best times, time spent, hardest completion, and Elo with global rank. Percentages show one decimal place, rounded down. A bar at 100% cycles through the rainbow, as rush names always do; `rainbowSpeed` in `Config > Visuals.completions` sets how fast.
+- A person is a name in quotes, or a Roblox user ID without quotes. A user ID shows
+  their avatar and display name.
+- While `groups` is empty and `showAscent` is off, the ⓘ button is hidden.
 
-### Extended Completions
+With `showAscent = true`, the list ends with **Made with Ascent** and the kit's
+creator. It ships on, as a way to support Ascent. Set it to `false` to leave it out.
 
-Some towers stop counting once they're gone. An event tower (Halloween, Christmas, April Fools) or a place that has closed can't be beaten by anyone new, so normal completions leave it out. So do tower rushes, which aren't towers.
+## Extended Completions
 
-- **Normal view**, the default: those towers, their places and every rush are hidden and not counted. Each Area's bar reads `Normal`.
-- **Extended Completions**, in the Misc settings: they're all shown, by Area and by difficulty, and every bar counts everything shown. Each Area's bar reads `Extended`.
+Some towers can't be beaten by new players any more, such as event towers and
+places that have closed. Mark them with `extended = true`:
 
-Mark what's extended in Config:
+- on an Area in [`Config > Worlds`](./worlds-personal-servers.md), for every tower in it
+- or on a tower in [`Config > Towers`](./configuration.md).
 
-- `extended = true` on an Area in `Config > Worlds`: every tower in it. See [Worlds](./worlds-personal-servers.md).
-- `extended = true` on a tower in `Config > Towers`: an event tower in a normal place. See [Configuration](./configuration.md).
-- Every rush is extended already.
+The Completions menu then leaves them, and every rush, out of the normal count.
+Players can switch to the **Extended** view to count everything.
 
-Only the count changes. An extended tower still counts for Area unlocks, tower points and the leaderboard, Elo, and cosmetic unlocks, and still pays its badge and tickets. The hardest tower is never a rush. When you look someone up, *your* setting decides which view you see.
+Only the count changes. An extended tower still counts for Area unlocks, tower
+points, Elo and cosmetics, and still gives its badge and tickets.
 
-It's off to start (`extendedCompletions` in `Config > Settings`). The bar words are `normal` and `extended` in `Config > Messages.completions`. The settings row is `SettingsMenu > MiscFrame > ExtendedCompletions`; a row of that name works in any tab, so a place with it under `VisualFrame` is fine. Without it the setting isn't offered, and players get the normal view.
+## Leaderboards menu
 
-## Spectate
+| Tab | Ranks players by | Updates |
+| :-- | :-- | :-- |
+| Towers | Tower points | Every minute |
+| All Jumps | All Jumps points. Hidden while All Jumps is off. | Every minute |
+| Elo | [Elo](./elo.md). Hidden while Elo is off. | Every minute |
+| Fastest | Best times on one tower or rush | When opened |
 
-Watches another player: their name, tower, timer, rush progress, mode, boost use, health, frame rate, and how many are spectating them. See [Settings](./settings.md#spectating).
+Only times the server measured count, and a run that used a boost never sets one.
+To go without the menu, set `leaderboardsEnabled = false` in `Config > Project`.
+No fastest times are saved while it's off.
 
-## The Backpack Icon
+## The backpack button
 
-The backpack's topbar icon only shows for players without a keyboard (phones, tablets, controllers); on a keyboard, the backquote key opens it. To show it everywhere, delete the `BackpackIcon.follow` call in `Client > Backpack > TopbarIcon`.
-
-## Scrolling Lists
-
-Give each scrolling list a `UIListLayout` or `UIGridLayout` and set its `AutomaticCanvasSize`, and the kit sizes it so the last item can be reached.
+The backpack's button in the top bar only shows for players without a keyboard.
+To show it for everyone, delete the `BackpackIcon.follow(icon)` line in
+`Client > Backpack > TopbarIcon`.

@@ -1,54 +1,75 @@
 # Winpads & Endings
 
-A `WinPad` is the part players touch to finish a tower.
+A winpad is the part a player touches to beat a tower. It must be a part named
+exactly `WinPad`, with a capital P.
 
-## What happens on a touch
+## What happens when a player touches it
 
-The touch is ignored in Practice mode, and after a boost in a tower or rush that bans boosts. Otherwise the server checks, in order:
+The touch is ignored in Practice mode, and after a boost item was used in a tower
+or rush that bans them. Otherwise the server checks three things, in order:
 
 1. The winpad belongs to the tower the player is in.
 2. The run took at least the tower's minimum time.
-3. Every checkpoint was passed, in order.
+3. The player passed every checkpoint, in order.
 
-If all three pass, the win is announced, rewards are given, and the player goes to the winroom. In a rush, the winpad moves them on to the next tower instead; see [Tower Rushes](./tower-rushes.md).
+If all three pass, the win is announced, the player gets their rewards, and
+they're sent to the winroom. In a rush, they're sent on to the next tower instead.
+See [Tower Rushes](./tower-rushes.md).
 
-::: warning Failing a check is treated as cheating
-The player is **kicked** with nothing awarded, and a line from `antiCheatKickMessages` in `Config > Chat` is announced. With `webhooks.antiCheat` on, it's also posted to `ANTICHEAT_WEBHOOK`.
+::: warning Failing a check counts as cheating
+The player is **kicked**, gets nothing, and a line from `antiCheatKickMessages`
+in `Config > Chat` is announced. If `webhooks.antiCheat` is on, it's also posted
+to your `ANTICHEAT_WEBHOOK` Discord channel.
 :::
 
-A run that used a debug tool (like the Studio test tools) skips the checks, earns nothing, and the player is told it didn't count.
+A run that used a test tool, such as the ones Studio hands out, skips the checks
+but earns nothing, and the player is told it didn't count.
 
-## Standard Ending
+## The main ending
 
-Add a `BasePart` named exactly `WinPad` (not `Winpad`) at the end of the tower. A Normal win on it records the win and best time, and gives the badge, points, completion tools and tickets.
+Put a part named `WinPad` at the top of the tower. A Normal win on it saves the
+win and the best time, and gives the tower's badge, points, completion tools and
+tickets.
 
-An All Jumps win records an All Jumps win and can give `AJBadgeID`, but no tickets, tools or normal badges.
+An All Jumps win saves an All Jumps win and can give the `AJBadgeID` badge, but no
+tickets, completion tools or normal badge.
 
-## Custom Ending
+## Side endings
 
-For secret endings and alternate exits, add more winpads with attributes. A tower's **main ending** is the winpad whose `EndingID` is its acronym, or empty. **Only the main ending counts as beating the tower.** A side ending announces the win under its own name, gives its own badge (and the tower's, unless `PreventTowerBadge` is set) and sends the player to its winroom, but doesn't record the tower as beaten.
+For secret endings or other ways out, add more winpads with attributes.
 
-A secret ending:
+- The **main ending** is the winpad whose `EndingID` is empty or the tower's
+  acronym. **Only the main ending counts as beating the tower.**
+- A side ending is announced under its own name, gives its own badge (and the
+  tower's badge too, unless `PreventTowerBadge` is set), and sends the player to
+  its own winroom.
 
-1. Add another `BasePart` named `WinPad`.
-2. Set `EndingID = "SecretVault"` and `EndingName = "The Secret Vault"`.
-3. Set `BadgeID` for its own badge, and `PreventTowerBadge = true` if it shouldn't also give the tower's.
+To make a secret ending:
 
-The [Tower Setup plugin](./tower-setup-plugin.md#endings)'s **Add another ending** does this for you.
+1. Add another part named `WinPad`.
+2. Give it the attributes `EndingID = "SecretVault"` and
+   `EndingName = "The Secret Vault"`.
+3. Optional: give it `BadgeID` for its own badge, and `PreventTowerBadge = true` if
+   it shouldn't also give the tower's badge.
 
-## Winpad Attributes
+The [Ascent Setup plugin](./tower-setup-plugin.md)'s **Add another ending**
+button does this for you.
 
-| Attribute | Type | Default | Purpose |
+## Winpad attributes
+
+| Attribute | Type | Default | What it does |
 | :-- | :-- | :-- | :-- |
-| `EndingID` | `string` | the acronym | Which ending this is. Anything but the acronym makes it a side ending. |
-| `EndingName` | `string` | the tower's name | The name announced. Side endings only. |
-| `Difficulty` | `string` | the tower's | A difficulty **name**, like `"Extreme"`, for the announcement. Side endings only. |
-| `BadgeID` | `number` | `0` | A badge for this ending. |
-| `PreventTowerBadge` | `boolean` | `false` | Don't also give the tower's badge. |
-| `WinroomMarker` | `string` | `WinroomSpawn` | The marker to send the player to. |
+| `EndingID` | string | the acronym | Which ending this is. Anything other than the acronym makes it a side ending. |
+| `EndingName` | string | the tower's name | The name announced for a side ending. |
+| `Difficulty` | string | the tower's | A difficulty **name**, such as `"Extreme"`, announced for a side ending. |
+| `BadgeID` | number | `0` | A badge for reaching this ending. |
+| `PreventTowerBadge` | boolean | `false` | Stops this ending from also giving the tower's badge. |
+| `WinroomMarker` | string | `WinroomSpawn` | The [marker](./markers-portals.md) the player is sent to. |
 
-Old towers' Value objects with these names work too.
+Value objects with these names, from older kits, work too.
 
-## Winpad Visuals
+## Winpad colours
 
-Winpads get the kit's particles and flash colours and materials while someone is in the tower. `winpadInterval`, `winpadsChangeColor` and `winpadsChangeMaterial` in `Config > Project` control it.
+Winpads flash between colours and materials while someone is in the tower. Turn
+this off, or change its speed, with `winpadsChangeColor`, `winpadsChangeMaterial`
+and `winpadInterval` in `Config > Project`.
