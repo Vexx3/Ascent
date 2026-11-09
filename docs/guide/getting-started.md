@@ -30,8 +30,7 @@ versions are announced.
 The file you download has your map, menus and settings, but not the kit's code.
 The code comes as Roblox packages that only Ascent buyers can use.
 
-1. In Studio, open the Toolbox and go to **Inventory > My Packages**. If the
-   packages aren't there, try **Creations > Group Packages**.
+1. In Studio, open the Toolbox and go to **Creations > Group Packages**.
 2. Insert every Ascent package for this kind of place: a tower place needs five,
    and the hub needs four. The Check window lists the ones still missing.
 3. Open the plugin's **Check** window and press **Move into place**. Each package
