@@ -1,105 +1,29 @@
 /*
-  Ascent's look.
-
-  One accent, applied where it means something: links, the active sidebar item,
-  the brand button. Everything else is VitePress's own scale. No gradient text
-  and no decorative glow -- this is reference material, and the reader is here
-  to find a setting rather than to be sold anything.
+  The docs keep VitePress's own layout and type scale. The changes are one
+  typeface, IBM Plex, and the orange Studio shows on the folders a buyer edits,
+  used for links.
 */
 
 :root {
-  --vp-c-brand-1: #6d28d9;
-  --vp-c-brand-2: #5b21b6;
-  --vp-c-brand-3: #4c1d95;
-  --vp-c-brand-soft: rgba(109, 40, 217, 0.12);
-  --vp-c-text-selection-bg: rgba(109, 40, 217, 0.18);
+  --vp-c-brand-1: #c2410c;
+  --vp-c-brand-2: #9a3412;
+  --vp-c-brand-3: #c2410c;
+  --vp-c-brand-soft: rgba(255, 100, 30, 0.12);
+  --vp-c-text-selection-bg: rgba(255, 100, 30, 0.2);
 
-  /* Diagrams read from these, so one palette drives prose and pictures. */
-  --ascent-diagram-line: #cbd5e1;
-  --ascent-diagram-fill: #ffffff;
-  --ascent-diagram-panel: #f8fafc;
-  --ascent-diagram-text: #1e293b;
-  --ascent-diagram-muted: #64748b;
-  --ascent-diagram-accent: #6d28d9;
-  --ascent-diagram-accent-soft: rgba(109, 40, 217, 0.1);
-  --ascent-diagram-server: #0369a1;
-  --ascent-diagram-server-soft: rgba(3, 105, 161, 0.09);
-  --ascent-diagram-client: #b45309;
-  --ascent-diagram-client-soft: rgba(180, 83, 9, 0.09);
+  --vp-font-family-base: 'IBM Plex Sans', ui-sans-serif, system-ui, 'Segoe UI', sans-serif;
+  --vp-font-family-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
 }
 
 .dark {
-  --vp-c-brand-1: #a78bfa;
-  --vp-c-brand-2: #8b5cf6;
-  --vp-c-brand-3: #7c3aed;
-  --vp-c-brand-soft: rgba(167, 139, 250, 0.16);
-
-  --ascent-diagram-line: #3f4a5a;
-  --ascent-diagram-fill: #1b1f26;
-  --ascent-diagram-panel: #161a20;
-  --ascent-diagram-text: #e2e8f0;
-  --ascent-diagram-muted: #94a3b8;
-  --ascent-diagram-accent: #a78bfa;
-  --ascent-diagram-accent-soft: rgba(167, 139, 250, 0.14);
-  --ascent-diagram-server: #38bdf8;
-  --ascent-diagram-server-soft: rgba(56, 189, 248, 0.12);
-  --ascent-diagram-client: #fbbf24;
-  --ascent-diagram-client-soft: rgba(251, 191, 36, 0.12);
+  --vp-c-brand-1: #ff7a3d;
+  --vp-c-brand-2: #ff641e;
+  --vp-c-brand-3: #ff641e;
+  --vp-c-brand-soft: rgba(255, 100, 30, 0.16);
 }
 
-/* --- Home ------------------------------------------------------------- */
-
-/*
-  The hero states what this is and offers two ways in. The logo sits at its own
-  size rather than inside VitePress's glowing blob.
-*/
-.VPHero .image-bg {
-  display: none;
-}
-
-.VPHero .VPImage {
-  max-width: 180px;
-  max-height: 180px;
-}
-
-.VPHero .name {
-  letter-spacing: -0.03em;
-}
-
-.VPHero .text {
-  max-width: 640px;
-  font-size: 30px;
-  line-height: 1.3;
-  letter-spacing: -0.02em;
-}
-
-.VPHero .tagline {
-  max-width: 600px;
-  font-size: 17px;
-  line-height: 1.6;
-}
-
-.VPFeature {
-  border-radius: 10px;
-  transition: border-color 140ms ease;
-}
-
-.VPFeature:hover {
-  border-color: var(--vp-c-brand-1);
-}
-
-/* --- Prose ------------------------------------------------------------ */
-
-.vp-doc h2 {
-  border-top: 0;
-  margin-top: 40px;
-  padding-top: 0;
-  letter-spacing: -0.02em;
-}
-
-.vp-doc h3 {
-  margin-top: 28px;
-  letter-spacing: -0.01em;
+.vp-doc :not(pre) > code {
+  color: var(--vp-c-text-1);
 }
 
 .vp-doc table {
@@ -107,13 +31,94 @@
   width: 100%;
 }
 
-.vp-doc th {
-  font-size: 13px;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+/* --- Home: the contents, in as many columns as fit -------------------- */
+
+.contents {
+  columns: 3 200px;
+  column-gap: 40px;
+  margin-top: 20px;
+}
+
+.contents section {
+  break-inside: avoid;
+  margin-bottom: 28px;
+}
+
+.vp-doc .contents h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.vp-doc .contents ul {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.vp-doc .contents li + li {
+  margin-top: 4px;
+}
+
+.vp-doc .contents a {
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.vp-doc .contents a:hover {
+  text-decoration: underline;
+}
+
+/* --- Showcase --------------------------------------------------------- */
+
+.vp-doc .shots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 28px 24px;
+  margin-top: 28px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.vp-doc .shots li + li {
+  margin-top: 0;
+}
+
+.vp-doc .shots a {
+  display: block;
+  color: inherit;
+  font-weight: inherit;
+  text-decoration: none;
+}
+
+.vp-doc .shots img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  margin: 0;
+  border-radius: 4px;
+  background: var(--vp-c-bg-soft);
+}
+
+.vp-doc .shots .name {
+  display: block;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.vp-doc .shots .by {
+  display: block;
+  font-size: 14px;
   color: var(--vp-c-text-2);
 }
 
-.custom-block {
-  border-radius: 8px;
+.vp-doc .shots a:hover .name {
+  color: var(--vp-c-brand-1);
+  text-decoration: underline;
+}
+
+.vp-doc .shots a:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 4px;
+  border-radius: 4px;
 }

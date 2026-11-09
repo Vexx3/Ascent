@@ -1,42 +1,46 @@
 ---
-layout: home
-
-hero:
-  name: "Ascent"
-  text: "A tower game template for Roblox Studio"
-  tagline: "Make an Eternal Towers of Hell-style game by changing settings, not writing code."
-  image:
-    src: /logo.svg
-    alt: Ascent
-  actions:
-    - theme: brand
-      text: Get Started
-      link: /guide/getting-started
-    - theme: alt
-      text: Get the kit
-      link: /guide/getting-started#getting-the-kit
-    - theme: alt
-      text: See games made with it
-      link: /showcase
-
-features:
-  - title: One Config folder
-    details: Your towers, rewards, game passes and every line of text live in one folder of ModuleScripts, with a comment on each setting.
-    link: /guide/configuration
-    linkText: See every setting
-
-  - title: A plugin for building towers
-    details: The Ascent Setup plugin adds the parts a tower needs and tells you what's still missing.
-    link: /guide/tower-setup
-    linkText: Build a tower
-
-  - title: Checked on the server
-    details: Wins, checkpoints, minimum times, purchases and rewards are all checked by the server, so exploiters can't fake them.
-    link: /guide/player-data
-    linkText: How saving works
-
-  - title: Room to grow
-    details: Listen for wins, save your own values and add admin commands from your own scripts, without touching the kit's.
-    link: /guide/hooks
-    linkText: Hook into the kit
+title: Ascent
+titleTemplate: Documentation
+sidebar: false
+aside: false
+outline: false
+editLink: false
+lastUpdated: false
+prev: false
+next: false
 ---
+
+<script setup>
+import { useData, withBase } from 'vitepress'
+import { data as release } from './.vitepress/release.data.js'
+
+const { theme } = useData()
+const groups = theme.value.sidebar['/guide/']
+</script>
+
+# Ascent
+
+Ascent is a kit for making Eternal Towers of Hell-style fangames in Roblox
+Studio. It comes with towers, timers, a shop, a hub and all the menus, and you
+set it up by changing settings in one folder.
+
+This is its documentation. If you're new, start with
+[Getting Started](/guide/getting-started). To buy the kit, see
+[Getting the kit](/guide/getting-started#getting-the-kit).
+
+<p v-if="release">Latest version: <strong>{{ release.version }}</strong>, released {{ release.date }}. <a :href="withBase('/changelog')">Changelog</a></p>
+
+## Contents
+
+<div class="contents">
+  <section v-for="group in groups" :key="group.text">
+    <h3>{{ group.text }}</h3>
+    <ul>
+      <li v-for="item in group.items" :key="item.link"><a :href="withBase(item.link)">{{ item.text }}</a></li>
+    </ul>
+  </section>
+</div>
+
+## Games made with Ascent
+
+Released games built with the kit are on the [Showcase](/showcase).
