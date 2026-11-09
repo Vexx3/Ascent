@@ -4,6 +4,8 @@ What to do by hand for each release is in [Updating Ascent](https://kiels.dev/As
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-11-09
+
 ### Added
 
 - [Modifiers](https://kiels.dev/Ascent/guide/modifiers): start a tower or rush with any of twelve run modifiers that change its tickets and Elo. Off until you set `enabled = true`.
@@ -256,6 +258,7 @@ The first stable release. The names in [Hooking Into the Kit](https://kiels.dev/
 - Saves from fanofpixels' Multi-Tower Kit carry over. See [Moving An Old Kit Across](https://kiels.dev/Ascent/guide/migrating).
 
 [Unreleased]: https://github.com/Vexx3/Ascent/releases
+[2.0.0]: https://github.com/Vexx3/Ascent/releases/tag/v2.0.0
 [1.2.0]: https://github.com/Vexx3/Ascent/releases/tag/v1.2.0
 [1.1.1]: https://github.com/Vexx3/Ascent/releases/tag/v1.1.1
 [1.1.0]: https://github.com/Vexx3/Ascent/releases/tag/v1.1.0

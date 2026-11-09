@@ -8,7 +8,7 @@ The kit's code comes as Roblox packages, so most updates reach you by themselves
 ## Before you start
 
 1. Press **Play** and find the line in the Output that says which version you're
-   on, such as `Ascent 1.2.0 (stable)`. Older versions don't print it, so run
+   on, such as `Ascent 2.0.0 (stable)`. Older versions don't print it, so run
    `kit-info` in the admin console (`F4`) instead.
 2. Read the [steps for each release](#steps-for-each-release) between your
    version and the new one. Some releases need a few changes by hand.
@@ -84,7 +84,7 @@ into your own scripts using [Hooking Into the Kit](./hooks.md).
 
 Do the steps for every release newer than yours, oldest first.
 
-### Next release (from 1.2.0)
+### 2.0.0 (from 1.2.0)
 
 **Required.** Skip one of these and something will break:
 

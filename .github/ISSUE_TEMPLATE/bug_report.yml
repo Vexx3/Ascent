@@ -23,8 +23,8 @@ body:
     id: version
     attributes:
       label: Kit version
-      description: Press Play and read the `Ascent` line in the Output, such as `Ascent 1.2.0 (stable)`, or run `kit-info` in the admin console (F4 by default).
-      placeholder: 1.2.0
+      description: Press Play and read the `Ascent` line in the Output, such as `Ascent 2.0.0 (stable)`, or run `kit-info` in the admin console (F4 by default).
+      placeholder: 2.0.0
     validations:
       required: true
   - type: dropdown
