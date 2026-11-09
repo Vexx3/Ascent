@@ -32,8 +32,8 @@ The code comes as Roblox packages that only Ascent buyers can use.
 
 1. In Studio, open the Toolbox and go to **Inventory > My Packages**. If the
    packages aren't there, try **Creations > Group Packages**.
-2. Insert each Ascent package: `Server`, `ServerPackages`, `Client`, `Shared`
-   and `Packages`. The hub has `Server`, `Client`, `Shared` and `Packages`.
+2. Insert every Ascent package for this kind of place: a tower place needs five,
+   and the hub needs four. The Check window lists the ones still missing.
 3. Open the plugin's **Check** window and press **Move into place**. Each package
    goes where it belongs.
 4. Select each package's `PackageLink` and turn on **AutoUpdate**, so updates
