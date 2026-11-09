@@ -15,6 +15,9 @@ hero:
     - theme: alt
       text: Get the kit
       link: /guide/getting-started#getting-the-kit
+    - theme: alt
+      text: See games made with it
+      link: /showcase
 
 features:
   - title: One Config folder

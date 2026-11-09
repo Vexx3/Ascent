@@ -31,6 +31,7 @@ export default defineConfig({
       { text: 'Configuration', link: '/guide/configuration' },
       { text: 'API', link: '/guide/api' },
       { text: 'Changelog', link: '/changelog' },
+      { text: 'Showcase', link: '/showcase' },
       { text: 'Get the kit', link: '/guide/getting-started#getting-the-kit' },
       {
         text: 'Plugin',
