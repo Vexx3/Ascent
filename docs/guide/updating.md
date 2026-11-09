@@ -41,8 +41,8 @@ when `Config` is a [package](./configuration.md#sharing-config-between-your-plac
 
 Some releases also change the tower framework. When a release's steps say so:
 
-1. In the Ascent Discord, run `/retrieve` and pick **Ascent** to get the new
-   `Ascent Area.rbxlx`.
+1. In the Ascent Discord, run `/retrieve` and pick **Ascent** to get the newest
+   `Ascent Area` file.
 2. Open it in a second Studio window, next to your place.
 3. **Replace** each of these with the new file's copy. Delete yours, then copy the
    new one into the same spot:

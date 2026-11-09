@@ -9,7 +9,7 @@ nothing to fill in twice.
 
 ## Setting up the hub
 
-1. Open `Ascent Hub.rbxlx`. Don't start the hub from a tower place: the two use
+1. Open the `Ascent Hub` file. Don't start the hub from a tower place: the two use
    different code.
 2. Publish it into the same experience as your tower places, and make it the
    experience's **start place** in the Creator Dashboard.

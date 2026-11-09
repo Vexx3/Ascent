@@ -18,8 +18,10 @@ versions are announced.
 
    | Pick | File | What it's for |
    | :-- | :-- | :-- |
-   | **Ascent** | `Ascent Area.rbxlx` | A tower place. Every Ring, Zone or other Area in your game is a copy of this file. |
-   | **Ascent Hub** | `Ascent Hub.rbxlx` | The hub, the place players join first and pick an Area from. See [Ring Select](./ring-select.md). |
+   | **Ascent** | `Ascent Area v2.0.0.rbxl` | A tower place. Every Ring, Zone or other Area in your game is a copy of this file. |
+   | **Ascent Hub** | `Ascent Hub v2.0.0.rbxl` | The hub, the place players join first and pick an Area from. See [Ring Select](./ring-select.md). |
+
+   The number in each file's name is the version.
 
 4. Install the [Ascent Setup plugin](./tower-setup-plugin.md#installing-it). It
    helps you build towers and checks your place.
@@ -176,12 +178,12 @@ missing. See [Troubleshooting](./troubleshooting.md) for the common ones.
 
 ### 6. Set up the hub
 
-The hub is the place players join first. Make it from `Ascent Hub.rbxlx` and
+The hub is the place players join first. Make it from the `Ascent Hub` file and
 follow [Setting Up the Hub](./ring-select.md#setting-up-the-hub).
 
 ### 7. Publish
 
-Every Area is a copy of `Ascent Area.rbxlx`, published as its own place in the
+Every Area is a copy of the `Ascent Area` file, published as its own place in the
 same experience as the hub. Roblox's
 [publishing guide](https://create.roblox.com/docs/production/publishing/publish-experiences-and-places)
 shows how to add places to an experience.
