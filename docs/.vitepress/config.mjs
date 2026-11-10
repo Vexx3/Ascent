@@ -33,7 +33,7 @@ export default defineConfig({
     search: { provider: 'local' },
     socialLinks: [
       { icon: 'github', link: 'https://github.com/Vexx3/Ascent', ariaLabel: 'Ascent on GitHub' },
-      { icon: 'discord', link: 'https://discord.gg/TbqyC2hJRH', ariaLabel: 'Ascent Discord' },
+      { icon: 'discord', link: 'https://discord.gg/z7Q4drgpCt', ariaLabel: 'Ascent Discord' },
     ],
     nav: [
       { text: 'Start Here', link: '/guide/getting-started' },
